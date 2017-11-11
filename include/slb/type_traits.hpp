@@ -2,6 +2,7 @@
   SLB.TypeTraits
 
   Copyright Michael Park, 2017
+  Copyright Agustin Berge, 2017
 
   Distributed under the Boost Software License, Version 1.0.
   (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
@@ -10,7 +11,7 @@
 #ifndef SLB_TYPE_TRAITS_HPP
 #define SLB_TYPE_TRAITS_HPP
 
-/* N4687
+/*
 
 23.15.2 Header <type_traits> synopsis [meta.type.synop]
 
@@ -54,7 +55,6 @@ namespace std {
   template <class T> struct is_trivial;
   template <class T> struct is_trivially_copyable;
   template <class T> struct is_standard_layout;
-  template <class T> struct is_pod;
   template <class T> struct is_empty;
   template <class T> struct is_polymorphic;
   template <class T> struct is_abstract;
@@ -278,8 +278,6 @@ namespace std {
     = is_trivially_copyable<T>::value;
   template <class T> inline constexpr bool is_standard_layout_v
     = is_standard_layout<T>::value;
-  template <class T> inline constexpr bool is_pod_v
-    = is_pod<T>::value;
   template <class T> inline constexpr bool is_empty_v
     = is_empty<T>::value;
   template <class T> inline constexpr bool is_polymorphic_v
@@ -404,7 +402,7 @@ namespace slb {
 
 // 23.15.3, helper class
 
-#if defined(__cpp_lib_integral_constant_callable) // C++14
+#if __cpp_lib_integral_constant_callable // C++14
 using std::integral_constant;
 #else
 template <typename T, T v>
@@ -416,14 +414,14 @@ struct integral_constant : std::integral_constant<T, v> {
 };
 #endif
 
-#if defined(__cpp_lib_bool_constant) // C++17
+#if __cpp_lib_integral_constant_callable && __cpp_lib_bool_constant // C++17
 using std::bool_constant;
 #else
 template <bool B>
 using bool_constant = slb::integral_constant<bool, B>;
 #endif
 
-#if defined(__cpp_lib_integral_constant_callable) // C++14
+#if __cpp_lib_integral_constant_callable // C++14
 using std::false_type;
 using std::true_type;
 #else
@@ -433,20 +431,20 @@ using false_type = slb::bool_constant<false>;
 
 // 23.15.4.1, primary type categories
 
-#if defined(__cpp_lib_integral_constant_callable) // C++14
-using std::is_void;
-using std::is_integral;
-using std::is_floating_point;
+#if __cpp_lib_integral_constant_callable // C++14
 using std::is_array;
-using std::is_pointer;
-using std::is_lvalue_reference;
-using std::is_rvalue_reference;
-using std::is_member_object_pointer;
-using std::is_member_function_pointer;
-using std::is_enum;
-using std::is_union;
 using std::is_class;
+using std::is_enum;
+using std::is_floating_point;
 using std::is_function;
+using std::is_integral;
+using std::is_lvalue_reference;
+using std::is_member_function_pointer;
+using std::is_member_object_pointer;
+using std::is_pointer;
+using std::is_rvalue_reference;
+using std::is_union;
+using std::is_void;
 #else
 template <typename T>
 struct is_void : slb::bool_constant<std::is_void<T>::value> {};
@@ -493,7 +491,7 @@ template <typename T>
 struct is_function : slb::bool_constant<std::is_function<T>::value> {};
 #endif
 
-#if defined(__cpp_lib_is_null_pointer) // C++14
+#if __cpp_lib_integral_constant_callable && __cpp_lib_is_null_pointer // C++14
 using std::is_null_pointer;
 #else
 template <typename T>
@@ -504,14 +502,14 @@ struct is_null_pointer
 
 // 23.15.4.2, composite type categories
 
-#if defined(__cpp_lib_integral_constant_callable) // C++14
-using std::is_reference;
+#if __cpp_lib_integral_constant_callable // C++14
 using std::is_arithmetic;
-using std::is_fundamental;
-using std::is_object;
-using std::is_scalar;
 using std::is_compound;
+using std::is_fundamental;
 using std::is_member_pointer;
+using std::is_object;
+using std::is_reference;
+using std::is_scalar;
 #else
 template <typename T>
 struct is_reference : slb::bool_constant<std::is_reference<T>::value> {};
@@ -538,16 +536,15 @@ struct is_member_pointer
 
 // 23.15.4.3, type properties
 
-#if defined(__cpp_lib_integral_constant_callable) // C++14
+#if __cpp_lib_integral_constant_callable // C++14
+using std::is_abstract;
 using std::is_const;
-using std::is_volatile;
-using std::is_trivial;
-using std::is_trivially_copyable;
-using std::is_standard_layout;
-using std::is_pod;
 using std::is_empty;
 using std::is_polymorphic;
-using std::is_abstract;
+using std::is_standard_layout;
+using std::is_trivial;
+using std::is_trivially_copyable;
+using std::is_volatile;
 #else
 template <typename T>
 struct is_const : slb::bool_constant<std::is_const<T>::value> {};
@@ -567,9 +564,6 @@ struct is_standard_layout
     : slb::bool_constant<std::is_standard_layout<T>::value> {};
 
 template <typename T>
-struct is_pod : slb::bool_constant<std::is_pod<T>::value> {};
-
-template <typename T>
 struct is_empty : slb::bool_constant<std::is_empty<T>::value> {};
 
 template <typename T>
@@ -579,7 +573,7 @@ template <typename T>
 struct is_abstract : slb::bool_constant<std::is_abstract<T>::value> {};
 #endif
 
-#if defined(__cpp_lib_is_final) // C++14
+#if __cpp_lib_integral_constant_callable && __cpp_lib_is_final // C++14
 using std::is_final;
 #elif __has_feature(is_final) || (__GNUC__ > 4) ||                             \
     ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7))
@@ -587,41 +581,45 @@ template <typename T>
 struct is_final : slb::bool_constant<__is_final(T)> {};
 #else
 template <typename T>
-struct is_final : slb::false_type {};
+struct is_final {
+  static_assert(false_v<T>, "`is_final` is not available.");
+};
 #endif
 
-#if defined(__cpp_lib_is_aggregate) // C++17
+#if __cpp_lib_integral_constant_callable && __cpp_lib_is_aggregate // C++17
 using std::is_aggregate;
 #elif __has_feature(is_aggregate) || (__GNUC__ >= 7)
 template <typename T>
 struct is_aggregate : slb::bool_constant<__is_aggregate(T)> {};
 #else
 template <typename T>
-struct is_aggregate : slb::false_type {};
+struct is_aggregate {
+  static_assert(false_v<T>, "`is_aggregate` is not available.");
+}
 #endif
 
-#if defined(__cpp_lib_integral_constant_callable) // C++14
+#if __cpp_lib_integral_constant_callable // C++14
 using std::is_signed;
 using std::is_unsigned;
 
 using std::is_constructible;
-using std::is_default_constructible;
 using std::is_copy_constructible;
+using std::is_default_constructible;
 using std::is_move_constructible;
 
 using std::is_trivially_constructible;
-using std::is_trivially_default_constructible;
 using std::is_trivially_copy_constructible;
+using std::is_trivially_default_constructible;
 using std::is_trivially_move_constructible;
 
 using std::is_nothrow_constructible;
-using std::is_nothrow_default_constructible;
 using std::is_nothrow_copy_constructible;
+using std::is_nothrow_default_constructible;
 using std::is_nothrow_move_constructible;
 
 using std::is_destructible;
-using std::is_trivially_destructible;
 using std::is_nothrow_destructible;
+using std::is_trivially_destructible;
 
 using std::is_assignable;
 using std::is_copy_assignable;
@@ -736,11 +734,11 @@ struct is_nothrow_move_assignable
     : slb::bool_constant<std::is_nothrow_move_assignable<T>::value> {};
 #endif
 
-#if defined(__cpp_lib_is_swappable) // C++17
-using is_swappable_with;
-using is_swappable;
-using is_nothrow_swappable_with;
+#if __cpp_lib_integral_constant_callable && __cpp_lib_is_swappable // C++17
 using is_nothrow_swappable;
+using is_nothrow_swappable_with;
+using is_swappable;
+using is_swappable_with;
 #else
 // TODO
 // template <typename T, typename U> struct is_swappable_with;
@@ -749,7 +747,7 @@ using is_nothrow_swappable;
 // template <typename T> struct is_nothrow_swappable;
 #endif
 
-#if defined(__cpp_lib_integral_constant_callable) // C++14
+#if __cpp_lib_integral_constant_callable // C++14
 using std::has_virtual_destructor;
 #else
 template <typename T>
@@ -757,7 +755,8 @@ struct has_virtual_destructor
     : slb::bool_constant<std::has_virtual_destructor<T>::value> {};
 #endif
 
-#if defined(__cpp_lib_has_unique_object_representations) // C++17
+#if __cpp_lib_integral_constant_callable &&                                    \
+    __cpp_lib_has_unique_object_representations // C++17
 using std::has_unique_object_representations;
 #elif __has_feature(has_unique_object_representations) || (__GNUC__ >= 7)
 template <typename T>
@@ -765,15 +764,18 @@ struct has_unique_object_representations
     : slb::bool_constant<__has_unique_object_representations(T)> {};
 #else
 template <typename T>
-struct has_unique_object_representations : slb::false_type {};
+struct has_unique_object_representations {
+  static_assert(false_v<T>,
+                "`has_unique_object_representations` is not available.");
+};
 #endif
 
 // 23.15.5, type property queries
 
-#if defined(__cpp_lib_integral_constant_callable) // C++14
+#if __cpp_lib_integral_constant_callable // C++14
 using std::alignment_of;
-using std::rank;
 using std::extent;
+using std::rank;
 #else
 template <typename T>
 struct alignment_of
@@ -788,10 +790,10 @@ struct extent : slb::integral_constant<std::size_t, std::extent<T>::value> {};
 
 // 23.15.6, type relations
 
-#if defined(__cpp_lib_integral_constant_callable) // C++14
-using std::is_same;
+#if __cpp_lib_integral_constant_callable // C++14
 using std::is_base_of;
 using std::is_convertible;
+using std::is_same;
 #else
 template <typename T, typename U>
 struct is_same : slb::bool_constant<std::is_same<T, U>::value> {};
@@ -805,7 +807,7 @@ struct is_convertible
     : slb::bool_constant<std::is_convertible<From, To>::value> {};
 #endif
 
-#if defined(__cpp_lib_is_invocable) // C++17
+#if __cpp_lib_integral_constant_callable && __cpp_lib_is_invocable // C++17
 using std::is_invocable;
 using std::is_invocable_r;
 using std::is_nothrow_invocable;
@@ -828,20 +830,20 @@ using std::is_nothrow_invocable_r;
 
 // 23.15.7.1, const-volatile modifications
 
-using std::remove_const;
-using std::remove_volatile;
-using std::remove_cv;
 using std::add_const;
-using std::add_volatile;
 using std::add_cv;
+using std::add_volatile;
+using std::remove_const;
+using std::remove_cv;
+using std::remove_volatile;
 
-#if defined(__cpp_lib_transformation_trait_aliases) // C++14
-using std::remove_const_t;
-using std::remove_volatile_t;
-using std::remove_cv_t;
+#if __cpp_lib_transformation_trait_aliases // C++14
 using std::add_const_t;
-using std::add_volatile_t;
 using std::add_cv_t;
+using std::add_volatile_t;
+using std::remove_const_t;
+using std::remove_cv_t;
+using std::remove_volatile_t;
 #else
 template <typename T>
 using remove_const_t = typename slb::remove_const<T>::type;
@@ -864,14 +866,14 @@ using add_cv_t = typename slb::add_cv<T>::type;
 
 // 23.15.7.2, reference modifications
 
-using std::remove_reference;
 using std::add_lvalue_reference;
 using std::add_rvalue_reference;
+using std::remove_reference;
 
-#if defined(__cpp_lib_transformation_trait_aliases) // C++14
-using std::remove_reference_t;
+#if __cpp_lib_transformation_trait_aliases // C++14
 using std::add_lvalue_reference_t;
 using std::add_rvalue_reference_t;
+using std::remove_reference_t;
 #else
 template <typename T>
 using remove_reference_t = typename slb::remove_reference<T>::type;
@@ -888,7 +890,7 @@ using add_rvalue_reference_t = typename slb::add_rvalue_reference<T>::type;
 using std::make_signed;
 using std::make_unsigned;
 
-#if defined(__cpp_lib_transformation_trait_aliases) // C++14
+#if __cpp_lib_transformation_trait_aliases // C++14
 using std::make_signed_t;
 using std::make_unsigned_t;
 #else
@@ -901,12 +903,12 @@ using make_unsigned_t = typename slb::make_unsigned<T>::type;
 
 // 23.15.7.4, array modifications
 
-using std::remove_extent;
 using std::remove_all_extents;
+using std::remove_extent;
 
-#if defined(__cpp_lib_transformation_trait_aliases) // C++14
-using std::remove_extent_t;
+#if __cpp_lib_transformation_trait_aliases // C++14
 using std::remove_all_extents_t;
+using std::remove_extent_t;
 #else
 template <typename T>
 using remove_extent_t = typename slb::remove_extent<T>::type;
@@ -917,12 +919,12 @@ using remove_all_extents_t = typename slb::remove_all_extents<T>::type;
 
 // 23.15.7.5, pointer modifications
 
-using std::remove_pointer;
 using std::add_pointer;
+using std::remove_pointer;
 
-#if defined(__cpp_lib_transformation_trait_aliases) // C++14
-using std::remove_pointer_t;
+#if __cpp_lib_transformation_trait_aliases // C++14
 using std::add_pointer_t;
+using std::remove_pointer_t;
 #else
 template <typename T>
 using remove_pointer_t = typename slb::remove_pointer<T>::type;
@@ -935,35 +937,38 @@ using add_pointer_t = typename slb::add_pointer<T>::type;
 
 using std::aligned_storage;
 using std::aligned_union;
+using std::conditional;
 using std::decay;
 using std::enable_if;
-using std::conditional;
+
+// TODO: C++14 (SFINAE) / C++17 (recursive commutative `std::decay_t`)
 using std::common_type;
+
 using std::underlying_type;
 
-#if defined(__cpp_lib_transformation_trait_aliases) // C++14
+#if __cpp_lib_transformation_trait_aliases // C++14
 using std::aligned_storage_t;
 using std::aligned_union_t;
+using std::common_type_t;
+using std::conditional_t;
 using std::decay_t;
 using std::enable_if_t;
-using std::conditional_t;
-using std::common_type_t;
 using std::underlying_type_t;
 #else
 namespace detail {
 
-template <typename = slb::aligned_storage<static_cast<std::size_t>(-1)>>
+template <typename>
 struct default_alignment;
 
-template <std::size_t Align>
-struct default_alignment<
-    slb::aligned_storage<static_cast<std::size_t>(-1), Align>>
+template <std::size_t Len, std::size_t Align>
+struct default_alignment<slb::aligned_storage<Len, Align>>
     : slb::integral_constant<std::size_t, Align> {};
 
 } // namespace detail
 
 template <std::size_t Len,
-          std::size_t Align = slb::detail::default_alignment<>::value>
+          std::size_t Align =
+              slb::detail::default_alignment<slb::aligned_storage<Len>>::value>
 using aligned_storage_t = typename slb::aligned_storage<Len, Align>::type;
 
 template <std::size_t Len, typename... Ts>
@@ -985,7 +990,7 @@ template <typename T>
 using underlying_type_t = typename slb::underlying_type<T>::type;
 #endif
 
-#if defined(__cpp_lib_is_invocable) // C++17
+#if __cpp_lib_is_invocable // C++17
 using std::invoke_result;
 using std::invoke_result_t;
 #else
@@ -996,25 +1001,16 @@ template <typename F, typename... Args>
 using invoke_result_t = typename slb::invoke_result<F, Args...>::type;
 #endif
 
-#if defined(__cpp_lib_void_t) // C++17
+#if __cpp_lib_void_t // C++17
 using std::void_t;
 #else
-namespace detail {
-
-template <typename...>
-struct void_ {
-  using type = void;
-};
-
-} // namespace detail
-
 template <typename... Ts>
-using void_t = typename slb::detail::void_<Ts...>::type;
+using void_t = void;
 #endif
 
 // 23.15.8, logical operator traits
 
-#if defined(__cpp_lib_logical_traits) // C++17
+#if __cpp_lib_logical_traits // C++17
 using std::conjunction;
 using std::disjunction;
 using std::negation;
@@ -1025,14 +1021,19 @@ using std::negation;
 // template <typename B> struct negation;
 #endif
 
-// // 23.15.9, endian
+// 23.15.9, endian
 
-// TODO
-// enum class endian {
-//   little = see below,
-//   big = see below,
-//   native = see below
-// };
+enum class endian {
+#ifdef _WIN32
+  little = 0,
+  big = 1,
+  native = little
+#else
+  little = __ORDER_LITTLE_ENDIAN__,
+  big = __ORDER_BIG_ENDIAN__,
+  native = __BYTE_ORDER__
+#endif
+};
 
 } // namespace slb
 
