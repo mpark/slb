@@ -3,4 +3,5 @@ BasedOnStyle: LLVM
 
 AlwaysBreakTemplateDeclarations: true
 PointerAlignment: Left
+SortUsingDeclarations: false
 ...
