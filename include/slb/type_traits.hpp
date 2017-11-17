@@ -11,6 +11,8 @@
 #ifndef SLB_TYPE_TRAITS_HPP
 #define SLB_TYPE_TRAITS_HPP
 
+#include "detail/lib.hpp"
+
 /*
 
 23.15.2 Header <type_traits> synopsis [meta.type.synop]
@@ -582,7 +584,8 @@ struct is_final : slb::bool_constant<__is_final(T)> {};
 #else
 template <typename T>
 struct is_final {
-  static_assert(false_v<T>, "`is_final` is not available.");
+  static_assert(detail::lib::always_false<T>::value,
+                "`is_final` is not available.");
 };
 #endif
 
@@ -594,8 +597,9 @@ struct is_aggregate : slb::bool_constant<__is_aggregate(T)> {};
 #else
 template <typename T>
 struct is_aggregate {
-  static_assert(false_v<T>, "`is_aggregate` is not available.");
-}
+  static_assert(detail::lib::always_false<T>::value,
+                "`is_aggregate` is not available.");
+};
 #endif
 
 #if __cpp_lib_integral_constant_callable // C++14
@@ -765,7 +769,7 @@ struct has_unique_object_representations
 #else
 template <typename T>
 struct has_unique_object_representations {
-  static_assert(false_v<T>,
+  static_assert(detail::lib::always_false<T>::value,
                 "`has_unique_object_representations` is not available.");
 };
 #endif
