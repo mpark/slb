@@ -1004,8 +1004,8 @@ using std::invoke_result_t;
 // TODO
 // template <typename F, typename... Args> struct invoke_result;
 
-template <typename F, typename... Args>
-using invoke_result_t = typename slb::invoke_result<F, Args...>::type;
+// template <typename F, typename... Args>
+// using invoke_result_t = typename slb::invoke_result<F, Args...>::type;
 #endif
 
 #if __cpp_lib_void_t // C++17
