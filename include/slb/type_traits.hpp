@@ -792,7 +792,8 @@ template <typename T>
 struct rank : slb::integral_constant<std::size_t, std::rank<T>::value> {};
 
 template <typename T, unsigned I = 0>
-struct extent : slb::integral_constant<std::size_t, std::extent<T>::value> {};
+struct extent : slb::integral_constant<std::size_t, std::extent<T, I>::value> {
+};
 #endif
 
 // 23.15.6, type relations
