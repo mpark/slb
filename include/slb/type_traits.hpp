@@ -606,39 +606,39 @@ struct is_aggregate {
 #endif
 
 #if __cpp_lib_integral_constant_callable // C++14
-using is_signed;
-using is_unsigned;
+using std::is_signed;
+using std::is_unsigned;
 
-using is_constructible;
-using is_default_constructible;
-using is_copy_constructible;
-using is_move_constructible;
+using std::is_constructible;
+using std::is_default_constructible;
+using std::is_copy_constructible;
+using std::is_move_constructible;
 
-using is_trivially_constructible;
-using is_trivially_default_constructible;
-using is_trivially_copy_constructible;
-using is_trivially_move_constructible;
+using std::is_trivially_constructible;
+using std::is_trivially_default_constructible;
+using std::is_trivially_copy_constructible;
+using std::is_trivially_move_constructible;
 
-using is_nothrow_constructible;
-using is_nothrow_default_constructible;
-using is_nothrow_copy_constructible;
-using is_nothrow_move_constructible;
+using std::is_nothrow_constructible;
+using std::is_nothrow_default_constructible;
+using std::is_nothrow_copy_constructible;
+using std::is_nothrow_move_constructible;
 
-using is_destructible;
-using is_trivially_destructible;
-using is_nothrow_destructible;
+using std::is_destructible;
+using std::is_trivially_destructible;
+using std::is_nothrow_destructible;
 
-using is_assignable;
-using is_copy_assignable;
-using is_move_assignable;
+using std::is_assignable;
+using std::is_copy_assignable;
+using std::is_move_assignable;
 
-using is_trivially_assignable;
-using is_trivially_copy_assignable;
-using is_trivially_move_assignable;
+using std::is_trivially_assignable;
+using std::is_trivially_copy_assignable;
+using std::is_trivially_move_assignable;
 
-using is_nothrow_assignable;
-using is_nothrow_copy_assignable;
-using is_nothrow_move_assignable;
+using std::is_nothrow_assignable;
+using std::is_nothrow_copy_assignable;
+using std::is_nothrow_move_assignable;
 #else
 template <typename T>
 struct is_signed : slb::bool_constant<std::is_signed<T>::value> {};
@@ -742,10 +742,10 @@ struct is_nothrow_move_assignable
 #endif
 
 #if __cpp_lib_integral_constant_callable && __cpp_lib_is_swappable // C++17
-using is_swappable_with;
-using is_swappable;
-using is_nothrow_swappable_with;
-using is_nothrow_swappable;
+using std::is_swappable_with;
+using std::is_swappable;
+using std::is_nothrow_swappable_with;
+using std::is_nothrow_swappable;
 #else
 // TODO
 // template <typename T, typename U> struct is_swappable_with;
