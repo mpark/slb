@@ -419,20 +419,11 @@ struct integral_constant : std::integral_constant<T, v> {
 };
 #endif
 
-#if __cpp_lib_integral_constant_callable && __cpp_lib_bool_constant // C++17
-using std::bool_constant;
-#else
 template <bool B>
 using bool_constant = slb::integral_constant<bool, B>;
-#endif
 
-#if __cpp_lib_integral_constant_callable // C++14
-using std::true_type;
-using std::false_type;
-#else
 using true_type = slb::bool_constant<true>;
 using false_type = slb::bool_constant<false>;
-#endif
 
 // 23.15.4.1, primary type categories
 
@@ -845,14 +836,6 @@ using std::add_const;
 using std::add_volatile;
 using std::add_cv;
 
-#if __cpp_lib_transformation_trait_aliases // C++14
-using std::remove_const_t;
-using std::remove_volatile_t;
-using std::remove_cv_t;
-using std::add_const_t;
-using std::add_volatile_t;
-using std::add_cv_t;
-#else
 template <typename T>
 using remove_const_t = typename slb::remove_const<T>::type;
 
@@ -870,7 +853,6 @@ using add_volatile_t = typename slb::add_volatile<T>::type;
 
 template <typename T>
 using add_cv_t = typename slb::add_cv<T>::type;
-#endif
 
 // 23.15.7.2, reference modifications
 
@@ -878,11 +860,6 @@ using std::remove_reference;
 using std::add_lvalue_reference;
 using std::add_rvalue_reference;
 
-#if __cpp_lib_transformation_trait_aliases // C++14
-using std::remove_reference_t;
-using std::add_lvalue_reference_t;
-using std::add_rvalue_reference_t;
-#else
 template <typename T>
 using remove_reference_t = typename slb::remove_reference<T>::type;
 
@@ -891,55 +868,39 @@ using add_lvalue_reference_t = typename slb::add_lvalue_reference<T>::type;
 
 template <typename T>
 using add_rvalue_reference_t = typename slb::add_rvalue_reference<T>::type;
-#endif
 
 // 23.15.7.3, sign modifications
 
 using std::make_signed;
 using std::make_unsigned;
 
-#if __cpp_lib_transformation_trait_aliases // C++14
-using std::make_signed_t;
-using std::make_unsigned_t;
-#else
 template <typename T>
 using make_signed_t = typename slb::make_signed<T>::type;
 
 template <typename T>
 using make_unsigned_t = typename slb::make_unsigned<T>::type;
-#endif
 
 // 23.15.7.4, array modifications
 
 using std::remove_extent;
 using std::remove_all_extents;
 
-#if __cpp_lib_transformation_trait_aliases // C++14
-using std::remove_extent_t;
-using std::remove_all_extents_t;
-#else
 template <typename T>
 using remove_extent_t = typename slb::remove_extent<T>::type;
 
 template <typename T>
 using remove_all_extents_t = typename slb::remove_all_extents<T>::type;
-#endif
 
 // 23.15.7.5, pointer modifications
 
 using std::remove_pointer;
 using std::add_pointer;
 
-#if __cpp_lib_transformation_trait_aliases // C++14
-using std::remove_pointer_t;
-using std::add_pointer_t;
-#else
 template <typename T>
 using remove_pointer_t = typename slb::remove_pointer<T>::type;
 
 template <typename T>
 using add_pointer_t = typename slb::add_pointer<T>::type;
-#endif
 
 // 23.15.7.6, other transformations
 
@@ -954,15 +915,6 @@ using std::common_type;
 
 using std::underlying_type;
 
-#if __cpp_lib_transformation_trait_aliases // C++14
-using std::aligned_storage_t;
-using std::aligned_union_t;
-using std::decay_t;
-using std::enable_if_t;
-using std::conditional_t;
-using std::common_type_t;
-using std::underlying_type_t;
-#else
 namespace detail {
 
 template <typename>
@@ -996,7 +948,6 @@ using common_type_t = typename slb::common_type<Ts...>::type;
 
 template <typename T>
 using underlying_type_t = typename slb::underlying_type<T>::type;
-#endif
 
 #if __cpp_lib_is_invocable // C++17
 using std::invoke_result;
@@ -1009,12 +960,8 @@ using std::invoke_result_t;
 // using invoke_result_t = typename slb::invoke_result<F, Args...>::type;
 #endif
 
-#if __cpp_lib_void_t // C++17
-using std::void_t;
-#else
 template <typename... Ts>
 using void_t = void;
-#endif
 
 // 23.15.8, logical operator traits
 
