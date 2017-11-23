@@ -971,10 +971,38 @@ using std::conjunction;
 using std::disjunction;
 using std::negation;
 #else
-// TODO
-// template <typename... Bs> struct conjunction;
-// template <typename... Bs> struct disjunction;
-// template <typename B> struct negation;
+template <typename... Bs>
+struct conjunction : slb::true_type {};
+
+template <typename B>
+struct conjunction<B> : B {};
+
+// We deviate slightly here from the standard by performing a `static_assert` to
+// `bool` rather than a C-style cast. Reconsider this if it turns out to matter.
+template <typename B, typename... Bs>
+struct conjunction<B, Bs...>
+    : slb::conditional_t<static_cast<bool>(B::value), conjunction<Bs...>, B> {
+  static_assert(std::is_convertible<decltype((B::value)), bool>::value,
+                "Member `value` shall be convertible to `bool`.");
+};
+
+template <typename... Bs>
+struct disjunction : slb::false_type {};
+
+template <typename B>
+struct disjunction<B> : B {};
+
+// We deviate slightly here from the standard by performing a `static_assert` to
+// `bool` rather than a C-style cast. Reconsider this if it turns out to matter.
+template <typename B, typename... Bs>
+struct disjunction<B, Bs...>
+    : slb::conditional_t<static_cast<bool>(B::value), B, disjunction<Bs...>> {
+  static_assert(std::is_convertible<decltype((B::value)), bool>::value,
+                "Member `value` shall be convertible to `bool`.");
+};
+
+template <typename B>
+struct negation : slb::bool_constant<!static_cast<bool>(B::value)> {};
 #endif
 
 // 23.15.9, endian

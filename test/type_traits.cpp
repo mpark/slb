@@ -693,6 +693,147 @@ TEST_CASE("void_t", "[meta.trans.other]") {
   CHECK(std::is_same<slb::void_t<int, float, double>, void>::value);
 }
 
+// 23.15.8, logical operator traits
+
+struct WeirdTrue {
+  static constexpr struct {
+    operator int() const { return false; }
+    constexpr explicit operator bool() const { return true; }
+  } value{};
+};
+
+struct WeirdFalse {
+  static constexpr struct {
+    operator int() const { return true; }
+    constexpr explicit operator bool() const { return false; }
+  } value{};
+};
+
+// template<class... B> struct conjunction;
+TEST_CASE("conjunction", "[meta.logical]") {
+  /* length: 0 */ {
+    CHECK(std::is_base_of<slb::true_type, slb::conjunction<>>::value);
+  }
+
+  /* length: 1 */ {
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::conjunction<slb::true_type>>::value);
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::conjunction<slb::false_type>>::value);
+
+    CHECK(std::is_base_of<WeirdTrue, slb::conjunction<WeirdTrue>>::value);
+    CHECK(std::is_base_of<WeirdFalse, slb::conjunction<WeirdFalse>>::value);
+  }
+
+  /* length: 2 */ {
+    CHECK(std::is_base_of<
+          slb::true_type,
+          slb::conjunction<slb::true_type, slb::true_type>>::value);
+
+    CHECK(std::is_base_of<
+          slb::false_type,
+          slb::conjunction<slb::true_type, slb::false_type>>::value);
+
+    CHECK(std::is_base_of<
+          slb::false_type,
+          slb::conjunction<slb::false_type, slb::true_type>>::value);
+
+    CHECK(std::is_base_of<
+          slb::false_type,
+          slb::conjunction<slb::false_type, slb::false_type>>::value);
+
+    CHECK(std::is_base_of<WeirdTrue,
+                          slb::conjunction<WeirdTrue, WeirdTrue>>::value);
+
+    CHECK(std::is_base_of<WeirdFalse,
+                          slb::conjunction<WeirdTrue, WeirdFalse>>::value);
+
+    CHECK(std::is_base_of<WeirdFalse,
+                          slb::conjunction<WeirdFalse, WeirdTrue>>::value);
+
+    CHECK(std::is_base_of<WeirdFalse,
+                          slb::conjunction<WeirdFalse, WeirdFalse>>::value);
+  }
+
+  /* short-circuiting */ {
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::conjunction<slb::false_type, void>>::value);
+
+    CHECK(
+        std::is_base_of<WeirdFalse,
+                        slb::conjunction<WeirdTrue, WeirdFalse, void>>::value);
+  }
+}
+
+// template<class... B> struct disjunction;
+TEST_CASE("disjunction", "[meta.logical]") {
+  /* length: 0 */ {
+    CHECK(std::is_base_of<slb::false_type, slb::disjunction<>>::value);
+  }
+
+  /* length: 1 */ {
+    CHECK(std::is_base_of<std::true_type,
+                          slb::disjunction<slb::true_type>>::value);
+
+    CHECK(std::is_base_of<std::false_type,
+                          slb::disjunction<slb::false_type>>::value);
+
+    CHECK(std::is_base_of<WeirdTrue, slb::disjunction<WeirdTrue>>::value);
+    CHECK(std::is_base_of<WeirdFalse, slb::disjunction<WeirdFalse>>::value);
+  }
+
+  /* length: 2 */ {
+    CHECK(std::is_base_of<
+          slb::true_type,
+          slb::disjunction<slb::true_type, slb::true_type>>::value);
+
+    CHECK(std::is_base_of<
+          slb::true_type,
+          slb::disjunction<slb::true_type, slb::false_type>>::value);
+
+    CHECK(std::is_base_of<
+          slb::true_type,
+          slb::disjunction<slb::false_type, slb::true_type>>::value);
+
+    CHECK(std::is_base_of<
+          slb::false_type,
+          slb::disjunction<slb::false_type, slb::false_type>>::value);
+
+    CHECK(std::is_base_of<WeirdTrue,
+                          slb::disjunction<WeirdTrue, WeirdTrue>>::value);
+
+    CHECK(std::is_base_of<WeirdTrue,
+                          slb::disjunction<WeirdTrue, WeirdFalse>>::value);
+
+    CHECK(std::is_base_of<WeirdTrue,
+                          slb::disjunction<WeirdFalse, WeirdTrue>>::value);
+
+    CHECK(std::is_base_of<WeirdFalse,
+                          slb::disjunction<WeirdFalse, WeirdFalse>>::value);
+  }
+
+  /* short-circuiting */ {
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::disjunction<slb::true_type, void>>::value);
+
+    CHECK(
+        std::is_base_of<WeirdTrue,
+                        slb::disjunction<WeirdFalse, WeirdTrue, void>>::value);
+  }
+}
+
+// template<class B> struct negation;
+TEST_CASE("negation", "[meta.logical]") {
+  CHECK(std::is_base_of<slb::false_type, slb::negation<slb::true_type>>::value);
+  CHECK(std::is_base_of<slb::true_type, slb::negation<slb::false_type>>::value);
+
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::negation<slb::negation<WeirdTrue>>>::value);
+  CHECK(std::is_base_of<slb::false_type,
+                        slb::negation<slb::negation<WeirdFalse>>>::value);
+}
+
 // 23.15.9, endian
 
 // enum class endian {
