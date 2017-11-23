@@ -107,92 +107,82 @@ TEST_CASE("bool_constant", "[meta.help]") {
 
 // template <class T> struct is_void;
 TEST_CASE("is_void", "[meta.unary.cat]") {
-  slb::is_void<void> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_void<void>>::value);
 }
 
 // template <class T> struct is_integral;
 TEST_CASE("is_integral", "[meta.unary.cat]") {
-  slb::is_integral<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_integral<int>>::value);
 }
 
 // template <class T> struct is_floating_point;
 TEST_CASE("is_floating_point", "[meta.unary.cat]") {
-  slb::is_floating_point<double> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_floating_point<double>>::value);
 }
 
 // template <class T> struct is_array;
 TEST_CASE("is_array", "[meta.unary.cat]") {
-  slb::is_array<int[3]> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_array<int[3]>>::value);
 }
 
 // template <class T> struct is_pointer;
 TEST_CASE("is_pointer", "[meta.unary.cat]") {
-  slb::is_pointer<int*> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_pointer<int*>>::value);
 }
 
 // template <class T> struct is_lvalue_reference;
 TEST_CASE("is_lvalue_reference", "[meta.unary.cat]") {
-  slb::is_lvalue_reference<int&> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_lvalue_reference<int&>>::value);
 }
 
 // template <class T> struct is_rvalue_reference;
 TEST_CASE("is_rvalue_reference", "[meta.unary.cat]") {
-  slb::is_rvalue_reference<int&&> ic;
-  CHECK(ic() == true);
+  CHECK(
+      std::is_base_of<slb::true_type, slb::is_rvalue_reference<int&&>>::value);
 }
 
 // template <class T> struct is_member_object_pointer;
 TEST_CASE("is_member_object_pointer", "[meta.unary.cat]") {
   class C {};
-  slb::is_member_object_pointer<int C::*> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_member_object_pointer<int C::*>>::value);
 }
 
 // template <class T> struct is_member_function_pointer;
 TEST_CASE("is_member_function_pointer", "[meta.unary.cat]") {
   class C {};
-  slb::is_member_function_pointer<int (C::*)()> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_member_function_pointer<int (C::*)()>>::value);
 }
 
 // template <class T> struct is_enum;
 TEST_CASE("is_enum", "[meta.unary.cat]") {
   enum E {};
-  slb::is_enum<E> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_enum<E>>::value);
 }
 
 // template <class T> struct is_union;
 TEST_CASE("is_union", "[meta.unary.cat]") {
   union U {};
-  slb::is_union<U> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_union<U>>::value);
 }
 
 // template <class T> struct is_class;
 TEST_CASE("is_class", "[meta.unary.cat]") {
   class C {};
-  slb::is_class<C> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_class<C>>::value);
 }
 
 // template <class T> struct is_function;
 TEST_CASE("is_function", "[meta.unary.cat]") {
-  slb::is_function<void()> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_function<void()>>::value);
 }
 
 // template <class T> struct is_null_pointer;
 TEST_CASE("is_null_pointer", "[meta.unary.cat]") {
   using nullptr_t = decltype(nullptr);
-  slb::is_null_pointer<nullptr_t> ic;
-  CHECK(ic() == true);
+  CHECK(
+      std::is_base_of<slb::true_type, slb::is_null_pointer<nullptr_t>>::value);
 
   {
     CHECK(slb::is_null_pointer<nullptr_t>::value);
@@ -207,84 +197,73 @@ TEST_CASE("is_null_pointer", "[meta.unary.cat]") {
 
 // template <class T> struct is_reference;
 TEST_CASE("is_reference", "[meta.unary.comp]") {
-  slb::is_reference<int&> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_reference<int&>>::value);
 }
 
 // template <class T> struct is_arithmetic;
 TEST_CASE("is_arithmetic", "[meta.unary.comp]") {
-  slb::is_arithmetic<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_arithmetic<int>>::value);
 }
 
 // template <class T> struct is_fundamental;
 TEST_CASE("is_fundamental", "[meta.unary.comp]") {
-  slb::is_fundamental<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_fundamental<int>>::value);
 }
 
 // template <class T> struct is_object;
 TEST_CASE("is_object", "[meta.unary.comp]") {
-  slb::is_object<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_object<int>>::value);
 }
 
 // template <class T> struct is_scalar;
 TEST_CASE("is_scalar", "[meta.unary.comp]") {
-  slb::is_scalar<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_scalar<int>>::value);
 }
 
 // template <class T> struct is_compound;
 TEST_CASE("is_compound", "[meta.unary.comp]") {
-  slb::is_compound<int[3]> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_compound<int[3]>>::value);
 }
 
 // template <class T> struct is_member_pointer;
 TEST_CASE("is_member_pointer", "[meta.unary.comp]") {
   class C {};
-  slb::is_member_pointer<int C::*> ic;
-  CHECK(ic() == true);
+  CHECK(
+      std::is_base_of<slb::true_type, slb::is_member_pointer<int C::*>>::value);
 }
 
 // 23.15.4.3, type properties
 
 // template <class T> struct is_const;
 TEST_CASE("is_const", "[meta.unary.prop]") {
-  slb::is_const<int const> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_const<int const>>::value);
 }
 
 // template <class T> struct is_volatile;
 TEST_CASE("is_volatile", "[meta.unary.prop]") {
-  slb::is_volatile<int volatile> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_volatile<int volatile>>::value);
 }
 
 // template <class T> struct is_trivial;
 TEST_CASE("is_trivial", "[meta.unary.prop]") {
-  slb::is_trivial<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_trivial<int>>::value);
 }
 
 // template <class T> struct is_trivially_copyable;
 TEST_CASE("is_trivially_copyable", "[meta.unary.prop]") {
-  slb::is_trivially_copyable<int> ic;
-  CHECK(ic() == true);
+  CHECK(
+      std::is_base_of<slb::true_type, slb::is_trivially_copyable<int>>::value);
 }
 
 // template <class T> struct is_standard_layout;
 TEST_CASE("is_standard_layout", "[meta.unary.prop]") {
-  slb::is_standard_layout<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_standard_layout<int>>::value);
 }
 
 // template <class T> struct is_empty;
 TEST_CASE("is_empty", "[meta.unary.prop]") {
   struct Empty {};
-  slb::is_empty<Empty> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_empty<Empty>>::value);
 }
 
 // template <class T> struct is_polymorphic;
@@ -292,8 +271,8 @@ TEST_CASE("is_polymorphic", "[meta.unary.prop]") {
   class Polymorphic {
     virtual void fun() {}
   };
-  slb::is_polymorphic<Polymorphic> ic;
-  CHECK(ic() == true);
+  CHECK(
+      std::is_base_of<slb::true_type, slb::is_polymorphic<Polymorphic>>::value);
 }
 
 // template <class T> struct is_abstract;
@@ -301,8 +280,7 @@ TEST_CASE("is_abstract", "[meta.unary.prop]") {
   class Abstract {
     virtual void fun() = 0;
   };
-  slb::is_abstract<Abstract> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_abstract<Abstract>>::value);
 }
 
 #if __cpp_lib_is_final || __has_feature(is_final) || (__GNUC__ > 4) ||         \
@@ -310,8 +288,7 @@ TEST_CASE("is_abstract", "[meta.unary.prop]") {
 // template <class T> struct is_final;
 TEST_CASE("is_final", "[meta.unary.prop]") {
   class Final final {};
-  slb::is_final<Final> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_final<Final>>::value);
 }
 #endif
 
@@ -321,165 +298,158 @@ TEST_CASE("is_aggregate", "[meta.unary.prop]") {
   struct Aggregate {
     int obj;
   };
-  slb::is_aggregate<Aggregate> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_aggregate<Aggregate>>::value);
 }
 #endif
 
 // template <class T> struct is_signed;
 TEST_CASE("is_signed", "[meta.unary.prop]") {
-  slb::is_signed<signed int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_signed<signed int>>::value);
 }
 
 // template <class T> struct is_unsigned;
 TEST_CASE("is_unsigned", "[meta.unary.prop]") {
-  slb::is_unsigned<unsigned int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_unsigned<unsigned int>>::value);
 }
 
 // template <class T, class... Args> struct is_constructible;
 TEST_CASE("is_constructible", "[meta.unary.prop]") {
-  slb::is_constructible<int, int> ic;
-  CHECK(ic() == true);
+  CHECK(
+      std::is_base_of<slb::true_type, slb::is_constructible<int, int>>::value);
 }
 
 // template <class T> struct is_default_constructible;
 TEST_CASE("is_default_constructible", "[meta.unary.prop]") {
-  slb::is_default_constructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_default_constructible<int>>::value);
 }
 
 // template <class T> struct is_copy_constructible;
 TEST_CASE("is_copy_constructible", "[meta.unary.prop]") {
-  slb::is_copy_constructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(
+      std::is_base_of<slb::true_type, slb::is_copy_constructible<int>>::value);
 }
 
 // template <class T> struct is_move_constructible;
 TEST_CASE("is_move_constructible", "[meta.unary.prop]") {
-  slb::is_move_constructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(
+      std::is_base_of<slb::true_type, slb::is_move_constructible<int>>::value);
 }
 
 // template <class T, class ...Args> struct is_trivially_constructible;
 TEST_CASE("is_trivially_constructible", "[meta.unary.prop]") {
-  slb::is_trivially_constructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_trivially_constructible<int>>::value);
 }
 
 // template <class T> struct is_trivially_default_constructible;
 TEST_CASE("is_trivially_default_constructible", "[meta.unary.prop]") {
-  slb::is_trivially_default_constructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_trivially_default_constructible<int>>::value);
 }
 
 // template <class T> struct is_trivially_copy_constructible;
 TEST_CASE("is_trivially_copy_constructible", "[meta.unary.prop]") {
-  slb::is_trivially_copy_constructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_trivially_copy_constructible<int>>::value);
 }
 
 // template <class T> struct is_trivially_move_constructible;
 TEST_CASE("is_trivially_move_constructible", "[meta.unary.prop]") {
-  slb::is_trivially_move_constructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_trivially_move_constructible<int>>::value);
 }
 
 // template <class T, class ...Args> struct is_nothrow_constructible;
 TEST_CASE("is_nothrow_constructible", "[meta.unary.prop]") {
-  slb::is_nothrow_constructible<int, int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_nothrow_constructible<int, int>>::value);
 }
 
 // template <class T> struct is_nothrow_default_constructible;
 TEST_CASE("is_nothrow_default_constructible", "[meta.unary.prop]") {
-  slb::is_nothrow_default_constructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_nothrow_default_constructible<int>>::value);
 }
 
 // template <class T> struct is_nothrow_copy_constructible;
 TEST_CASE("is_nothrow_copy_constructible", "[meta.unary.prop]") {
-  slb::is_nothrow_copy_constructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_nothrow_copy_constructible<int>>::value);
 }
 
 // template <class T> struct is_nothrow_move_constructible;
 TEST_CASE("is_nothrow_move_constructible", "[meta.unary.prop]") {
-  slb::is_nothrow_move_constructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_nothrow_move_constructible<int>>::value);
 }
 
 // template <class T> struct is_destructible;
 TEST_CASE("is_destructible", "[meta.unary.prop]") {
-  slb::is_destructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_destructible<int>>::value);
 }
 
 // template <class T> struct is_trivially_destructible;
 TEST_CASE("is_trivially_destructible", "[meta.unary.prop]") {
-  slb::is_trivially_destructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_trivially_destructible<int>>::value);
 }
 
 // template <class T> struct is_nothrow_destructible;
 TEST_CASE("is_nothrow_destructible", "[meta.unary.prop]") {
-  slb::is_nothrow_destructible<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_nothrow_destructible<int>>::value);
 }
 
 // template <class T, class U> struct is_assignable;
 TEST_CASE("is_assignable", "[meta.unary.prop]") {
-  slb::is_assignable<int&, int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_assignable<int&, int>>::value);
 }
 
 // template <class T> struct is_copy_assignable;
 TEST_CASE("is_copy_assignable", "[meta.unary.prop]") {
-  slb::is_copy_assignable<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_copy_assignable<int>>::value);
 }
 
 // template <class T> struct is_move_assignable;
 TEST_CASE("is_move_assignable", "[meta.unary.prop]") {
-  slb::is_move_assignable<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_move_assignable<int>>::value);
 }
 
 // template <class T, class U> struct is_trivially_assignable;
 TEST_CASE("is_trivially_assignable", "[meta.unary.prop]") {
-  slb::is_trivially_assignable<int&, int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_trivially_assignable<int&, int>>::value);
 }
 
 // template <class T> struct is_trivially_copy_assignable;
 TEST_CASE("is_trivially_copy_assignable", "[meta.unary.prop]") {
-  slb::is_trivially_copy_assignable<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_trivially_copy_assignable<int>>::value);
 }
 
 // template <class T> struct is_trivially_move_assignable;
 TEST_CASE("is_trivially_move_assignable", "[meta.unary.prop]") {
-  slb::is_trivially_move_assignable<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_trivially_move_assignable<int>>::value);
 }
 
 // template <class T, class U> struct is_nothrow_assignable;
 TEST_CASE("is_nothrow_assignable", "[meta.unary.prop]") {
-  slb::is_nothrow_assignable<int&, int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_nothrow_assignable<int&, int>>::value);
 }
 
 // template <class T> struct is_nothrow_copy_assignable;
 TEST_CASE("is_nothrow_copy_assignable", "[meta.unary.prop]") {
-  slb::is_nothrow_copy_assignable<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_nothrow_copy_assignable<int>>::value);
 }
 
 // template <class T> struct is_nothrow_move_assignable;
 TEST_CASE("is_nothrow_move_assignable", "[meta.unary.prop]") {
-  slb::is_nothrow_move_assignable<int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_nothrow_move_assignable<int>>::value);
 }
 
 // template <class T> struct has_virtual_destructor;
@@ -487,8 +457,8 @@ TEST_CASE("has_virtual_destructor", "[meta.unary.prop]") {
   class WithVirtualDestructor {
     virtual ~WithVirtualDestructor() {}
   };
-  slb::has_virtual_destructor<WithVirtualDestructor> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::has_virtual_destructor<
+                                            WithVirtualDestructor>>::value);
 }
 
 #if __cpp_lib_has_unique_object_representations ||                             \
@@ -498,8 +468,9 @@ TEST_CASE("has_unique_object_representations", "[meta.unary.prop]") {
   class WithUniqueObjectRepresentations {
     int obj;
   };
-  slb::has_unique_object_representations<WithUniqueObjectRepresentations> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::has_unique_object_representations<
+                            WithUniqueObjectRepresentations>>::value);
 }
 #endif
 
@@ -507,45 +478,43 @@ TEST_CASE("has_unique_object_representations", "[meta.unary.prop]") {
 
 // template <class T> struct alignment_of;
 TEST_CASE("alignment_of", "[meta.unary.prop.query]") {
-  slb::alignment_of<int> ic;
-  CHECK(ic() == alignof(int));
+  CHECK(std::is_base_of<slb::integral_constant<std::size_t, alignof(int)>,
+                        slb::alignment_of<int>>::value);
 }
 
 // template <class T> struct rank;
 TEST_CASE("rank", "[meta.unary.prop.query]") {
-  slb::rank<int[2][2][2]> ic;
-  CHECK(ic() == 3);
+  CHECK(std::is_base_of<slb::integral_constant<std::size_t, 3>,
+                        slb::rank<int[2][2][2]>>::value);
 }
 
 // template <class T, unsigned I = 0> struct extent;
 TEST_CASE("extent", "[meta.unary.prop.query]") {
-  slb::extent<int[2][3]> ic0;
-  CHECK(ic0() == 2);
+  CHECK(std::is_base_of<slb::integral_constant<std::size_t, 2>,
+                        slb::extent<int[2][3]>>::value);
 
-  slb::extent<int[2][3], 1> ic1;
-  CHECK(ic1() == 3);
+  CHECK(std::is_base_of<slb::integral_constant<std::size_t, 3>,
+                        slb::extent<int[2][3], 1>>::value);
 }
 
 // 23.15.6, type relations
 
 // template <class T, class U> struct is_same;
 TEST_CASE("is_same", "[meta.rel]") {
-  slb::is_same<int, int> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_same<int, int>>::value);
 }
 
 // template <class Base, class Derived> struct is_base_of;
 TEST_CASE("is_base_of", "[meta.rel]") {
   class Base {};
   class Derived : public Base {};
-  slb::is_base_of<Base, Derived> ic;
-  CHECK(ic() == true);
+  CHECK(std::is_base_of<slb::true_type, slb::is_base_of<Base, Derived>>::value);
 }
 
 // template <class From, class To> struct is_convertible;
 TEST_CASE("is_convertible", "[meta.rel]") {
-  slb::is_convertible<float, int> ic;
-  CHECK(ic() == true);
+  CHECK(
+      std::is_base_of<slb::true_type, slb::is_convertible<float, int>>::value);
 }
 
 // 23.15.7.1, const-volatile modifications
