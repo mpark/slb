@@ -183,6 +183,7 @@ namespace std {
   template <size_t Len, size_t Align = default-alignment > // see 23.15.7.6
   struct aligned_storage;
   template <size_t Len, class... Types> struct aligned_union;
+  template <class T> struct remove_cvref;
   template <class T> struct decay;
   template <bool, class T = void> struct enable_if;
   template <bool, class T, class F> struct conditional;
@@ -194,6 +195,8 @@ namespace std {
   using aligned_storage_t = typename aligned_storage<Len, Align>::type;
   template <size_t Len, class... Types>
   using aligned_union_t = typename aligned_union<Len, Types...>::type;
+  template <class T>
+  using remove_cvref_t = typename remove_cvref<T>::type;
   template <class T>
   using decay_t = typename decay<T>::type;
   template <bool B, class T = void>
@@ -1024,6 +1027,12 @@ template <std::size_t Len, typename... Ts>
 constexpr std::size_t aligned_union<Len, Ts...>::alignment_value;
 #endif
 
+template <typename T>
+struct remove_cvref {
+  using type =
+      typename std::remove_cv<typename std::remove_reference<T>::type>::type;
+};
+
 using std::decay;
 using std::enable_if;
 using std::conditional;
@@ -1051,6 +1060,9 @@ using aligned_storage_t = typename slb::aligned_storage<Len, Align>::type;
 
 template <std::size_t Len, typename... Ts>
 using aligned_union_t = typename slb::aligned_union<Len, Ts...>::type;
+
+template <typename T>
+using remove_cvref_t = typename slb::remove_cvref<T>::type;
 
 template <typename T>
 using decay_t = typename slb::decay<T>::type;

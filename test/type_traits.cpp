@@ -679,6 +679,25 @@ TEST_CASE("aligned_union", "[meta.trans.other]") {
   }
 }
 
+// template <class T> struct remove_cvref;
+TEST_CASE("remove_cvref", "[meta.trans.other]") {
+  CHECK(std::is_same<slb::remove_cvref<int>::type, int>::value);
+  CHECK(std::is_same<slb::remove_cvref<int const>::type, int>::value);
+  CHECK(std::is_same<slb::remove_cvref<int volatile>::type, int>::value);
+  CHECK(std::is_same<slb::remove_cvref<int const volatile>::type, int>::value);
+
+  CHECK(std::is_same<slb::remove_cvref<int&>::type, int>::value);
+  CHECK(std::is_same<slb::remove_cvref<int const&>::type, int>::value);
+  CHECK(std::is_same<slb::remove_cvref<int volatile&>::type, int>::value);
+  CHECK(std::is_same<slb::remove_cvref<int const volatile&>::type, int>::value);
+
+  CHECK(std::is_same<slb::remove_cvref<int&&>::type, int>::value);
+  CHECK(std::is_same<slb::remove_cvref<int const&&>::type, int>::value);
+  CHECK(std::is_same<slb::remove_cvref<int volatile&&>::type, int>::value);
+  CHECK(
+      std::is_same<slb::remove_cvref<int const volatile&&>::type, int>::value);
+}
+
 // template <size_t Len, size_t Align = default-alignment>
 // using aligned_storage_t = typename aligned_storage<Len, Align>::type;
 TEST_CASE("aligned_storage_t", "[meta.trans.other]") {
@@ -695,6 +714,13 @@ TEST_CASE("aligned_storage_t", "[meta.trans.other]") {
 TEST_CASE("aligned_union_t", "[meta.trans.other]") {
   CHECK(std::is_same<slb::aligned_union_t<1, int, float, double>,
                      slb::aligned_union<1, int, float, double>::type>::value);
+}
+
+// template <class T>
+// using remove_cvref_t = typename remove_cvref<T>::type;
+TEST_CASE("remove_cvref_t", "[meta.trans.other]") {
+  CHECK(std::is_same<slb::remove_cvref_t<int const volatile&>,
+                     slb::remove_cvref<int const volatile&>::type>::value);
 }
 
 // template <class T>
