@@ -35,6 +35,13 @@ struct is_function : std::integral_constant<bool,
 #pragma warning(pop)
 #endif
 
+////////////////////////////////////////////////////////////////////////////////
+template <typename T>
+struct remove_cvref {
+  using type =
+      typename std::remove_cv<typename std::remove_reference<T>::type>::type;
+};
+
 } // namespace lib
 } // namespace detail
 } // namespace slb

@@ -431,6 +431,7 @@ namespace std {
 #include <cstddef>
 
 #include "detail/config.hpp"
+#include "detail/invoke.hpp"
 #include "detail/lib.hpp"
 
 namespace slb {
@@ -946,19 +947,72 @@ using std::is_invocable_r;
 using std::is_nothrow_invocable;
 using std::is_nothrow_invocable_r;
 #else
-// TODO
+namespace detail {
 
-// template <typename F, typename... Args>
-// struct is_invocable;
+template <typename F, typename Enable = void>
+struct is_invocable_impl {
+  static constexpr bool value = false;
+  static constexpr bool nothrow = false;
+};
 
-// template <typename R, typename F, typename... Args>
-// struct is_invocable_r;
+template <typename F, typename... Args>
+struct is_invocable_impl<F(Args...),
+                         decltype((void)(detail::invoke(
+                             std::declval<F>(), std::declval<Args>()...)))> {
+  static constexpr bool value = true;
+  static constexpr bool nothrow =
+      noexcept(detail::invoke(std::declval<F>(), std::declval<Args>()...));
+  using result =
+      decltype(slb::detail::invoke(std::declval<F>(), std::declval<Args>()...));
+};
 
-// template <typename F, typename... Args>
-// struct is_nothrow_invocable;
+template <typename R,
+          typename F,
+          bool IsVoid = std::is_void<R>::value,
+          bool IsInvocable = is_invocable_impl<F>::value>
+struct is_invocable_r_impl {
+  static constexpr bool value = false;
+  static constexpr bool nothrow = false;
+};
 
-// template <typename R, typename F, typename... Args>
-// struct is_nothrow_invocable_r;
+template <typename R, typename F>
+struct is_invocable_r_impl<R, F, /*IsVoid=*/true, /*IsInvocable=*/true>
+    : is_invocable_impl<F> {};
+
+template <typename R, typename F>
+struct is_invocable_r_impl<R, F, /*IsVoid=*/false, /*IsInvocable=*/true> {
+  static void conversion(...);
+  static void conversion(R) noexcept;
+
+  static constexpr bool value =
+      std::is_convertible<typename is_invocable_impl<F>::result, R>::value;
+  static constexpr bool nothrow =
+      is_invocable_impl<F>::nothrow &&
+      noexcept(
+          conversion(std::declval<typename is_invocable_impl<F>::result>()));
+};
+
+} // namespace detail
+
+template <typename F, typename... Args>
+struct is_invocable
+    : slb::bool_constant<detail::is_invocable_impl<F && (Args && ...)>::value> {
+};
+
+template <typename R, typename F, typename... Args>
+struct is_invocable_r
+    : slb::bool_constant<
+          detail::is_invocable_r_impl<R, F && (Args && ...)>::value> {};
+
+template <typename F, typename... Args>
+struct is_nothrow_invocable
+    : slb::bool_constant<
+          detail::is_invocable_impl<F && (Args && ...)>::nothrow> {};
+
+template <typename R, typename F, typename... Args>
+struct is_nothrow_invocable_r
+    : slb::bool_constant<
+          detail::is_invocable_r_impl<R, F && (Args && ...)>::nothrow> {};
 #endif
 
 // [meta.trans.cv], const-volatile modifications
@@ -1120,7 +1174,7 @@ struct default_alignment<slb::aligned_storage<Len, Align>>
 
 template <std::size_t Len,
           std::size_t Align =
-              slb::detail::default_alignment<slb::aligned_storage<Len>>::value>
+              detail::default_alignment<slb::aligned_storage<Len>>::value>
 using aligned_storage_t = typename slb::aligned_storage<Len, Align>::type;
 
 template <std::size_t Len, typename... Ts>
@@ -1148,11 +1202,26 @@ using underlying_type_t = typename slb::underlying_type<T>::type;
 using std::invoke_result;
 using std::invoke_result_t;
 #else
-// TODO
-// template <typename F, typename... Args> struct invoke_result;
+namespace detail {
 
-// template <typename F, typename... Args>
-// using invoke_result_t = typename slb::invoke_result<F, Args...>::type;
+template <typename F, typename Enable = void>
+struct invoke_result_impl {};
+
+template <typename F, typename... Args>
+struct invoke_result_impl<F(Args...),
+                          decltype((void)detail::invoke(
+                              std::declval<F>(), std::declval<Args>()...))> {
+  using type =
+      decltype(detail::invoke(std::declval<F>(), std::declval<Args>()...));
+};
+
+} // namespace detail
+
+template <typename F, typename... Args>
+struct invoke_result : detail::invoke_result_impl<F && (Args && ...)> {};
+
+template <typename F, typename... Args>
+using invoke_result_t = typename slb::invoke_result<F, Args...>::type;
 #endif
 
 // gcc did not implement CWG1558: "Unused arguments in alias template

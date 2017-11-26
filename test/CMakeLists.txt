@@ -7,6 +7,8 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 set(_tests
+  functional/invoke
+  functional/mem_fn
   type_traits
   utility)
 foreach(_test ${_tests})

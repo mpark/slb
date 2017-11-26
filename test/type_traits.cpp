@@ -10,10 +10,17 @@
 
 #include <slb/type_traits.hpp>
 
+#include <functional>
 #include <type_traits>
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
+
+#define CHECK_NESTED(...)                                                      \
+  do {                                                                         \
+    INFO(__FILE__ "(" << __LINE__ << "): " #__VA_ARGS__);                      \
+    check_##__VA_ARGS__;                                                       \
+  } while (false)
 
 // [meta.help], helper class
 
@@ -555,6 +562,207 @@ TEST_CASE("is_convertible", "[meta.rel]") {
       std::is_base_of<slb::true_type, slb::is_convertible<float, int>>::value);
 }
 
+// template <class Fn, class... ArgTypes>
+// struct is_invocable;
+// template <class R, class Fn, class... ArgTypes>
+// struct is_invocable_r;
+// template <class Fn, class... ArgTypes>
+// struct is_nothrow_invocable;
+// template <class R, class Fn, class... ArgTypes>
+// struct is_nothrow_invocable_r;
+template <typename T, bool IsNothrow = true>
+struct smart_ptr {
+  T* ptr;
+  T& operator*() const noexcept(IsNothrow) { return *ptr; }
+};
+template <typename T>
+using smart_ptr_throws = smart_ptr<T, false>;
+
+template <typename T, bool IsNothrow = true>
+struct conv_to {
+  operator T() const noexcept(IsNothrow) { return T(); }
+};
+template <typename T>
+using conv_to_throws = conv_to<T, false>;
+
+template <typename T, bool IsNothrow = true>
+struct conv_from {
+  conv_from(T) noexcept(IsNothrow) {}
+};
+template <typename T>
+using conv_from_throws = conv_from<T, false>;
+
+// Account for P0012: "Make exception specifications be part of the type
+// system".
+static constexpr bool p0012 = !std::is_same<void(), void() noexcept>::value;
+
+std::true_type const nothrows{};
+std::false_type const throws{};
+std::integral_constant<bool, p0012> const p0012_nothrows{};
+
+template <typename R,
+          typename F,
+          typename... Args,
+          bool IsNothrow,
+          bool IsNothrowR = IsNothrow>
+void check_invocable(std::integral_constant<bool, IsNothrow>,
+                     std::integral_constant<bool, IsNothrowR> = {}) {
+  CHECK(std::is_base_of<slb::true_type, slb::is_invocable<F, Args...>>::value);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_invocable_r<R, F, Args...>>::value);
+
+  CHECK(std::is_base_of<slb::bool_constant<IsNothrow>,
+                        slb::is_nothrow_invocable<F, Args...>>::value);
+  CHECK(std::is_base_of<slb::bool_constant<IsNothrowR>,
+                        slb::is_nothrow_invocable_r<R, F, Args...>>::value);
+}
+
+template <typename F, typename... Args>
+void check_not_invocable() {
+  CHECK(std::is_base_of<slb::false_type, slb::is_invocable<F, Args...>>::value);
+  CHECK(std::is_base_of<slb::false_type,
+                        slb::is_invocable_r<void, F, Args...>>::value);
+
+  CHECK(std::is_base_of<slb::false_type,
+                        slb::is_nothrow_invocable<F, Args...>>::value);
+  CHECK(std::is_base_of<slb::false_type,
+                        slb::is_nothrow_invocable_r<void, F, Args...>>::value);
+}
+
+TEST_CASE("is_invocable", "[meta.rel]") {
+  struct C {
+    int fun(int) noexcept(p0012) { return 0; }
+    int cfun(int) const noexcept(p0012) { return 1; }
+    int lfun(int) & noexcept(p0012) { return 2; }
+    int rfun(int) && noexcept(p0012) { return 3; }
+    int clfun(int) const& noexcept(p0012) { return 4; }
+    int crfun(int) const&& noexcept(p0012) { return 5; }
+  };
+  struct D : C {};
+
+  /* mem-fun-ptr */ {
+    using Fn = decltype(&C::fun);
+
+    CHECK_NESTED(invocable<int, Fn, C&, int>(p0012_nothrows));
+    CHECK_NESTED(not_invocable<Fn, C const&, int>());
+    CHECK_NESTED(invocable<int, Fn, C&&, int>(p0012_nothrows));
+    CHECK_NESTED(not_invocable<Fn, C const&&, int>());
+
+    CHECK_NESTED(invocable<int, Fn, D&, int>(p0012_nothrows));
+    CHECK_NESTED(not_invocable<Fn, D const&, int>());
+    CHECK_NESTED(invocable<int, Fn, D&&, int>(p0012_nothrows));
+    CHECK_NESTED(not_invocable<Fn, D const&&, int>());
+
+    CHECK_NESTED(
+        invocable<int, Fn, std::reference_wrapper<C>, int>(p0012_nothrows));
+    CHECK_NESTED(not_invocable<Fn, std::reference_wrapper<C const>, int>());
+
+    CHECK_NESTED(invocable<int, Fn, C*, int>(p0012_nothrows));
+    CHECK_NESTED(not_invocable<Fn, C const*, int>());
+
+    CHECK_NESTED(invocable<int, Fn, smart_ptr<C>, int>(p0012_nothrows));
+    CHECK_NESTED(not_invocable<Fn, smart_ptr<C const>, int>());
+
+    CHECK_NESTED(invocable<int, Fn, smart_ptr_throws<C>, int>(throws));
+    CHECK_NESTED(not_invocable<Fn, smart_ptr_throws<C const>, int>());
+
+    CHECK_NESTED(not_invocable<Fn>());
+    CHECK_NESTED(not_invocable<Fn, int&>());
+    CHECK_NESTED(not_invocable<Fn, C&, C>());
+
+    using Fnc = decltype(&C::cfun);
+
+    CHECK_NESTED(invocable<int, Fnc, C&, int>(p0012_nothrows));
+    CHECK_NESTED(invocable<int, Fnc, C const&, int>(p0012_nothrows));
+    CHECK_NESTED(invocable<int, Fnc, C&&, int>(p0012_nothrows));
+    CHECK_NESTED(invocable<int, Fnc, C const&&, int>(p0012_nothrows));
+
+    using Fnl = decltype(&C::lfun);
+
+    CHECK_NESTED(invocable<int, Fnl, C&, int>(p0012_nothrows));
+    CHECK_NESTED(not_invocable<Fnl, C const&, int>());
+    CHECK_NESTED(not_invocable<Fnl, C&&, int>());
+    CHECK_NESTED(not_invocable<Fnl, C const&&, int>());
+
+    using Fnr = decltype(&C::rfun);
+
+    CHECK_NESTED(not_invocable<Fnr, C&, int>());
+    CHECK_NESTED(not_invocable<Fnr, C const&, int>());
+    CHECK_NESTED(invocable<int, Fnr, C&&, int>(p0012_nothrows));
+    CHECK_NESTED(not_invocable<Fnr, C const&&, int>());
+
+    using Fncl = decltype(&C::clfun);
+
+    CHECK_NESTED(invocable<int, Fncl, C&, int>(p0012_nothrows));
+    CHECK_NESTED(invocable<int, Fncl, C const&, int>(p0012_nothrows));
+    CHECK_NESTED(not_invocable<Fncl, C&&, int>());
+    CHECK_NESTED(not_invocable<Fncl, C const&&, int>());
+
+    using Fncr = decltype(&C::crfun);
+
+    CHECK_NESTED(not_invocable<Fncr, C&, int>());
+    CHECK_NESTED(not_invocable<Fncr, C const&, int>());
+    CHECK_NESTED(invocable<int, Fncr, C&&, int>(p0012_nothrows));
+    CHECK_NESTED(invocable<int, Fncr, C const&&, int>(p0012_nothrows));
+  }
+
+  /* mem-obj-ptr */ {
+    using Fn = int C::*;
+
+    CHECK_NESTED(invocable<int&, Fn, C&>(nothrows));
+    CHECK_NESTED(invocable<int const&, Fn, C const&>(nothrows));
+    CHECK_NESTED(invocable<int&&, Fn, C&&>(nothrows));
+    CHECK_NESTED(invocable<int const&&, Fn, C const&&>(nothrows));
+
+    CHECK_NESTED(invocable<int&, Fn, D&>(nothrows));
+    CHECK_NESTED(invocable<int const&, Fn, D const&>(nothrows));
+    CHECK_NESTED(invocable<int&&, Fn, D&&>(nothrows));
+    CHECK_NESTED(invocable<int const&&, Fn, D const&&>(nothrows));
+
+    CHECK_NESTED(invocable<int&, Fn, std::reference_wrapper<C>>(nothrows));
+    CHECK_NESTED(
+        invocable<int const&, Fn, std::reference_wrapper<C const>>(nothrows));
+
+    CHECK_NESTED(invocable<int&, Fn, C*>(nothrows));
+    CHECK_NESTED(invocable<int const&, Fn, C const*>(nothrows));
+
+    CHECK_NESTED(invocable<int&, Fn, smart_ptr<C>>(nothrows));
+    CHECK_NESTED(invocable<int const&, Fn, smart_ptr<C const>>(nothrows));
+
+    CHECK_NESTED(invocable<int&, Fn, smart_ptr_throws<C>>(throws));
+    CHECK_NESTED(invocable<int const&, Fn, smart_ptr_throws<C const>>(throws));
+
+    CHECK_NESTED(not_invocable<Fn>());
+    CHECK_NESTED(not_invocable<Fn, int&>());
+    CHECK_NESTED(not_invocable<Fn, C&, int>());
+  }
+
+  /* fun-obj */ {
+    struct Fn {
+      int operator()(int) noexcept { return 42; }
+    };
+
+    CHECK_NESTED(invocable<int, Fn, int>(nothrows));
+    CHECK_NESTED(invocable<int, Fn, conv_to<int>>(nothrows));
+    CHECK_NESTED(invocable<int, Fn, conv_to_throws<int>>(throws));
+    CHECK_NESTED(invocable<conv_from<int>, Fn, int>(nothrows));
+    CHECK_NESTED(invocable<conv_from_throws<int>, Fn, int>(nothrows, throws));
+    CHECK_NESTED(invocable<conv_from_throws<int>, Fn, conv_to_throws<int>>(
+        throws, throws));
+
+    CHECK_NESTED(not_invocable<Fn>());
+    CHECK_NESTED(not_invocable<Fn, void*>());
+    CHECK_NESTED(not_invocable<Fn, int, int>());
+
+    struct S {
+      static int f(int) noexcept(p0012) { return 0; }
+    };
+    using Fn_ptr = decltype(&S::f);
+
+    CHECK_NESTED(invocable<int, Fn_ptr, int>(p0012_nothrows));
+  }
+}
+
 // [meta.trans.cv], const-volatile modifications
 
 // template<class T>
@@ -782,6 +990,156 @@ TEST_CASE("underlying_type_t", "[meta.trans.other]") {
   enum E : int {};
   CHECK(std::is_same<slb::underlying_type_t<E>,
                      std::underlying_type<E>::type>::value);
+}
+
+// template <class Fn, class... ArgTypes> struct invoke_result;
+template <typename T>
+struct no_result_void {
+  using type = void;
+};
+
+template <typename T, typename Enable = void>
+struct no_result : std::true_type {};
+
+template <typename T>
+struct no_result<T, typename no_result_void<typename T::type>::type>
+    : std::false_type {};
+
+TEST_CASE("invoke_result", "[meta.trans.other]") {
+  struct C {};
+  struct D : C {};
+
+  /* mem-fun-ptr */ {
+    using Fn = int (C::*)(int);
+
+    CHECK(std::is_same<slb::invoke_result<Fn, C&, int>::type, int>::value);
+    CHECK(no_result<slb::invoke_result<Fn, C const&, int>>::value);
+    CHECK(std::is_same<slb::invoke_result<Fn, C&&, int>::type, int>::value);
+    CHECK(no_result<slb::invoke_result<Fn, C const&&, int>>::value);
+
+    CHECK(std::is_same<slb::invoke_result<Fn, D&, int>::type, int>::value);
+    CHECK(no_result<slb::invoke_result<Fn, D const&, int>>::value);
+    CHECK(std::is_same<slb::invoke_result<Fn, D&&, int>::type, int>::value);
+    CHECK(no_result<slb::invoke_result<Fn, D const&&, int>>::value);
+
+    CHECK(std::is_same<
+          slb::invoke_result<Fn, std::reference_wrapper<C>, int>::type,
+          int>::value);
+    CHECK(no_result<
+          slb::invoke_result<Fn, std::reference_wrapper<C const>, int>>::value);
+
+    CHECK(std::is_same<slb::invoke_result<Fn, C*, int>::type, int>::value);
+    CHECK(no_result<slb::invoke_result<Fn, C const*, int>>::value);
+
+    CHECK(std::is_same<slb::invoke_result<Fn, smart_ptr<C>, int>::type,
+                       int>::value);
+    CHECK(no_result<slb::invoke_result<Fn, smart_ptr<C const>, int>>::value);
+
+    CHECK(no_result<slb::invoke_result<Fn>>::value);
+    CHECK(no_result<slb::invoke_result<Fn, int&>>::value);
+    CHECK(no_result<slb::invoke_result<Fn, C&, C>>::value);
+
+    using Fnc = int (C::*)(int) const;
+
+    CHECK(std::is_same<slb::invoke_result<Fnc, C&, int>::type, int>::value);
+    CHECK(
+        std::is_same<slb::invoke_result<Fnc, C const&, int>::type, int>::value);
+    CHECK(std::is_same<slb::invoke_result<Fnc, C&&, int>::type, int>::value);
+    CHECK(std::is_same<slb::invoke_result<Fnc, C const&&, int>::type,
+                       int>::value);
+
+    using Fnl = int (C::*)(int)&;
+
+    CHECK(std::is_same<slb::invoke_result<Fnl, C&, int>::type, int>::value);
+    CHECK(no_result<slb::invoke_result<Fnl, C const&, int>>::value);
+    CHECK(no_result<slb::invoke_result<Fnl, C&&, int>>::value);
+    CHECK(no_result<slb::invoke_result<Fnl, C const&&, int>>::value);
+
+    using Fnr = int (C::*)(int)&&;
+
+    CHECK(no_result<slb::invoke_result<Fnr, C&, int>>::value);
+    CHECK(no_result<slb::invoke_result<Fnr, C const&, int>>::value);
+    CHECK(std::is_same<slb::invoke_result<Fnr, C&&, int>::type, int>::value);
+    CHECK(no_result<slb::invoke_result<Fnr, C const&&, int>>::value);
+
+    using Fncl = int (C::*)(int) const&;
+
+    CHECK(std::is_same<slb::invoke_result<Fncl, C&, int>::type, int>::value);
+    CHECK(std::is_same<slb::invoke_result<Fncl, C const&, int>::type,
+                       int>::value);
+    CHECK(no_result<slb::invoke_result<Fncl, C&&, int>>::value);
+    CHECK(no_result<slb::invoke_result<Fncl, C const&&, int>>::value);
+
+    using Fncr = int (C::*)(int) const&&;
+
+    CHECK(no_result<slb::invoke_result<Fncr, C&, int>>::value);
+    CHECK(no_result<slb::invoke_result<Fncr, C const&, int>>::value);
+    CHECK(std::is_same<slb::invoke_result<Fncr, C&&, int>::type, int>::value);
+    CHECK(std::is_same<slb::invoke_result<Fncr, C const&&, int>::type,
+                       int>::value);
+  }
+
+  /* mem-obj-ptr */ {
+    using Fn = int C::*;
+
+    CHECK(std::is_same<slb::invoke_result<Fn, C&>::type, int&>::value);
+    CHECK(std::is_same<slb::invoke_result<Fn, C const&>::type,
+                       int const&>::value);
+    CHECK(std::is_same<slb::invoke_result<Fn, C&&>::type, int&&>::value);
+    CHECK(std::is_same<slb::invoke_result<Fn, C const&&>::type,
+                       int const&&>::value);
+
+    CHECK(std::is_same<slb::invoke_result<Fn, D&>::type, int&>::value);
+    CHECK(std::is_same<slb::invoke_result<Fn, D const&>::type,
+                       int const&>::value);
+    CHECK(std::is_same<slb::invoke_result<Fn, D&&>::type, int&&>::value);
+    CHECK(std::is_same<slb::invoke_result<Fn, D const&&>::type,
+                       int const&&>::value);
+
+    CHECK(std::is_same<slb::invoke_result<Fn, std::reference_wrapper<C>>::type,
+                       int&>::value);
+    CHECK(std::is_same<
+          slb::invoke_result<Fn, std::reference_wrapper<C const>>::type,
+          int const&>::value);
+
+    CHECK(std::is_same<slb::invoke_result<Fn, C*>::type, int&>::value);
+    CHECK(std::is_same<slb::invoke_result<Fn, C const*>::type,
+                       int const&>::value);
+
+    CHECK(
+        std::is_same<slb::invoke_result<Fn, smart_ptr<C>>::type, int&>::value);
+    CHECK(std::is_same<slb::invoke_result<Fn, smart_ptr<C const>>::type,
+                       int const&>::value);
+
+    CHECK(no_result<slb::invoke_result<Fn>>::value);
+    CHECK(no_result<slb::invoke_result<Fn, int&>>::value);
+    CHECK(no_result<slb::invoke_result<Fn, C&, int>>::value);
+  }
+
+  /* fun-obj */ {
+    struct Fn {
+      int operator()(int) noexcept { return 42; }
+    };
+
+    CHECK(std::is_same<slb::invoke_result<Fn, int>::type, int>::value);
+    CHECK(std::is_same<slb::invoke_result<Fn, conv_to<int>>::type, int>::value);
+
+    CHECK(no_result<slb::invoke_result<Fn>>::value);
+    CHECK(no_result<slb::invoke_result<Fn, void*>>::value);
+    CHECK(no_result<slb::invoke_result<Fn, int, int>>::value);
+
+    using Fn_ptr = int (*)(int);
+
+    CHECK(std::is_same<slb::invoke_result<Fn_ptr, int>::type, int>::value);
+  }
+}
+
+// template <class Fn, class... ArgTypes>
+// using invoke_result_t = typename invoke_result<Fn, ArgTypes...>::type;
+TEST_CASE("invoke_result_t", "[meta.trans.other]") {
+  CHECK(std::is_same<
+        slb::invoke_result_t<int (*)(int), int>,
+        typename slb::invoke_result<int (*)(int), int>::type>::value);
 }
 
 // template<class...>
