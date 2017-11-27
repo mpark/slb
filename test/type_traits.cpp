@@ -457,8 +457,9 @@ TEST_CASE("has_virtual_destructor", "[meta.unary.prop]") {
   class WithVirtualDestructor {
     virtual ~WithVirtualDestructor() {}
   };
-  CHECK(std::is_base_of<slb::true_type, slb::has_virtual_destructor<
-                                            WithVirtualDestructor>>::value);
+  CHECK(std::is_base_of<
+        slb::true_type,
+        slb::has_virtual_destructor<WithVirtualDestructor>>::value);
 }
 
 #if __cpp_lib_has_unique_object_representations ||                             \

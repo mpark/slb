@@ -492,8 +492,9 @@ using std::is_null_pointer;
 #else
 template <typename T>
 struct is_null_pointer
-    : slb::bool_constant<std::is_same<
-          std::nullptr_t, typename std::remove_cv<T>::type>::value> {};
+    : slb::bool_constant<
+          std::is_same<std::nullptr_t,
+                       typename std::remove_cv<T>::type>::value> {};
 #endif
 
 // 23.15.4.2, composite type categories
