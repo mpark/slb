@@ -11,8 +11,6 @@
 #ifndef SLB_TYPE_TRAITS_HPP
 #define SLB_TYPE_TRAITS_HPP
 
-#include "detail/lib.hpp"
-
 /*
 
 23.15.2 Header <type_traits> synopsis [meta.type.synop]
@@ -399,6 +397,7 @@ namespace std {
 #include <type_traits>
 
 #include "detail/config.hpp"
+#include "detail/lib.hpp"
 
 namespace slb {
 
