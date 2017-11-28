@@ -7,7 +7,8 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 set(_tests
-  type_traits)
+  type_traits
+  utility)
 foreach(_test ${_tests})
   set(_test_file ${_test}.cpp)
   string(REPLACE "/" "." _test ${_test})
