@@ -41,6 +41,7 @@ TEST_CASE("integral_constant", "[meta.help]") {
     CHECK(noexcept(ic0()));
     CHECK(ic0() == 0);
     constexpr int ic0_value = ic0();
+    (void)ic0_value;
   }
 
   /* std-compatible */ {
