@@ -26,19 +26,16 @@ T deduce_std_integral_constant(std::integral_constant<T, V>) {
 }
 
 TEST_CASE("integral_constant", "[meta.help]") {
-  // using value_type = T;
-  {
+  /* using value_type = T; */ {
     CHECK(std::is_same<slb::integral_constant<int, 0>::value_type, int>::value);
   }
 
-  // using type = integral_constant;
-  {
+  /* using type = integral_constant; */ {
     CHECK(std::is_same<slb::integral_constant<int, 0>::type,
                        slb::integral_constant<int, 0>>::value);
   }
 
-  // inline constexpr value_type operator()() const noexcept;
-  {
+  /* inline constexpr value_type operator()() const noexcept; */ {
     slb::integral_constant<int, 0> ic0;
     CHECK(std::is_same<decltype(ic0()), int>::value);
     CHECK(noexcept(ic0()));
@@ -46,8 +43,7 @@ TEST_CASE("integral_constant", "[meta.help]") {
     constexpr int ic0_value = ic0();
   }
 
-  // std-compatible
-  {
+  /* std-compatible */ {
     slb::integral_constant<int, 0> ic0;
     std::integral_constant<int, 0> std_ic0 = ic0;
     (void)std_ic0;
@@ -75,14 +71,15 @@ TEST_CASE("bool_constant", "[meta.help]") {
   CHECK(std::is_same<slb::bool_constant<true>::type,
                      slb::integral_constant<bool, true>>::value);
 
-  // using true_type = bool_constant<true>;
-  { CHECK(std::is_same<slb::true_type, slb::bool_constant<true>>::value); }
+  /* using true_type = bool_constant<true>; */ {
+    CHECK(std::is_same<slb::true_type, slb::bool_constant<true>>::value);
+  }
 
-  // using false_type = bool_constant<false>;
-  { CHECK(std::is_same<slb::false_type, slb::bool_constant<false>>::value); }
+  /* using false_type = bool_constant<false>; */ {
+    CHECK(std::is_same<slb::false_type, slb::bool_constant<false>>::value);
+  }
 
-  // std-compatible
-  {
+  /* std-compatible */ {
     slb::integral_constant<bool, true> ic_true;
     std::integral_constant<bool, true> std_true = ic_true;
     (void)std_true;
