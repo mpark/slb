@@ -965,11 +965,10 @@ using void_t = void;
 
 // 23.15.8, logical operator traits
 
-#if __cpp_lib_logical_traits // C++17
-using std::conjunction;
-using std::disjunction;
-using std::negation;
-#else
+// We don't enable the C++17 implementations via `__cpp_lib_logical_traits`
+// here since none of the implementations (i.e., libstdc++, libc++, MSVC)
+// are currently strictly conforming.
+
 template <typename... Bs>
 struct conjunction : slb::true_type {};
 
@@ -1002,7 +1001,6 @@ struct disjunction<B, Bs...>
 
 template <typename B>
 struct negation : slb::bool_constant<!static_cast<bool>(B::value)> {};
-#endif
 
 // 23.15.9, endian
 
