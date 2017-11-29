@@ -412,7 +412,7 @@ struct integral_constant : std::integral_constant<T, v> {
   using type = integral_constant;
 
   // C++14
-  inline constexpr value_type operator()() const noexcept {
+  constexpr value_type operator()() const noexcept {
     return this->value;
   }
 };

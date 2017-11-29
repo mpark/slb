@@ -35,7 +35,7 @@ TEST_CASE("integral_constant", "[meta.help]") {
                        slb::integral_constant<int, 0>>::value);
   }
 
-  /* inline constexpr value_type operator()() const noexcept; */ {
+  /* constexpr value_type operator()() const noexcept; */ {
     slb::integral_constant<int, 0> ic0;
     CHECK(std::is_same<decltype(ic0()), int>::value);
     CHECK(noexcept(ic0()));
