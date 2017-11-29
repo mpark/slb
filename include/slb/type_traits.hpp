@@ -915,7 +915,59 @@ using add_pointer_t = typename slb::add_pointer<T>::type;
 // 23.15.7.6, other transformations
 
 using std::aligned_storage;
+
+// libstdc++ did not provide `aligned_union` until version 5.
+// libc++ does not provide an out-of-class definition for `alignment_value`.
+#if !defined(__GLIBCXX__) || __has_include(<codecvt>) // >= libstdc++-5
+#if !defined(_LIBCPP_VERSION)
+#define SLB_CPP_LIB_ALIGNED_UNION 2 // available / conforming
+#else
+#define SLB_CPP_LIB_ALIGNED_UNION 1 // available / non-conforming
+#endif
+#else
+#define SLB_CPP_LIB_ALIGNED_UNION 0 // not available
+#endif
+
+#if SLB_CPP_LIB_ALIGNED_UNION == 2
 using std::aligned_union;
+#else
+#if SLB_CPP_LIB_ALIGNED_UNION == 1
+template <std::size_t Len, typename... Ts>
+struct aligned_union : std::aligned_union<Len, Ts...> {
+  static constexpr std::size_t alignment_value =
+      std::aligned_union<Len, Ts...>::alignment_value;
+};
+#else
+namespace detail {
+template <std::size_t... Vs>
+struct static_max;
+
+template <std::size_t V>
+struct static_max<V> {
+  static constexpr std::size_t value = V;
+};
+
+template <std::size_t V0, std::size_t V1, std::size_t... Vs>
+struct static_max<V0, V1, Vs...> : static_max<(V0 < V1 ? V1 : V0), Vs...> {};
+} // namespace detail
+
+template <std::size_t Len, typename... Ts>
+struct aligned_union {
+  static_assert(sizeof...(Ts) > 0, "At least one type shall be provided.");
+
+  static constexpr std::size_t alignment_value =
+      detail::static_max<alignof(Ts)...>::value;
+
+  using type = typename std::aligned_storage<
+      detail::static_max<Len, sizeof(Ts)...>::value,
+      alignment_value>::type;
+};
+#endif
+
+template <std::size_t Len, typename... Ts>
+constexpr std::size_t aligned_union<Len, Ts...>::alignment_value;
+#endif
+
 using std::decay;
 using std::enable_if;
 using std::conditional;

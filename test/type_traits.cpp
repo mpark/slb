@@ -631,6 +631,38 @@ TEST_CASE("add_pointer_t", "[meta.trans.ptr]") {
 
 // 23.15.7.6, other transformations
 
+// template <size_t Len, class... Types> struct aligned_union;
+TEST_CASE("aligned_union", "[meta.trans.other]") {
+  union U {
+    int x;
+    double y;
+  };
+
+  // The member typedef type shall be a trivial standard-layout type suitable
+  // for use as uninitialized storage for any object whose type is listed in
+  // Types; its size shall be at least Len.
+  {
+    using type = slb::aligned_union<0, int, double>::type;
+    CHECK(std::is_trivial<type>::value);
+    CHECK(std::is_standard_layout<type>::value);
+    CHECK(alignof(type) % alignof(U) == 0);
+
+    CHECK(sizeof(slb::aligned_union<sizeof(int) * 2, int>::type) >=
+          sizeof(int) * 2);
+  }
+
+  // The static member alignment_value shall be an integral constant of type
+  // size_t whose value is the strictest alignment of all types listed in Types.
+  {
+    using au0 = slb::aligned_union<0, int, double>;
+    CHECK(
+        std::is_same<decltype(au0::alignment_value), std::size_t const>::value);
+    CHECK(au0::alignment_value == alignof(U));
+    constexpr std::size_t au0_alignment_value = au0::alignment_value;
+    (void)au0_alignment_value;
+  }
+}
+
 // template <size_t Len, size_t Align = default-alignment>
 // using aligned_storage_t = typename aligned_storage<Len, Align>::type;
 TEST_CASE("aligned_storage_t", "[meta.trans.other]") {
@@ -646,7 +678,7 @@ TEST_CASE("aligned_storage_t", "[meta.trans.other]") {
 // using aligned_union_t = typename aligned_union<Len, Types...>::type;
 TEST_CASE("aligned_union_t", "[meta.trans.other]") {
   CHECK(std::is_same<slb::aligned_union_t<1, int, float, double>,
-                     std::aligned_union<1, int, float, double>::type>::value);
+                     slb::aligned_union<1, int, float, double>::type>::value);
 }
 
 // template <class T>
