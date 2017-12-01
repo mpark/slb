@@ -158,16 +158,31 @@ namespace std {
 #include "detail/config.hpp"
 #include "detail/lib.hpp"
 
+#if __cpp_lib_integer_sequence ||                                              \
+    (_LIBCPP_VERSION >= 1101 && _LIBCPP_STD_VER > 11) || defined(_MSC_VER)
+// libstdc++ did not mark `size()` as `noexcept` until version 8.
+#if defined(__GLIBCXX__) && __has_include(<filesystem>)
+#define SLB_CPP_LIB_INTEGER_SEQUENCE 2 // available / conforming
+#else
+#define SLB_CPP_LIB_INTEGER_SEQUENCE 1 // available / non-conforming
+#endif
+#else
+#define SLB_CPP_LIB_INTEGER_SEQUENCE 0 // not available
+#endif
+
 namespace slb {
 
 // 23.3, Compile-time integer sequences
 
-#if __cpp_lib_integer_sequence ||                                              \
-    (_LIBCPP_VERSION >= 1101 && _LIBCPP_STD_VER > 11) || defined(_MSC_VER)
+#if SLB_CPP_LIB_INTEGER_SEQUENCE == 2
 using std::integer_sequence;
 #else
 template <typename T, T... Is>
-struct integer_sequence {
+struct integer_sequence
+#if SLB_CPP_LIB_INTEGER_SEQUENCE == 1
+    : std::integer_sequence<T, Is...>
+#endif
+{
   static_assert(std::is_integral<T>::value, "`T` shall be an integer type.");
   using value_type = T;
   static constexpr std::size_t size() noexcept { return sizeof...(Is); }

@@ -17,14 +17,7 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#if __cpp_lib_integer_sequence ||                                              \
-    (_LIBCPP_VERSION >= 1101 && _LIBCPP_STD_VER > 11) || defined(_MSC_VER)
-#define HAS_STD_INTEGER_SEQUENCE 1
-#else
-#define HAS_STD_INTEGER_SEQUENCE 0
-#endif
-
-#if HAS_STD_INTEGER_SEQUENCE
+#if SLB_CPP_LIB_INTEGER_SEQUENCE
 template <typename T, T... Is>
 std::size_t deduce_std_integer_sequence(std::integer_sequence<T, Is...>) {
   return sizeof...(Is);
@@ -44,7 +37,7 @@ TEST_CASE("index_sequence", "[utility.syn]") {
   CHECK(std::is_same<slb::index_sequence<2, 1, 0>,
                      slb::integer_sequence<std::size_t, 2, 1, 0>>::value);
 
-#if HAS_STD_INTEGER_SEQUENCE
+#if SLB_CPP_LIB_INTEGER_SEQUENCE
   /* std-compatible */ {
     slb::index_sequence<101, 202, 303, 404> slb_is;
     std::index_sequence<101, 202, 303, 404> std_is = slb_is;
@@ -102,7 +95,7 @@ TEST_CASE("integer_sequence", "[intseq.intseq]") {
     (void)bs;
   }
 
-#if HAS_STD_INTEGER_SEQUENCE
+#if SLB_CPP_LIB_INTEGER_SEQUENCE
   /* std-compatible */ {
     slb::integer_sequence<int, 2, 1, -1, -2> slb_is;
     std::integer_sequence<int, 2, 1, -1, -2> std_is = slb_is;
