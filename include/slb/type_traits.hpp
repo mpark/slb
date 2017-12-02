@@ -941,7 +941,11 @@ struct is_convertible
     : slb::bool_constant<std::is_convertible<From, To>::value> {};
 #endif
 
-#if SLB_INTEGRAL_CONSTANT == 2 && __cpp_lib_is_invocable // C++17
+// We only enable the C++17 implementation under C++2a here to account for
+// P0704: "Fixing const-qualified pointers to members".
+
+#if SLB_INTEGRAL_CONSTANT == 2 && __cpp_lib_is_invocable /* C++17 */ &&        \
+    __cplusplus > 201703L /* C++2a */
 using std::is_invocable;
 using std::is_invocable_r;
 using std::is_nothrow_invocable;
@@ -1198,7 +1202,10 @@ using common_type_t = typename slb::common_type<Ts...>::type;
 template <typename T>
 using underlying_type_t = typename slb::underlying_type<T>::type;
 
-#if __cpp_lib_is_invocable // C++17
+// We only enable the C++17 implementation under C++2a here to account for
+// P0704: "Fixing const-qualified pointers to members".
+
+#if __cpp_lib_is_invocable /* C++17 */ && __cplusplus > 201703L /* C++2a */
 using std::invoke_result;
 using std::invoke_result_t;
 #else

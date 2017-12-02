@@ -695,8 +695,8 @@ TEST_CASE("is_invocable", "[meta.rel]") {
 
     CHECK_NESTED(invocable<int, Fncl, C&, int>(p0012_nothrows));
     CHECK_NESTED(invocable<int, Fncl, C const&, int>(p0012_nothrows));
-    CHECK_NESTED(not_invocable<Fncl, C&&, int>());
-    CHECK_NESTED(not_invocable<Fncl, C const&&, int>());
+    CHECK_NESTED(invocable<int, Fncl, C&&, int>(p0012_nothrows));
+    CHECK_NESTED(invocable<int, Fncl, C const&&, int>(p0012_nothrows));
 
     using Fncr = decltype(&C::crfun);
 
@@ -1067,8 +1067,9 @@ TEST_CASE("invoke_result", "[meta.trans.other]") {
     CHECK(std::is_same<slb::invoke_result<Fncl, C&, int>::type, int>::value);
     CHECK(std::is_same<slb::invoke_result<Fncl, C const&, int>::type,
                        int>::value);
-    CHECK(no_result<slb::invoke_result<Fncl, C&&, int>>::value);
-    CHECK(no_result<slb::invoke_result<Fncl, C const&&, int>>::value);
+    CHECK(std::is_same<slb::invoke_result<Fncl, C&&, int>::type, int>::value);
+    CHECK(std::is_same<slb::invoke_result<Fncl, C const&&, int>::type,
+                       int>::value);
 
     using Fncr = int (C::*)(int) const&&;
 

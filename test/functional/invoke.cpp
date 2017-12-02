@@ -185,12 +185,16 @@ TEST_CASE("invoke(mem-fun-ptr)", "[func.invoke]") {
     CHECK_NESTED(invoke_fun(
         std::move(r).cfun(40), p0012_nothrows, cf, std::move(r), 40));
     CHECK_NESTED(invoke_fun(
+        std::move(r).clfun(40), p0012_nothrows, clf, std::move(r), 40));
+    CHECK_NESTED(invoke_fun(
         std::move(r).rfun(40), p0012_nothrows, rf, std::move(r), 40));
     CHECK_NESTED(invoke_fun(
         std::move(r).crfun(40), p0012_nothrows, crf, std::move(r), 40));
 
     CHECK_NESTED(invoke_fun(
         std::move(cr).cfun(40), p0012_nothrows, cf, std::move(cr), 40));
+    CHECK_NESTED(invoke_fun(
+        std::move(cr).clfun(40), p0012_nothrows, clf, std::move(cr), 40));
     CHECK_NESTED(invoke_fun(
         std::move(cr).crfun(40), p0012_nothrows, crf, std::move(cr), 40));
   }

@@ -161,7 +161,10 @@ namespace slb {
 
 // [func.invoke], invoke
 
-#if __cpp_lib_invoke // C++17
+// We only enable the C++17 implementation under C++2a here to account for
+// P0704: "Fixing const-qualified pointers to members".
+
+#if __cpp_lib_invoke /* C++17 */ && __cplusplus > 201703L /* C++2a */
 using std::invoke;
 #else
 template <typename F, typename... Args>
@@ -174,11 +177,11 @@ invoke(F&& f,
 
 // [func.memfn], member function adaptors
 
-// We only enable the C++17 implementation via `__cpp_lib_invoke` here to
-// account for C++17's LWG2210: "INVOKE-ing a pointer to member with a
-// `reference_wrapper` as the object expression".
+// We only enable the C++17 implementation under C++2a here to account for
+// P0704: "Fixing const-qualified pointers to members" and LWG2210: "INVOKE-ing
+// a pointer to member with a `reference_wrapper` as the object expression".
 
-#if __cpp_lib_invoke // C++17
+#if __cpp_lib_invoke /* C++17 */ && __cplusplus > 201703L /* C++2a */
 using std::mem_fn;
 #else
 template <typename T, typename C>

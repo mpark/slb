@@ -140,6 +140,39 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+template <typename F, typename T1>
+struct p0704_noexcept {
+  using type = T1;
+};
+template <typename F, typename T1>
+struct p0704 {
+  using type = typename p0704_noexcept<F, T1>::type;
+};
+
+// P0704: Fixing const-qualified pointers to members
+// In a .* expression whose object expression is an rvalue, the program is
+// ill-formed if the second operand is a pointer to member function with whose
+// ref-qualifier is &, unless its cv-qualifier-seq is const.
+#if __cplusplus <= 201703L // C++2a
+template <typename R, typename... Args, typename T1>
+struct p0704_noexcept<R(Args...) const& noexcept, T1> {
+  using type = T1&;
+};
+template <typename R, typename... Args, typename T1>
+struct p0704_noexcept<R(Args..., ...) const& noexcept, T1> {
+  using type = T1&;
+};
+template <typename R, typename... Args, typename T1>
+struct p0704<R(Args...) const&, T1> {
+  using type = T1&;
+};
+template <typename R, typename... Args, typename T1>
+struct p0704<R(Args..., ...) const&, T1> {
+  using type = T1&;
+};
+#endif
+
+////////////////////////////////////////////////////////////////////////////////
 template <typename Tag, typename T, typename Enable = void>
 struct mem_fun_ptr_result {};
 
@@ -216,12 +249,13 @@ public:
 
   template <typename T1,
             typename... Tn,
-            typename Tag = typename dispatch_mem_ptr<C, T1>::type,
+            typename PT1 = typename p0704<T, T1>::type,
+            typename Tag = typename dispatch_mem_ptr<C, PT1>::type,
             typename R =
-                typename mem_fun_ptr_result<Tag, T C::*(T1&&, Tn&&...)>::type>
+                typename mem_fun_ptr_result<Tag, T C::*(PT1&&, Tn&&...)>::type>
   constexpr R operator()(T1&& t1, Tn&&... tn) const noexcept(noexcept(
-      call<R>(Tag{}, pm, std::forward<T1>(t1), std::forward<Tn>(tn)...))) {
-    return call<R>(Tag{}, pm, std::forward<T1>(t1), std::forward<Tn>(tn)...);
+      call<R>(Tag{}, pm, std::forward<PT1>(t1), std::forward<Tn>(tn)...))) {
+    return call<R>(Tag{}, pm, std::forward<PT1>(t1), std::forward<Tn>(tn)...);
   }
 };
 

@@ -198,6 +198,8 @@ TEST_CASE("mem_fn(mem-fun-ptr)", "[func.memfn]") {
         mem_fun(std::move(r).fun(40), p0012_nothrows, mem, std::move(r), 40));
     CHECK_NESTED(
         mem_fun(std::move(r).cfun(40), p0012_nothrows, cmem, std::move(r), 40));
+    CHECK_NESTED(mem_fun(
+        std::move(r).clfun(40), p0012_nothrows, clmem, std::move(r), 40));
     CHECK_NESTED(
         mem_fun(std::move(r).rfun(40), p0012_nothrows, rmem, std::move(r), 40));
     CHECK_NESTED(mem_fun(
@@ -205,6 +207,8 @@ TEST_CASE("mem_fn(mem-fun-ptr)", "[func.memfn]") {
 
     CHECK_NESTED(mem_fun(
         std::move(cr).cfun(40), p0012_nothrows, cmem, std::move(cr), 40));
+    CHECK_NESTED(mem_fun(
+        std::move(cr).clfun(40), p0012_nothrows, clmem, std::move(cr), 40));
     CHECK_NESTED(mem_fun(
         std::move(cr).crfun(40), p0012_nothrows, crmem, std::move(cr), 40));
   }
