@@ -21,7 +21,7 @@ backported to __C++11__/__14__/__17__.
 
 ## Documentation
 
-  - [C++ Working Draft](wg21.link/standard)
+  - [C++ Working Draft](http://wg21.link/standard)
   - [eel.is/c++draft](http://eel.is/c++draft)
 
 ## CMake Variables
