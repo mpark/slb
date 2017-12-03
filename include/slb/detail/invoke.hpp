@@ -173,6 +173,38 @@ struct p0704<R(Args..., ...) const&, T1> {
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+template <typename C, typename F, typename T1>
+struct apply_clang_workaround_noexcept {
+  using type = void;
+};
+template <typename C, typename F, typename T1>
+struct apply_clang_workaround : apply_clang_workaround_noexcept<C, F, T1> {};
+
+// clang accepts invalid calls to non-const members on references to const
+// derived class up to version 5.0.
+#if defined(__clang__)
+template <typename C, typename T1>
+struct disable_if_const_derived
+    : std::enable_if<
+          !std::is_const<typename std::remove_reference<T1>::type>::value ||
+          !std::is_base_of<C,
+                           typename std::remove_reference<T1>::type>::value> {};
+
+template <typename C, typename R, typename... Args, typename T1>
+struct apply_clang_workaround_noexcept<C, R(Args...) noexcept, T1>
+    : disable_if_const_derived<C, T1> {};
+template <typename C, typename R, typename... Args, typename T1>
+struct apply_clang_workaround_noexcept<C, R(Args..., ...) noexcept, T1>
+    : disable_if_const_derived<C, T1> {};
+template <typename C, typename R, typename... Args, typename T1>
+struct apply_clang_workaround<C, R(Args...), T1>
+    : disable_if_const_derived<C, T1> {};
+template <typename C, typename R, typename... Args, typename T1>
+struct apply_clang_workaround<C, R(Args..., ...), T1>
+    : disable_if_const_derived<C, T1> {};
+#endif
+
+////////////////////////////////////////////////////////////////////////////////
 template <typename Tag, typename T, typename Enable = void>
 struct mem_fun_ptr_result {};
 
@@ -252,7 +284,8 @@ public:
             typename PT1 = typename p0704<T, T1>::type,
             typename Tag = typename dispatch_mem_ptr<C, PT1>::type,
             typename R =
-                typename mem_fun_ptr_result<Tag, T C::*(PT1&&, Tn&&...)>::type>
+                typename mem_fun_ptr_result<Tag, T C::*(PT1&&, Tn&&...)>::type,
+            typename = typename apply_clang_workaround<C, T, T1>::type>
   constexpr R operator()(T1&& t1, Tn&&... tn) const noexcept(noexcept(
       call<R>(Tag{}, pm, std::forward<PT1>(t1), std::forward<Tn>(tn)...))) {
     return call<R>(Tag{}, pm, std::forward<PT1>(t1), std::forward<Tn>(tn)...);
