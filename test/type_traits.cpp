@@ -35,13 +35,22 @@ TEST_CASE("integral_constant", "[meta.help]") {
                        slb::integral_constant<int, 0>>::value);
   }
 
+  /* constexpr operator value_type() const noexcept; */ {
+    slb::integral_constant<int, 0> ic;
+    CHECK(std::is_convertible<decltype(ic), int>::value);
+    CHECK(noexcept(static_cast<int>(ic)));
+    CHECK(static_cast<int>(ic) == 0);
+    constexpr int ic_value = ic;
+    CHECK(ic_value == 0);
+  }
+
   /* constexpr value_type operator()() const noexcept; */ {
     slb::integral_constant<int, 0> ic;
     CHECK(std::is_same<decltype(ic()), int>::value);
     CHECK(noexcept(ic()));
     CHECK(ic() == 0);
     constexpr int ic_value = ic();
-    (void)ic_value;
+    CHECK(ic_value == 0);
   }
 
   /* std-compatible */ {
