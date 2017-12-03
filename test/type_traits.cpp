@@ -36,20 +36,20 @@ TEST_CASE("integral_constant", "[meta.help]") {
   }
 
   /* constexpr value_type operator()() const noexcept; */ {
-    slb::integral_constant<int, 0> ic0;
-    CHECK(std::is_same<decltype(ic0()), int>::value);
-    CHECK(noexcept(ic0()));
-    CHECK(ic0() == 0);
-    constexpr int ic0_value = ic0();
-    (void)ic0_value;
+    slb::integral_constant<int, 0> ic;
+    CHECK(std::is_same<decltype(ic()), int>::value);
+    CHECK(noexcept(ic()));
+    CHECK(ic() == 0);
+    constexpr int ic_value = ic();
+    (void)ic_value;
   }
 
   /* std-compatible */ {
-    slb::integral_constant<int, 0> ic0;
-    std::integral_constant<int, 0> std_ic0 = ic0;
-    (void)std_ic0;
+    slb::integral_constant<int, 0> slb_ic;
+    std::integral_constant<int, 0> std_ic = slb_ic;
+    (void)std_ic;
 
-    CHECK(deduce_std_integral_constant(ic0) == 0);
+    CHECK(deduce_std_integral_constant(slb_ic) == 0);
   }
 }
 
