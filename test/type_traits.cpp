@@ -719,8 +719,23 @@ TEST_CASE("underlying_type_t", "[meta.trans.other]") {
 
 // template <class...>
 // using void_t = void;
+
+template <typename T, typename Enable = void>
+struct has_nested_type : std::false_type {};
+
+template <typename T>
+struct has_nested_type<T, slb::void_t<typename T::type>> : std::true_type {};
+
 TEST_CASE("void_t", "[meta.trans.other]") {
   CHECK(std::is_same<slb::void_t<int, float, double>, void>::value);
+
+  /* sfinae */ {
+    struct S {
+      using type = int;
+    };
+    CHECK(has_nested_type<S>::value);
+    CHECK_FALSE(has_nested_type<int>::value);
+  }
 }
 
 // 23.15.8, logical operator traits

@@ -1023,8 +1023,22 @@ using std::invoke_result_t;
 // using invoke_result_t = typename slb::invoke_result<F, Args...>::type;
 #endif
 
+// gcc did not implement CWG1558: "Unused arguments in alias template
+// specializations" until version 5.
+#if !defined(__GNUC__) || __GNUC__ >= 5
 template <typename... Ts>
 using void_t = void;
+#else
+namespace detail {
+template <typename... Ts>
+struct dependent_void {
+  using type = void;
+};
+} // namespace detail
+
+template <typename... Ts>
+using void_t = typename detail::dependent_void<Ts...>::type;
+#endif
 
 // 23.15.8, logical operator traits
 
