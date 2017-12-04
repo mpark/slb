@@ -12,105 +12,65 @@ sudo: false
 matrix:
   include:
     # gcc-4.8
-    - env: VERSION=4.8 CXXFLAGS="-std=c++11"
+    - env: VERSION=4.8 CXX_VERSIONS="11;1y"
       compiler: gcc
       os: linux
-      addons: &gcc48
+      addons:
         apt:
           packages:
             - g++-4.8
           sources:
             - ubuntu-toolchain-r-test
 
-    - env: VERSION=4.8 CXXFLAGS="-std=c++1y"
-      compiler: gcc
-      os: linux
-      addons: *gcc48
-
     # gcc-4.9
-    - env: VERSION=4.9 CXXFLAGS="-std=c++11"
+    - env: VERSION=4.9 CXX_VERSIONS="11;14"
       compiler: gcc
       os: linux
-      addons: &gcc49
+      addons:
         apt:
           packages:
             - g++-4.9
           sources:
             - ubuntu-toolchain-r-test
 
-    - env: VERSION=4.9 CXXFLAGS="-std=c++14"
-      compiler: gcc
-      os: linux
-      addons: *gcc49
-
     # gcc-5
-    - env: VERSION=5 CXXFLAGS="-std=c++11"
+    - env: VERSION=5 CXX_VERSIONS="11;14;1z"
       compiler: gcc
       os: linux
-      addons: &gcc5
+      addons:
         apt:
           packages:
             - g++-5
           sources:
             - ubuntu-toolchain-r-test
 
-    - env: VERSION=5 CXXFLAGS="-std=c++14"
-      compiler: gcc
-      os: linux
-      addons: *gcc5
-
-    - env: VERSION=5 CXXFLAGS="-std=c++1z"
-      compiler: gcc
-      os: linux
-      addons: *gcc5
-
     # gcc-6
-    - env: VERSION=6 CXXFLAGS="-std=c++11"
+    - env: VERSION=6 CXX_VERSIONS="11;14;1z"
       compiler: gcc
       os: linux
-      addons: &gcc6
+      addons:
         apt:
           packages:
             - g++-6
           sources:
             - ubuntu-toolchain-r-test
 
-    - env: VERSION=6 CXXFLAGS="-std=c++14"
-      compiler: gcc
-      os: linux
-      addons: *gcc6
-
-    - env: VERSION=6 CXXFLAGS="-std=c++1z"
-      compiler: gcc
-      os: linux
-      addons: *gcc6
-
     # gcc-7
-    - env: VERSION=7 CXXFLAGS="-std=c++11"
+    - env: VERSION=7 CXX_VERSIONS="11;14;17"
       compiler: gcc
       os: linux
-      addons: &gcc7
+      addons:
         apt:
           packages:
             - g++-7
           sources:
             - ubuntu-toolchain-r-test
 
-    - env: VERSION=7 CXXFLAGS="-std=c++14"
-      compiler: gcc
-      os: linux
-      addons: *gcc7
-
-    - env: VERSION=7 CXXFLAGS="-std=c++17"
-      compiler: gcc
-      os: linux
-      addons: *gcc7
-
     # clang-3.7
-    - env: VERSION=3.7 CXXFLAGS="-std=c++11"
+    - env: VERSION=3.7 CXX_VERSIONS="11;14"
       compiler: clang
       os: linux
-      addons: &clang37
+      addons:
         apt:
           packages:
             - clang-3.7
@@ -119,16 +79,11 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.7
 
-    - env: VERSION=3.7 CXXFLAGS="-std=c++14"
-      compiler: clang
-      os: linux
-      addons: *clang37
-
     # clang-3.8
-    - env: VERSION=3.8 CXXFLAGS="-std=c++11"
+    - env: VERSION=3.8 CXX_VERSIONS="11;14"
       compiler: clang
       os: linux
-      addons: &clang38
+      addons:
         apt:
           packages:
             - clang-3.8
@@ -137,16 +92,11 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.8
 
-    - env: VERSION=3.8 CXXFLAGS="-std=c++14"
-      compiler: clang
-      os: linux
-      addons: *clang38
-
     # clang-3.9
-    - env: VERSION=3.9 CXXFLAGS="-std=c++11"
+    - env: VERSION=3.9 CXX_VERSIONS="11;14;1z"
       compiler: clang
       os: linux
-      addons: &clang39
+      addons:
         apt:
           packages:
             - clang-3.9
@@ -155,21 +105,11 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-3.9
 
-    - env: VERSION=3.9 CXXFLAGS="-std=c++14"
-      compiler: clang
-      os: linux
-      addons: *clang39
-
-    - env: VERSION=3.9 CXXFLAGS="-std=c++1z"
-      compiler: clang
-      os: linux
-      addons: *clang39
-
     # clang-4
-    - env: VERSION=4.0 CXXFLAGS="-std=c++11"
+    - env: VERSION=4.0 CXX_VERSIONS="11;14;1z"
       compiler: clang
       os: linux
-      addons: &clang4
+      addons:
         apt:
           packages:
             - clang-4.0
@@ -178,21 +118,11 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-4.0
 
-    - env: VERSION=4.0 CXXFLAGS="-std=c++14"
-      compiler: clang
-      os: linux
-      addons: *clang4
-
-    - env: VERSION=4.0 CXXFLAGS="-std=c++1z"
-      compiler: clang
-      os: linux
-      addons: *clang4
-
     # clang-5
-    - env: VERSION=5.0 CXXFLAGS="-std=c++11"
+    - env: VERSION=5.0 CXX_VERSIONS="11;14;17"
       compiler: clang
       os: linux
-      addons: &clang5
+      addons:
         apt:
           packages:
             - clang-5.0
@@ -201,85 +131,29 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-5.0
 
-    - env: VERSION=5.0 CXXFLAGS="-std=c++14"
-      compiler: clang
-      os: linux
-      addons: *clang5
-
-    - env: VERSION=5.0 CXXFLAGS="-std=c++17"
-      compiler: clang
-      os: linux
-      addons: *clang5
-
     # Xcode 6.4
-    - env: CXXFLAGS="-std=c++11"
+    - env: CXX_VERSIONS="11;14"
       compiler: clang
       os: osx
       osx_image: xcode6.4
-      addons: &xcode64
-
-    - env: CXXFLAGS="-std=c++14"
-      compiler: clang
-      os: osx
-      osx_image: xcode6.4
-      addons: *xcode64
 
     # Xcode 7.3
-    - env: CXXFLAGS="-std=c++11"
+    - env: CXX_VERSIONS="11;14;1z"
       compiler: clang
       os: osx
       osx_image: xcode7.3
-      addons: &xcode73
-
-    - env: CXXFLAGS="-std=c++14"
-      compiler: clang
-      os: osx
-      osx_image: xcode7.3
-      addons: *xcode73
-
-    - env: CXXFLAGS="-std=c++1z"
-      compiler: clang
-      os: osx
-      osx_image: xcode7.3
-      addons: *xcode73
 
     # Xcode 8.3
-    - env: CXXFLAGS="-std=c++11"
+    - env: CXX_VERSIONS="11;14;1z"
       compiler: clang
       os: osx
       osx_image: xcode8.3
-      addons: &xcode83
-
-    - env: CXXFLAGS="-std=c++14"
-      compiler: clang
-      os: osx
-      osx_image: xcode8.3
-      addons: *xcode83
-
-    - env: CXXFLAGS="-std=c++1z"
-      compiler: clang
-      os: osx
-      osx_image: xcode8.3
-      addons: *xcode83
 
     # Xcode 9.1
-    - env: CXXFLAGS="-std=c++11"
+    - env: CXX_VERSIONS="11;14;1z"
       compiler: clang
       os: osx
       osx_image: xcode9.1
-      addons: &xcode91
-
-    - env: CXXFLAGS="-std=c++14"
-      compiler: clang
-      os: osx
-      osx_image: xcode9.1
-      addons: *xcode91
-
-    - env: CXXFLAGS="-std=c++1z"
-      compiler: clang
-      os: osx
-      osx_image: xcode9.1
-      addons: *xcode91
 
 branches:
   only:
@@ -291,29 +165,40 @@ before_install:
       export CC="${CC}-${VERSION}"
       export CXX="${CXX}-${VERSION}"
     fi
-  - export CXXFLAGS="${CXXFLAGS} -Wall -Wextra -Werror -pedantic-errors"
+  - export CXXFLAGS="-Wall -Wextra -Werror -pedantic-errors"
+  - CXX_VERSIONS=(${CXX_VERSIONS//;/ })
+  - BUILD_TYPES=(Debug Release)
 
 install:
-  - mkdir build-debug
-  - cd build-debug
-  - cmake -DCMAKE_BUILD_TYPE=Debug ..
-  - cd ..
-
-  - mkdir build-release
-  - cd build-release
-  - cmake -DCMAKE_BUILD_TYPE=Release ..
-  - cd ..
+  - |
+    for CXX_VERSION in "${CXX_VERSIONS[@]}"; do
+      for BUILD_TYPE in "${BUILD_TYPES[@]}"; do
+        BUILD_DIR="build-${CXX_VERSION}-${BUILD_TYPE}"
+        mkdir "${BUILD_DIR}"
+        pushd "${BUILD_DIR}"
+        (
+          set -ex
+          export CXXFLAGS="${CXXFLAGS} -std=c++${CXX_VERSION}"
+          cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" ..
+        )
+        popd
+      done
+    done
 
 script:
-  - cd build-debug
-  - cmake --build . -- -k
-  - ctest --output-on-failure
-  - cd ..
-
-  - cd build-release
-  - cmake --build . -- -k
-  - ctest --output-on-failure
-  - cd ..
+  - |
+    for CXX_VERSION in "${CXX_VERSIONS[@]}"; do
+      for BUILD_TYPE in "${BUILD_TYPES[@]}"; do
+        BUILD_DIR="build-${CXX_VERSION}-${BUILD_TYPE}"
+        pushd "${BUILD_DIR}"
+        (
+          set -ex
+          cmake --build . -- -k
+          ctest --output-on-failure
+        )
+        popd
+      done
+    done
 
 notifications:
   email: false
