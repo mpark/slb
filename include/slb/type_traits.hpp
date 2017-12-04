@@ -543,7 +543,6 @@ struct is_member_pointer
 using std::is_const;
 using std::is_volatile;
 using std::is_trivial;
-using std::is_trivially_copyable;
 using std::is_standard_layout;
 using std::is_empty;
 using std::is_polymorphic;
@@ -559,10 +558,6 @@ template <typename T>
 struct is_trivial : slb::bool_constant<std::is_trivial<T>::value> {};
 
 template <typename T>
-struct is_trivially_copyable
-    : slb::bool_constant<std::is_trivially_copyable<T>::value> {};
-
-template <typename T>
 struct is_standard_layout
     : slb::bool_constant<std::is_standard_layout<T>::value> {};
 
@@ -574,6 +569,26 @@ struct is_polymorphic : slb::bool_constant<std::is_polymorphic<T>::value> {};
 
 template <typename T>
 struct is_abstract : slb::bool_constant<std::is_abstract<T>::value> {};
+#endif
+
+#if !defined(__GLIBCXX__) || __has_include(<codecvt>) // >= libstdc++-5
+#define SLB_TRIVIALITY_TRAITS SLB_INTEGRAL_CONSTANT_CALLABLE
+#else
+#define SLB_TRIVIALITY_TRAITS 0 // not available
+#endif
+
+#if SLB_TRIVIALITY_TRAITS == 2
+using std::is_trivially_copyable;
+#elif SLB_TRIVIALITY_TRAITS == 1
+template <typename T>
+struct is_trivially_copyable
+    : slb::bool_constant<std::is_trivially_copyable<T>::value> {};
+#else
+template <typename T>
+struct is_trivially_copyable {
+  static_assert(detail::lib::always_false<T>::value,
+                "`is_trivially_copyable` is not available.");
+};
 #endif
 
 #if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 && __cpp_lib_is_final // C++14
@@ -612,11 +627,6 @@ using std::is_default_constructible;
 using std::is_copy_constructible;
 using std::is_move_constructible;
 
-using std::is_trivially_constructible;
-using std::is_trivially_default_constructible;
-using std::is_trivially_copy_constructible;
-using std::is_trivially_move_constructible;
-
 using std::is_nothrow_constructible;
 using std::is_nothrow_default_constructible;
 using std::is_nothrow_copy_constructible;
@@ -629,10 +639,6 @@ using std::is_nothrow_destructible;
 using std::is_assignable;
 using std::is_copy_assignable;
 using std::is_move_assignable;
-
-using std::is_trivially_assignable;
-using std::is_trivially_copy_assignable;
-using std::is_trivially_move_assignable;
 
 using std::is_nothrow_assignable;
 using std::is_nothrow_copy_assignable;
@@ -659,22 +665,6 @@ struct is_copy_constructible
 template <typename T>
 struct is_move_constructible
     : slb::bool_constant<std::is_move_constructible<T>::value> {};
-
-template <typename T, typename... Args>
-struct is_trivially_constructible
-    : slb::bool_constant<std::is_trivially_constructible<T, Args...>::value> {};
-
-template <typename T>
-struct is_trivially_default_constructible
-    : slb::bool_constant<std::is_trivially_default_constructible<T>::value> {};
-
-template <typename T>
-struct is_trivially_copy_constructible
-    : slb::bool_constant<std::is_trivially_copy_constructible<T>::value> {};
-
-template <typename T>
-struct is_trivially_move_constructible
-    : slb::bool_constant<std::is_trivially_move_constructible<T>::value> {};
 
 template <typename T, typename... Args>
 struct is_nothrow_constructible
@@ -715,18 +705,6 @@ struct is_move_assignable
     : slb::bool_constant<std::is_move_assignable<T>::value> {};
 
 template <typename T, typename U>
-struct is_trivially_assignable
-    : slb::bool_constant<std::is_trivially_assignable<T, U>::value> {};
-
-template <typename T>
-struct is_trivially_copy_assignable
-    : slb::bool_constant<std::is_trivially_copy_assignable<T>::value> {};
-
-template <typename T>
-struct is_trivially_move_assignable
-    : slb::bool_constant<std::is_trivially_move_assignable<T>::value> {};
-
-template <typename T, typename U>
 struct is_nothrow_assignable
     : slb::bool_constant<std::is_nothrow_assignable<T, U>::value> {};
 
@@ -737,6 +715,86 @@ struct is_nothrow_copy_assignable
 template <typename T>
 struct is_nothrow_move_assignable
     : slb::bool_constant<std::is_nothrow_move_assignable<T>::value> {};
+#endif
+
+#if SLB_TRIVIALITY_TRAITS == 2
+using std::is_trivially_constructible;
+using std::is_trivially_default_constructible;
+using std::is_trivially_copy_constructible;
+using std::is_trivially_move_constructible;
+using std::is_trivially_assignable;
+using std::is_trivially_copy_assignable;
+using std::is_trivially_move_assignable;
+#elif SLB_TRIVIALITY_TRAITS == 1
+template <typename T, typename... Args>
+struct is_trivially_constructible
+    : slb::bool_constant<std::is_trivially_constructible<T, Args...>::value> {};
+
+template <typename T>
+struct is_trivially_default_constructible
+    : slb::bool_constant<std::is_trivially_default_constructible<T>::value> {};
+
+template <typename T>
+struct is_trivially_copy_constructible
+    : slb::bool_constant<std::is_trivially_copy_constructible<T>::value> {};
+
+template <typename T>
+struct is_trivially_move_constructible
+    : slb::bool_constant<std::is_trivially_move_constructible<T>::value> {};
+
+template <typename T, typename U>
+struct is_trivially_assignable
+    : slb::bool_constant<std::is_trivially_assignable<T, U>::value> {};
+
+template <typename T>
+struct is_trivially_copy_assignable
+    : slb::bool_constant<std::is_trivially_copy_assignable<T>::value> {};
+
+template <typename T>
+struct is_trivially_move_assignable
+    : slb::bool_constant<std::is_trivially_move_assignable<T>::value> {};
+#else
+template <typename T, typename... Args>
+struct is_trivially_constructible {
+  static_assert(detail::lib::always_false<T>::value,
+                "`is_trivially_constructible` is not available.");
+};
+
+template <typename T>
+struct is_trivially_default_constructible {
+  static_assert(detail::lib::always_false<T>::value,
+                "`is_trivially_default_constructible` is not available.");
+};
+
+template <typename T>
+struct is_trivially_copy_constructible {
+  static_assert(detail::lib::always_false<T>::value,
+                "`is_trivially_copy_constructible` is not available.");
+};
+
+template <typename T>
+struct is_trivially_move_constructible {
+  static_assert(detail::lib::always_false<T>::value,
+                "`is_trivially_move_constructible` is not available.");
+};
+
+template <typename T, typename U>
+struct is_trivially_assignable {
+  static_assert(detail::lib::always_false<T>::value,
+                "`is_trivially_assignable` is not available.");
+};
+
+template <typename T>
+struct is_trivially_copy_assignable {
+  static_assert(detail::lib::always_false<T>::value,
+                "`is_trivially_copy_assignable` is not available.");
+};
+
+template <typename T>
+struct is_trivially_move_assignable {
+  static_assert(detail::lib::always_false<T>::value,
+                "`is_trivially_move_assignable` is not available.");
+};
 #endif
 
 #if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 && __cpp_lib_is_swappable // C++17

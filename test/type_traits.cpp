@@ -247,11 +247,13 @@ TEST_CASE("is_trivial", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type, slb::is_trivial<int>>::value);
 }
 
+#if SLB_TRIVIALITY_TRAITS
 // template <class T> struct is_trivially_copyable;
 TEST_CASE("is_trivially_copyable", "[meta.unary.prop]") {
   CHECK(
       std::is_base_of<slb::true_type, slb::is_trivially_copyable<int>>::value);
 }
+#endif
 
 // template <class T> struct is_standard_layout;
 TEST_CASE("is_standard_layout", "[meta.unary.prop]") {
@@ -334,6 +336,7 @@ TEST_CASE("is_move_constructible", "[meta.unary.prop]") {
       std::is_base_of<slb::true_type, slb::is_move_constructible<int>>::value);
 }
 
+#if SLB_TRIVIALITY_TRAITS
 // template <class T, class ...Args> struct is_trivially_constructible;
 TEST_CASE("is_trivially_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
@@ -357,6 +360,7 @@ TEST_CASE("is_trivially_move_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_move_constructible<int>>::value);
 }
+#endif
 
 // template <class T, class ...Args> struct is_nothrow_constructible;
 TEST_CASE("is_nothrow_constructible", "[meta.unary.prop]") {
@@ -414,6 +418,7 @@ TEST_CASE("is_move_assignable", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type, slb::is_move_assignable<int>>::value);
 }
 
+#if SLB_TRIVIALITY_TRAITS
 // template <class T, class U> struct is_trivially_assignable;
 TEST_CASE("is_trivially_assignable", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
@@ -431,6 +436,7 @@ TEST_CASE("is_trivially_move_assignable", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_move_assignable<int>>::value);
 }
+#endif
 
 // template <class T, class U> struct is_nothrow_assignable;
 TEST_CASE("is_nothrow_assignable", "[meta.unary.prop]") {
