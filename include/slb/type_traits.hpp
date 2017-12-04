@@ -400,6 +400,8 @@ namespace std {
 #include "detail/config.hpp"
 #include "detail/lib.hpp"
 
+namespace slb {
+
 // libstdc++ did not mark `operator()` as `noexcept` until version 8.
 #if __cpp_lib_integral_constant_callable &&                                    \
     (!defined(__GLIBCXX__) || __has_include(<filesystem>))
@@ -407,8 +409,6 @@ namespace std {
 #else
 #define SLB_INTEGRAL_CONSTANT_CALLABLE 1 // available / non-conforming
 #endif
-
-namespace slb {
 
 // 23.15.3, helper class
 

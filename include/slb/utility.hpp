@@ -159,6 +159,8 @@ namespace std {
 #include "detail/config.hpp"
 #include "detail/lib.hpp"
 
+namespace slb {
+
 #if __cpp_lib_integer_sequence ||                                              \
     (_LIBCPP_VERSION >= 1101 && _LIBCPP_STD_VER > 11) || defined(_MSC_VER)
 // libstdc++ did not mark `size()` as `noexcept` until version 8.
@@ -170,8 +172,6 @@ namespace std {
 #else
 #define SLB_INTEGER_SEQUENCE 0 // not available
 #endif
-
-namespace slb {
 
 // 23.3, Compile-time integer sequences
 
