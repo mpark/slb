@@ -28,6 +28,8 @@ backported to __C++11__/__14__/__17__.
 
   - __`SLB_BUILD_TESTING`__: `BOOL`
 
+    Build unit tests.
+
 ## Unit Tests
 
 Refer to [test/README.md](test/README.md).
