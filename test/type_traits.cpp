@@ -638,9 +638,9 @@ TEST_CASE("aligned_union", "[meta.trans.other]") {
     double y;
   };
 
-  // The member typedef type shall be a trivial standard-layout type suitable
+  // The member typedef `type` shall be a trivial standard-layout type suitable
   // for use as uninitialized storage for any object whose type is listed in
-  // Types; its size shall be at least Len.
+  // `Types`; its size shall be at least `Len`.
   {
     using type = slb::aligned_union<0, int, double>::type;
     CHECK(std::is_trivial<type>::value);
@@ -651,8 +651,9 @@ TEST_CASE("aligned_union", "[meta.trans.other]") {
           sizeof(int) * 2);
   }
 
-  // The static member alignment_value shall be an integral constant of type
-  // size_t whose value is the strictest alignment of all types listed in Types.
+  // The static member `alignment_value` shall be an integral constant of type
+  // `size_t` whose value is the strictest alignment of all types listed in
+  // `Types`.
   {
     using au0 = slb::aligned_union<0, int, double>;
     CHECK(
