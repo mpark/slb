@@ -163,24 +163,24 @@ namespace std {
     (_LIBCPP_VERSION >= 1101 && _LIBCPP_STD_VER > 11) || defined(_MSC_VER)
 // libstdc++ did not mark `size()` as `noexcept` until version 8.
 #if defined(__GLIBCXX__) && __has_include(<filesystem>)
-#define SLB_CPP_LIB_INTEGER_SEQUENCE 2 // available / conforming
+#define SLB_INTEGER_SEQUENCE 2 // available / conforming
 #else
-#define SLB_CPP_LIB_INTEGER_SEQUENCE 1 // available / non-conforming
+#define SLB_INTEGER_SEQUENCE 1 // available / non-conforming
 #endif
 #else
-#define SLB_CPP_LIB_INTEGER_SEQUENCE 0 // not available
+#define SLB_INTEGER_SEQUENCE 0 // not available
 #endif
 
 namespace slb {
 
 // 23.3, Compile-time integer sequences
 
-#if SLB_CPP_LIB_INTEGER_SEQUENCE == 2
+#if SLB_INTEGER_SEQUENCE == 2
 using std::integer_sequence;
 #else
 template <typename T, T... Is>
 struct integer_sequence
-#if SLB_CPP_LIB_INTEGER_SEQUENCE == 1
+#if SLB_INTEGER_SEQUENCE == 1
     : std::integer_sequence<T, Is...>
 #endif
 {

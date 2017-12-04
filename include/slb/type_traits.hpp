@@ -403,16 +403,16 @@ namespace std {
 // libstdc++ did not mark `operator()` as `noexcept` until version 8.
 #if __cpp_lib_integral_constant_callable &&                                    \
     (!defined(__GLIBCXX__) || __has_include(<filesystem>))
-#define SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE 2 // available / conforming
+#define SLB_INTEGRAL_CONSTANT_CALLABLE 2 // available / conforming
 #else
-#define SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE 1 // available / non-conforming
+#define SLB_INTEGRAL_CONSTANT_CALLABLE 1 // available / non-conforming
 #endif
 
 namespace slb {
 
 // 23.15.3, helper class
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
 using std::integral_constant;
 #else
 template <typename T, T v>
@@ -433,7 +433,7 @@ using false_type = slb::bool_constant<false>;
 
 // 23.15.4.1, primary type categories
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
 using std::is_void;
 using std::is_integral;
 using std::is_floating_point;
@@ -493,8 +493,7 @@ template <typename T>
 struct is_function : slb::bool_constant<std::is_function<T>::value> {};
 #endif
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 &&                             \
-    __cpp_lib_is_null_pointer // C++14
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 && __cpp_lib_is_null_pointer // C++14
 using std::is_null_pointer;
 #else
 template <typename T>
@@ -506,7 +505,7 @@ struct is_null_pointer
 
 // 23.15.4.2, composite type categories
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
 using std::is_reference;
 using std::is_arithmetic;
 using std::is_fundamental;
@@ -540,7 +539,7 @@ struct is_member_pointer
 
 // 23.15.4.3, type properties
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
 using std::is_const;
 using std::is_volatile;
 using std::is_trivial;
@@ -577,7 +576,7 @@ template <typename T>
 struct is_abstract : slb::bool_constant<std::is_abstract<T>::value> {};
 #endif
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 && __cpp_lib_is_final // C++14
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 && __cpp_lib_is_final // C++14
 using std::is_final;
 #elif __has_feature(is_final) || (__GNUC__ > 4) ||                             \
     ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7))
@@ -591,8 +590,7 @@ struct is_final {
 };
 #endif
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 &&                             \
-    __cpp_lib_is_aggregate // C++17
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 && __cpp_lib_is_aggregate // C++17
 using std::is_aggregate;
 #elif __has_feature(is_aggregate) || (__GNUC__ >= 7)
 template <typename T>
@@ -605,7 +603,7 @@ struct is_aggregate {
 };
 #endif
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
 using std::is_signed;
 using std::is_unsigned;
 
@@ -741,8 +739,7 @@ struct is_nothrow_move_assignable
     : slb::bool_constant<std::is_nothrow_move_assignable<T>::value> {};
 #endif
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 &&                             \
-    __cpp_lib_is_swappable // C++17
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 && __cpp_lib_is_swappable // C++17
 using std::is_swappable_with;
 using std::is_swappable;
 using std::is_nothrow_swappable_with;
@@ -755,7 +752,7 @@ using std::is_nothrow_swappable;
 // template <typename T> struct is_nothrow_swappable;
 #endif
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
 using std::has_virtual_destructor;
 #else
 template <typename T>
@@ -763,7 +760,7 @@ struct has_virtual_destructor
     : slb::bool_constant<std::has_virtual_destructor<T>::value> {};
 #endif
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 &&                             \
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 &&                                     \
     __cpp_lib_has_unique_object_representations // C++17
 using std::has_unique_object_representations;
 #elif __has_feature(has_unique_object_representations) || (__GNUC__ >= 7)
@@ -780,7 +777,7 @@ struct has_unique_object_representations {
 
 // 23.15.5, type property queries
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
 using std::alignment_of;
 using std::rank;
 using std::extent;
@@ -799,7 +796,7 @@ struct extent : slb::integral_constant<std::size_t, std::extent<T, I>::value> {
 
 // 23.15.6, type relations
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 // C++14
 using std::is_same;
 using std::is_base_of;
 using std::is_convertible;
@@ -816,8 +813,7 @@ struct is_convertible
     : slb::bool_constant<std::is_convertible<From, To>::value> {};
 #endif
 
-#if SLB_CPP_LIB_INTEGRAL_CONSTANT_CALLABLE == 2 &&                             \
-    __cpp_lib_is_invocable // C++17
+#if SLB_INTEGRAL_CONSTANT_CALLABLE == 2 && __cpp_lib_is_invocable // C++17
 using std::is_invocable;
 using std::is_invocable_r;
 using std::is_nothrow_invocable;
@@ -921,18 +917,18 @@ using std::aligned_storage;
 // libc++ does not provide an out-of-class definition for `alignment_value`.
 #if !defined(__GLIBCXX__) || __has_include(<codecvt>) // >= libstdc++-5
 #if !defined(_LIBCPP_VERSION)
-#define SLB_CPP_LIB_ALIGNED_UNION 2 // available / conforming
+#define SLB_ALIGNED_UNION 2 // available / conforming
 #else
-#define SLB_CPP_LIB_ALIGNED_UNION 1 // available / non-conforming
+#define SLB_ALIGNED_UNION 1 // available / non-conforming
 #endif
 #else
-#define SLB_CPP_LIB_ALIGNED_UNION 0 // not available
+#define SLB_ALIGNED_UNION 0 // not available
 #endif
 
-#if SLB_CPP_LIB_ALIGNED_UNION == 2
+#if SLB_ALIGNED_UNION == 2
 using std::aligned_union;
 #else
-#if SLB_CPP_LIB_ALIGNED_UNION == 1
+#if SLB_ALIGNED_UNION == 1
 template <std::size_t Len, typename... Ts>
 struct aligned_union : std::aligned_union<Len, Ts...> {
   static constexpr std::size_t alignment_value =
