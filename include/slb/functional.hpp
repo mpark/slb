@@ -151,6 +151,7 @@ namespace std {
 */
 
 #include <functional>
+#include <type_traits>
 #include <utility>
 
 #include "detail/config.hpp"
@@ -172,6 +173,82 @@ typename slb::invoke_result<F, Args...>::type
 invoke(F&& f,
        Args&&... args) noexcept(slb::is_nothrow_invocable<F, Args...>::value) {
   return detail::invoke(std::forward<F>(f), std::forward<Args>(args)...);
+}
+#endif
+
+// [func.not_fn], function template not_fn
+
+// We only enable the C++17 implementation under C++2a here to account for
+// P0704: "Fixing const-qualified pointers to members" and LWG2210: "INVOKE-ing
+// a pointer to member with a `reference_wrapper` as the object expression".
+
+#if __cpp_lib_not_fn /* C++17 */ && __cplusplus > 201703L /* C++2a */
+using std::not_fn;
+#else
+namespace detail {
+struct not_fn_tag {
+  explicit not_fn_tag() = default;
+};
+
+template <typename FD>
+class not_fn_result {
+  FD fd;
+
+public:
+  template <typename F>
+  not_fn_result(not_fn_tag, F&& f) : fd(std::forward<F>(f)) {}
+
+  not_fn_result(not_fn_result&&) = default;
+  not_fn_result(not_fn_result const&) = default;
+
+  template <typename... Args>
+      auto operator()(Args&&... args) &
+      noexcept(noexcept(!detail::invoke(std::declval<FD&>(),
+                                        std::forward<Args>(args)...)))
+          -> decltype(!detail::invoke(std::declval<FD&>(),
+                                      std::forward<Args>(args)...)) {
+    return !detail::invoke(fd, std::forward<Args>(args)...);
+  }
+
+  template <typename... Args>
+  auto operator()(Args&&... args) const& noexcept(noexcept(
+      !detail::invoke(std::declval<FD const&>(), std::forward<Args>(args)...)))
+      -> decltype(!detail::invoke(std::declval<FD const&>(),
+                                  std::forward<Args>(args)...)) {
+    return !detail::invoke(fd, std::forward<Args>(args)...);
+  }
+
+  template <typename... Args>
+      auto operator()(Args&&... args) &&
+      noexcept(noexcept(!detail::invoke(std::declval<FD&&>(),
+                                        std::forward<Args>(args)...)))
+          -> decltype(!detail::invoke(std::declval<FD&&>(),
+                                      std::forward<Args>(args)...)) {
+    return !detail::invoke(std::move(fd), std::forward<Args>(args)...);
+  }
+
+// gcc finds calls on const rvalues ambiguous up to version 4.8.
+#if !defined(__GNUC__) || (__GNUC__ > 4) ||                                    \
+    ((__GNUC__ == 4) && (__GNUC_MINOR__ > 8))
+  template <typename... Args>
+  auto operator()(Args&&... args) const&& noexcept(noexcept(
+      !detail::invoke(std::declval<FD const&&>(), std::forward<Args>(args)...)))
+      -> decltype(!detail::invoke(std::declval<FD const&&>(),
+                                  std::forward<Args>(args)...)) {
+    return !detail::invoke(std::move(fd), std::forward<Args>(args)...);
+  }
+#endif
+};
+} // namespace detail
+
+template <typename F, typename FD = typename std::decay<F>::type>
+detail::not_fn_result<FD> not_fn(F&& f) {
+  static_assert(std::is_move_constructible<FD>::value &&
+                    std::is_convertible<FD&&, FD>::value,
+                "FD shall satisfy the requirements of MoveConstructible");
+  static_assert(std::is_constructible<FD, F>::value,
+                "is_constructible_v<FD, F> shall be true");
+  return {detail::not_fn_tag{}, std::forward<F>(f)};
 }
 #endif
 

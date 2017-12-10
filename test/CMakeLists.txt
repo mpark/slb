@@ -11,6 +11,7 @@ add_library(Catch2 OBJECT catch.cpp)
 set(_tests
   functional/invoke
   functional/mem_fn
+  functional/not_fn
   type_traits
   utility)
 foreach(_test ${_tests})
