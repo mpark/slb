@@ -17,6 +17,8 @@ else()
   option(SLB_BUILD_TESTING "Compile with unit tests." OFF)
 endif()
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 # Build
 add_library(SLB INTERFACE)
 target_include_directories(SLB INTERFACE

@@ -11,9 +11,12 @@ set(_tests
   utility)
 foreach(_test ${_tests})
   set(_test_file ${_test}.cpp)
+  get_filename_component(_test_folder ${_test_file} DIRECTORY)
   string(REPLACE "/" "." _test ${_test})
+
   add_executable(test.${_test} ${_test_file})
   target_link_libraries(test.${_test} SLB)
+  set_property(TARGET test.${_test} PROPERTY FOLDER "test/${_test_folder}")
 
   file(STRINGS ${_test_file} _lines)
   foreach(_line ${_lines})
