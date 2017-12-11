@@ -17,63 +17,16 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
+// [intseq], Compile-time integer sequences
+
+// template<class T, T...>
+//   struct integer_sequence;
 #if SLB_INTEGER_SEQUENCE
 template <typename T, T... Is>
 std::size_t deduce_std_integer_sequence(std::integer_sequence<T, Is...>) {
   return sizeof...(Is);
 }
 #endif
-
-TEST_CASE("index_sequence", "[utility.syn]") {
-  CHECK(std::is_same<slb::index_sequence<>,
-                     slb::integer_sequence<std::size_t>>::value);
-
-  CHECK(std::is_same<slb::index_sequence<0>,
-                     slb::integer_sequence<std::size_t, 0>>::value);
-
-  CHECK(std::is_same<slb::index_sequence<1, 0>,
-                     slb::integer_sequence<std::size_t, 1, 0>>::value);
-
-  CHECK(std::is_same<slb::index_sequence<2, 1, 0>,
-                     slb::integer_sequence<std::size_t, 2, 1, 0>>::value);
-
-#if SLB_INTEGER_SEQUENCE
-  /* std-compatible */ {
-    slb::index_sequence<101, 202, 303, 404> slb_is;
-    std::index_sequence<101, 202, 303, 404> std_is = slb_is;
-    (void)std_is;
-
-    CHECK(deduce_std_integer_sequence(slb_is) == 4);
-  }
-#endif
-}
-
-TEST_CASE("make_index_sequence", "[utility.syn]") {
-  CHECK(
-      std::is_same<slb::make_index_sequence<0>, slb::index_sequence<>>::value);
-
-  CHECK(
-      std::is_same<slb::make_index_sequence<1>, slb::index_sequence<0>>::value);
-
-  CHECK(std::is_same<slb::make_index_sequence<2>,
-                     slb::index_sequence<0, 1>>::value);
-
-  CHECK(std::is_same<slb::make_index_sequence<3>,
-                     slb::index_sequence<0, 1, 2>>::value);
-}
-
-TEST_CASE("index_sequence_for", "[utility.syn]") {
-  CHECK(std::is_same<slb::index_sequence_for<>, slb::index_sequence<>>::value);
-
-  CHECK(std::is_same<slb::index_sequence_for<void>,
-                     slb::index_sequence<0>>::value);
-
-  CHECK(std::is_same<slb::index_sequence_for<void, void>,
-                     slb::index_sequence<0, 1>>::value);
-
-  CHECK(std::is_same<slb::index_sequence_for<void, void, void>,
-                     slb::index_sequence<0, 1, 2>>::value);
-}
 
 TEST_CASE("integer_sequence", "[intseq.intseq]") {
   /* using value_type = T; */ {
@@ -106,6 +59,34 @@ TEST_CASE("integer_sequence", "[intseq.intseq]") {
 #endif
 }
 
+// template<size_t... I>
+//   using index_sequence = integer_sequence<size_t, I...>;
+TEST_CASE("index_sequence", "[utility.syn]") {
+  CHECK(std::is_same<slb::index_sequence<>,
+                     slb::integer_sequence<std::size_t>>::value);
+
+  CHECK(std::is_same<slb::index_sequence<0>,
+                     slb::integer_sequence<std::size_t, 0>>::value);
+
+  CHECK(std::is_same<slb::index_sequence<1, 0>,
+                     slb::integer_sequence<std::size_t, 1, 0>>::value);
+
+  CHECK(std::is_same<slb::index_sequence<2, 1, 0>,
+                     slb::integer_sequence<std::size_t, 2, 1, 0>>::value);
+
+#if SLB_INTEGER_SEQUENCE
+  /* std-compatible */ {
+    slb::index_sequence<101, 202, 303, 404> slb_is;
+    std::index_sequence<101, 202, 303, 404> std_is = slb_is;
+    (void)std_is;
+
+    CHECK(deduce_std_integer_sequence(slb_is) == 4);
+  }
+#endif
+}
+
+// template<class T, T N>
+//   using make_integer_sequence = integer_sequence<T, see below>;
 template <typename T>
 void test_make_integer_sequence() {
   CHECK(std::is_same<slb::make_integer_sequence<T, 0>,
@@ -149,4 +130,35 @@ TEST_CASE("make_integer_sequence", "[intseq.make]") {
   test_make_integer_sequence<unsigned long>();
   test_make_integer_sequence<unsigned long long>();
   test_make_integer_sequence<std::size_t>();
+}
+
+// template<size_t N>
+//   using make_index_sequence = make_integer_sequence<size_t, N>;
+TEST_CASE("make_index_sequence", "[utility.syn]") {
+  CHECK(
+      std::is_same<slb::make_index_sequence<0>, slb::index_sequence<>>::value);
+
+  CHECK(
+      std::is_same<slb::make_index_sequence<1>, slb::index_sequence<0>>::value);
+
+  CHECK(std::is_same<slb::make_index_sequence<2>,
+                     slb::index_sequence<0, 1>>::value);
+
+  CHECK(std::is_same<slb::make_index_sequence<3>,
+                     slb::index_sequence<0, 1, 2>>::value);
+}
+
+// template<class... T>
+//   using index_sequence_for = make_index_sequence<sizeof...(T)>;
+TEST_CASE("index_sequence_for", "[utility.syn]") {
+  CHECK(std::is_same<slb::index_sequence_for<>, slb::index_sequence<>>::value);
+
+  CHECK(std::is_same<slb::index_sequence_for<void>,
+                     slb::index_sequence<0>>::value);
+
+  CHECK(std::is_same<slb::index_sequence_for<void, void>,
+                     slb::index_sequence<0, 1>>::value);
+
+  CHECK(std::is_same<slb::index_sequence_for<void, void, void>,
+                     slb::index_sequence<0, 1, 2>>::value);
 }
