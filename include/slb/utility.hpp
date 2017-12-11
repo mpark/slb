@@ -42,7 +42,7 @@ namespace std {
         T&&>
       move_if_noexcept(T& x) noexcept;
 
-  // [utility.as_const], as_­const
+  // [utility.as_const], as_const
   template<class T>
     constexpr add_const_t<T>& as_const(T& t) noexcept;
   template<class T>
@@ -56,15 +56,15 @@ namespace std {
   template<class T, T...>
     struct integer_sequence;
   template<size_t... I>
-    using index_­sequence = integer_sequence<size_t, I...>;
+    using index_sequence = integer_sequence<size_t, I...>;
 
   template<class T, T N>
     using make_integer_sequence = integer_sequence<T, see below>;
   template<size_t N>
-    using make_­index_­sequence = make_integer_sequence<size_t, N>;
+    using make_index_sequence = make_integer_sequence<size_t, N>;
 
   template<class... T>
-    using index_­sequence_­for = make_index_sequence<sizeof...(T)>;
+    using index_sequence_for = make_index_sequence<sizeof...(T)>;
 
   // [pairs], class template pair
   template<class T1, class T2>
