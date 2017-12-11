@@ -13,7 +13,7 @@
 
 /*
 
-23.2.1 Header <utility> synopsis [utility.syn]
+Header <utility> synopsis [utility.syn]
 
 #include <initializer_list>     // see [initializer_list.syn]
 
@@ -173,7 +173,7 @@ namespace slb {
 #define SLB_INTEGER_SEQUENCE 0 // not available
 #endif
 
-// 23.3, Compile-time integer sequences
+// [intseq], Compile-time integer sequences
 
 #if SLB_INTEGER_SEQUENCE == 2
 using std::integer_sequence;

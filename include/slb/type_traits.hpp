@@ -13,10 +13,10 @@
 
 /*
 
-23.15.2 Header <type_traits> synopsis [meta.type.synop]
+Header <type_traits> synopsis [meta.type.synop]
 
 namespace std {
-  // 23.15.3, helper class
+  // [meta.help], helper class
   template <class T, T v> struct integral_constant;
 
   template <bool B>
@@ -24,7 +24,7 @@ namespace std {
   using true_type = bool_constant<true>;
   using false_type = bool_constant<false>;
 
-  // 23.15.4.1, primary type categories
+  // [meta.unary.cat], primary type categories
   template <class T> struct is_void;
   template <class T> struct is_null_pointer;
   template <class T> struct is_integral;
@@ -40,7 +40,7 @@ namespace std {
   template <class T> struct is_class;
   template <class T> struct is_function;
 
-  // 23.15.4.2, composite type categories
+  // [meta.unary.comp], composite type categories
   template <class T> struct is_reference;
   template <class T> struct is_arithmetic;
   template <class T> struct is_fundamental;
@@ -49,7 +49,7 @@ namespace std {
   template <class T> struct is_compound;
   template <class T> struct is_member_pointer;
 
-  // 23.15.4.3, type properties
+  // [meta.unary.prop], type properties
   template <class T> struct is_const;
   template <class T> struct is_volatile;
   template <class T> struct is_trivial;
@@ -104,12 +104,12 @@ namespace std {
 
   template <class T> struct has_unique_object_representations;
 
-  // 23.15.5, type property queries
+  // [meta.unary.prop.query] type property queries
   template <class T> struct alignment_of;
   template <class T> struct rank;
   template <class T, unsigned I = 0> struct extent;
 
-  // 23.15.6, type relations
+  // [meta.rel], type relations
   template <class T, class U> struct is_same;
   template <class Base, class Derived> struct is_base_of;
   template <class From, class To> struct is_convertible;
@@ -119,7 +119,7 @@ namespace std {
   template <class Fn, class... ArgTypes> struct is_nothrow_invocable;
   template <class R, class Fn, class... ArgTypes> struct is_nothrow_invocable_r;
 
-  // 23.15.7.1, const-volatile modifications
+  // [meta.trans.cv], const-volatile modifications
   template <class T> struct remove_const;
   template <class T> struct remove_volatile;
   template <class T> struct remove_cv;
@@ -140,7 +140,7 @@ namespace std {
   template <class T>
   using add_cv_t = typename add_cv<T>::type;
 
-  // 23.15.7.2, reference modifications
+  // [meta.trans.ref], reference modifications
   template <class T> struct remove_reference;
   template <class T> struct add_lvalue_reference;
   template <class T> struct add_rvalue_reference;
@@ -152,7 +152,7 @@ namespace std {
   template <class T>
   using add_rvalue_reference_t = typename add_rvalue_reference<T>::type;
 
-  // 23.15.7.3, sign modifications
+  // [meta.trans.sign], sign modifications
   template <class T> struct make_signed;
   template <class T> struct make_unsigned;
 
@@ -161,7 +161,7 @@ namespace std {
   template <class T>
   using make_unsigned_t = typename make_unsigned<T>::type;
 
-  // 23.15.7.4, array modifications
+  // [meta.trans.arr], array modifications
   template <class T> struct remove_extent;
   template <class T> struct remove_all_extents;
 
@@ -170,7 +170,7 @@ namespace std {
   template <class T>
   using remove_all_extents_t = typename remove_all_extents<T>::type;
 
-  // 23.15.7.5, pointer modifications
+  // [meta.trans.ptr], pointer modifications
   template <class T> struct remove_pointer;
   template <class T> struct add_pointer;
 
@@ -179,8 +179,8 @@ namespace std {
   template <class T>
   using add_pointer_t = typename add_pointer<T>::type;
 
-  // 23.15.7.6, other transformations
-  template <size_t Len, size_t Align = default-alignment > // see 23.15.7.6
+  // [meta.trans.other], other transformations
+  template <size_t Len, size_t Align = default-alignment> // see [meta.trans.other]
   struct aligned_storage;
   template <size_t Len, class... Types> struct aligned_union;
   template <class T> struct remove_cvref;
@@ -191,7 +191,7 @@ namespace std {
   template <class T> struct underlying_type;
   template <class Fn, class... ArgTypes> struct invoke_result;
 
-  template <size_t Len, size_t Align = default-alignment > // see 23.15.7.6
+  template <size_t Len, size_t Align = default-alignment> // see [meta.trans.other]
   using aligned_storage_t = typename aligned_storage<Len, Align>::type;
   template <size_t Len, class... Types>
   using aligned_union_t = typename aligned_union<Len, Types...>::type;
@@ -199,9 +199,9 @@ namespace std {
   using remove_cvref_t = typename remove_cvref<T>::type;
   template <class T>
   using decay_t = typename decay<T>::type;
-  template <bool B, class T = void>
+  template <bool b, class T = void>
   using enable_if_t = typename enable_if<b, T>::type;
-  template <bool B, class T, class F>
+  template <bool b, class T, class F>
   using conditional_t = typename conditional<b, T, F>::type;
   template <class... T>
   using common_type_t = typename common_type<T...>::type;
@@ -212,19 +212,19 @@ namespace std {
   template <class...>
   using void_t = void;
 
-  // 23.15.8, logical operator traits
+  // [meta.logical], logical operator traits
   template<class... B> struct conjunction;
   template<class... B> struct disjunction;
   template<class B> struct negation;
 
-  // 23.15.9, endian
+  // [meta.endian], endian
   enum class endian {
     little = see below,
     big = see below,
     native = see below
   };
 
-  // 23.15.4.1, primary type categories
+  // [meta.unary.cat], primary type categories
   template <class T> inline constexpr bool is_void_v
     = is_void<T>::value;
   template <class T> inline constexpr bool is_null_pointer_v
@@ -254,7 +254,7 @@ namespace std {
   template <class T> inline constexpr bool is_function_v
     = is_function<T>::value;
 
-  // 23.15.4.2, composite type categories
+  // [meta.unary.comp], composite type categories
   template <class T> inline constexpr bool is_reference_v
     = is_reference<T>::value;
   template <class T> inline constexpr bool is_arithmetic_v
@@ -270,7 +270,7 @@ namespace std {
   template <class T> inline constexpr bool is_member_pointer_v
     = is_member_pointer<T>::value;
 
-  // 23.15.4.3, type properties
+  // [meta.unary.prop], type properties
   template <class T> inline constexpr bool is_const_v
     = is_const<T>::value;
   template <class T> inline constexpr bool is_volatile_v
@@ -359,14 +359,14 @@ namespace std {
   template <class T> inline constexpr bool has_unique_object_representations_v
     = has_unique_object_representations<T>::value;
 
-  // 23.15.5, type property queries
+  // [meta.unary.prop.query] type property queries
   template <class T> inline constexpr size_t alignment_of_v
     = alignment_of<T>::value;
   template <class T> inline constexpr size_t rank_v
     = rank<T>::value;
   template <class T, unsigned I = 0> inline constexpr size_t extent_v
     = extent<T, I>::value;
-  // 23.15.6, type relations
+  // [meta.rel], type relations
   template <class T, class U> inline constexpr bool is_same_v
     = is_same<T, U>::value;
   template <class Base, class Derived> inline constexpr bool is_base_of_v
@@ -385,7 +385,7 @@ namespace std {
   inline constexpr bool is_nothrow_invocable_r_v
     = is_nothrow_invocable_r<R, Fn, ArgTypes...>::value;
 
-  // 23.15.8, logical operator traits
+  // [meta.logical], logical operator traits
   template<class... B>
   inline constexpr bool conjunction_v = conjunction<B...>::value;
   template<class... B>
@@ -414,7 +414,7 @@ namespace slb {
 #define SLB_INTEGRAL_CONSTANT 1 // available / non-conforming
 #endif
 
-// 23.15.3, helper class
+// [meta.help], helper class
 
 #if SLB_INTEGRAL_CONSTANT == 2 // C++14
 using std::integral_constant;
@@ -435,7 +435,7 @@ using bool_constant = slb::integral_constant<bool, B>;
 using true_type = slb::bool_constant<true>;
 using false_type = slb::bool_constant<false>;
 
-// 23.15.4.1, primary type categories
+// [meta.unary.cat], primary type categories
 
 #if SLB_INTEGRAL_CONSTANT == 2 // C++14
 using std::is_void;
@@ -507,7 +507,7 @@ struct is_null_pointer
                        typename std::remove_cv<T>::type>::value> {};
 #endif
 
-// 23.15.4.2, composite type categories
+// [meta.unary.comp], composite type categories
 
 #if SLB_INTEGRAL_CONSTANT == 2 // C++14
 using std::is_reference;
@@ -541,7 +541,7 @@ struct is_member_pointer
     : slb::bool_constant<std::is_member_pointer<T>::value> {};
 #endif
 
-// 23.15.4.3, type properties
+// [meta.unary.prop], type properties
 
 #if SLB_INTEGRAL_CONSTANT == 2 // C++14
 using std::is_const;
@@ -837,7 +837,7 @@ struct has_unique_object_representations {
 };
 #endif
 
-// 23.15.5, type property queries
+// [meta.unary.prop.query] type property queries
 
 #if SLB_INTEGRAL_CONSTANT == 2 // C++14
 using std::alignment_of;
@@ -856,7 +856,7 @@ struct extent : slb::integral_constant<std::size_t, std::extent<T, I>::value> {
 };
 #endif
 
-// 23.15.6, type relations
+// [meta.rel], type relations
 
 #if SLB_INTEGRAL_CONSTANT == 2 // C++14
 using std::is_same;
@@ -896,7 +896,7 @@ using std::is_nothrow_invocable_r;
 // struct is_nothrow_invocable_r;
 #endif
 
-// 23.15.7.1, const-volatile modifications
+// [meta.trans.cv], const-volatile modifications
 
 using std::remove_const;
 using std::remove_volatile;
@@ -923,7 +923,7 @@ using add_volatile_t = typename slb::add_volatile<T>::type;
 template <typename T>
 using add_cv_t = typename slb::add_cv<T>::type;
 
-// 23.15.7.2, reference modifications
+// [meta.trans.ref], reference modifications
 
 using std::remove_reference;
 using std::add_lvalue_reference;
@@ -938,7 +938,7 @@ using add_lvalue_reference_t = typename slb::add_lvalue_reference<T>::type;
 template <typename T>
 using add_rvalue_reference_t = typename slb::add_rvalue_reference<T>::type;
 
-// 23.15.7.3, sign modifications
+// [meta.trans.sign], sign modifications
 
 using std::make_signed;
 using std::make_unsigned;
@@ -949,7 +949,7 @@ using make_signed_t = typename slb::make_signed<T>::type;
 template <typename T>
 using make_unsigned_t = typename slb::make_unsigned<T>::type;
 
-// 23.15.7.4, array modifications
+// [meta.trans.arr], array modifications
 
 using std::remove_extent;
 using std::remove_all_extents;
@@ -960,7 +960,7 @@ using remove_extent_t = typename slb::remove_extent<T>::type;
 template <typename T>
 using remove_all_extents_t = typename slb::remove_all_extents<T>::type;
 
-// 23.15.7.5, pointer modifications
+// [meta.trans.ptr], pointer modifications
 
 using std::remove_pointer;
 using std::add_pointer;
@@ -971,7 +971,7 @@ using remove_pointer_t = typename slb::remove_pointer<T>::type;
 template <typename T>
 using add_pointer_t = typename slb::add_pointer<T>::type;
 
-// 23.15.7.6, other transformations
+// [meta.trans.other], other transformations
 
 using std::aligned_storage;
 
@@ -1107,7 +1107,7 @@ template <typename... Ts>
 using void_t = typename detail::dependent_void<Ts...>::type;
 #endif
 
-// 23.15.8, logical operator traits
+// [meta.logical], logical operator traits
 
 // We don't enable the C++17 implementations via `__cpp_lib_logical_traits`
 // here since none of the implementations (i.e., libstdc++, libc++, MSVC)
@@ -1146,7 +1146,7 @@ struct disjunction<B, Bs...>
 template <typename B>
 struct negation : slb::bool_constant<!static_cast<bool>(B::value)> {};
 
-// 23.15.9, endian
+// [meta.endian], endian
 
 enum class endian {
 #ifdef _WIN32

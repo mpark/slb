@@ -15,7 +15,7 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-// 23.15.3, helper class
+// [meta.help], helper class
 
 // template <class T, T v>
 // struct integral_constant;
@@ -110,7 +110,7 @@ TEST_CASE("bool_constant", "[meta.help]") {
   }
 }
 
-// 23.15.4.1, primary type categories
+// [meta.unary.cat], primary type categories
 
 // template <class T> struct is_void;
 TEST_CASE("is_void", "[meta.unary.cat]") {
@@ -200,7 +200,7 @@ TEST_CASE("is_null_pointer", "[meta.unary.cat]") {
   }
 }
 
-// 23.15.4.2, composite type categories
+// [meta.unary.comp], composite type categories
 
 // template <class T> struct is_reference;
 TEST_CASE("is_reference", "[meta.unary.comp]") {
@@ -239,7 +239,7 @@ TEST_CASE("is_member_pointer", "[meta.unary.comp]") {
       std::is_base_of<slb::true_type, slb::is_member_pointer<int C::*>>::value);
 }
 
-// 23.15.4.3, type properties
+// [meta.unary.prop], type properties
 
 // template <class T> struct is_const;
 TEST_CASE("is_const", "[meta.unary.prop]") {
@@ -488,7 +488,7 @@ TEST_CASE("has_unique_object_representations", "[meta.unary.prop]") {
 }
 #endif
 
-// 23.15.5, type property queries
+// [meta.unary.prop.query] type property queries
 
 // template <class T> struct alignment_of;
 TEST_CASE("alignment_of", "[meta.unary.prop.query]") {
@@ -511,7 +511,7 @@ TEST_CASE("extent", "[meta.unary.prop.query]") {
                         slb::extent<int[2][3], 1>>::value);
 }
 
-// 23.15.6, type relations
+// [meta.rel], type relations
 
 // template <class T, class U> struct is_same;
 TEST_CASE("is_same", "[meta.rel]") {
@@ -531,7 +531,7 @@ TEST_CASE("is_convertible", "[meta.rel]") {
       std::is_base_of<slb::true_type, slb::is_convertible<float, int>>::value);
 }
 
-// 23.15.7.1, const-volatile modifications
+// [meta.trans.cv], const-volatile modifications
 
 // template <class T>
 // using remove_const_t = typename remove_const<T>::type;
@@ -573,7 +573,7 @@ TEST_CASE("add_cv_t", "[meta.trans.cv]") {
   CHECK(std::is_same<slb::add_cv_t<int>, std::add_cv<int>::type>::value);
 }
 
-// 23.15.7.2, reference modifications
+// [meta.trans.ref], reference modifications
 
 // template <class T>
 // using remove_reference_t = typename remove_reference<T>::type;
@@ -596,7 +596,7 @@ TEST_CASE("add_rvalue_reference_t", "[meta.trans.ref]") {
                      std::add_rvalue_reference<int>::type>::value);
 }
 
-// 23.15.7.3, sign modifications
+// [meta.trans.sign], sign modifications
 
 // template <class T>
 // using make_signed_t = typename make_signed<T>::type;
@@ -612,7 +612,7 @@ TEST_CASE("make_unsigned_t", "[meta.trans.sign]") {
                      std::make_unsigned<int>::type>::value);
 }
 
-// 23.15.7.4, array modifications
+// [meta.trans.arr], array modifications
 
 // template <class T>
 // using remove_extent_t = typename remove_extent<T>::type;
@@ -628,7 +628,7 @@ TEST_CASE("remove_all_extents_t", "[meta.trans.arr]") {
                      std::remove_all_extents<int[3][2][1]>::type>::value);
 }
 
-// 23.15.7.5, pointer modifications
+// [meta.trans.ptr], pointer modifications
 
 // template <class T>
 // using remove_pointer_t = typename remove_pointer<T>::type;
@@ -644,7 +644,7 @@ TEST_CASE("add_pointer_t", "[meta.trans.ptr]") {
                      std::add_pointer<int>::type>::value);
 }
 
-// 23.15.7.6, other transformations
+// [meta.trans.other], other transformations
 
 // template <size_t Len, class... Types> struct aligned_union;
 TEST_CASE("aligned_union", "[meta.trans.other]") {
@@ -730,15 +730,15 @@ TEST_CASE("decay_t", "[meta.trans.other]") {
                      std::decay<int const&>::type>::value);
 }
 
-// template <bool B, typename T = void>
-// using enable_if_t = typename enable_if<B, T>::type;
+// template <bool b, typename T = void>
+// using enable_if_t = typename enable_if<b, T>::type;
 TEST_CASE("enable_if_t", "[meta.trans.other]") {
   CHECK(std::is_same<slb::enable_if_t<true, int>,
                      std::enable_if<true, int>::type>::value);
 }
 
-// template <bool B, typename T, typename F>
-// using conditional_t = typename conditional<B, T, F>::type;
+// template <bool b, typename T, typename F>
+// using conditional_t = typename conditional<b, T, F>::type;
 TEST_CASE("conditional_t", "[meta.trans.other]") {
   CHECK(std::is_same<slb::conditional_t<true, int, float>,
                      std::conditional<true, int, float>::type>::value);
@@ -780,7 +780,7 @@ TEST_CASE("void_t", "[meta.trans.other]") {
   }
 }
 
-// 23.15.8, logical operator traits
+// [meta.logical], logical operator traits
 
 template <bool B>
 struct Weird {
@@ -920,7 +920,7 @@ TEST_CASE("negation", "[meta.logical]") {
                         slb::negation<slb::negation<Weird<false>>>>::value);
 }
 
-// 23.15.9, endian
+// [meta.endian], endian
 
 // enum class endian {
 //   little = see below,
