@@ -159,46 +159,42 @@ branches:
   only:
     - master
 
-before_install:
+install:
   - |
     if [ -n "${VERSION}" ]; then
       export CC="${CC}-${VERSION}"
       export CXX="${CXX}-${VERSION}"
     fi
-  - export CXXFLAGS="-Wall -Wextra -Werror -pedantic-errors"
-  - CXX_VERSIONS=(${CXX_VERSIONS//;/ })
-  - BUILD_TYPES=(Debug Release)
-
-install:
-  - |
-    for CXX_VERSION in "${CXX_VERSIONS[@]}"; do
-      for BUILD_TYPE in "${BUILD_TYPES[@]}"; do
-        BUILD_DIR="build-${CXX_VERSION}-${BUILD_TYPE}"
-        mkdir "${BUILD_DIR}"
-        pushd "${BUILD_DIR}"
-        (
-          set -ex
-          export CXXFLAGS="${CXXFLAGS} -std=c++${CXX_VERSION}"
-          cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" ..
-        )
-        popd
-      done
-    done
 
 script:
   - |
-    for CXX_VERSION in "${CXX_VERSIONS[@]}"; do
-      for BUILD_TYPE in "${BUILD_TYPES[@]}"; do
-        BUILD_DIR="build-${CXX_VERSION}-${BUILD_TYPE}"
-        pushd "${BUILD_DIR}"
-        (
-          set -ex
-          cmake --build . -- -k
-          ctest --output-on-failure
-        )
-        popd
-      done
-    done
+    python - <<EOF
+    import os
+    import pprint
+    import subprocess
+    result = {}
+    cxxflags = '-Wall -Wextra -Werror -pedantic-errors -std=c++{std}'
+    for cxx_version in "${CXX_VERSIONS}".split(';'):
+      os.environ['CXXFLAGS'] = cxxflags.format(std=cxx_version)
+      for build_type in ['Debug', 'Release']:
+          config = '{}-{}'.format(cxx_version, build_type)
+          build_dir = 'build-{}'.format(config)
+          os.mkdir(build_dir)
+          os.chdir(build_dir)
+          result[config] = [
+            ['configure', None], ['build', None], ['test', None]
+          ]
+          result[config][0][1] = subprocess.call([
+            'cmake', '-DCMAKE_BUILD_TYPE={}'.format(build_type), '..'])
+          if result[config][0][1] == 0:
+            result[config][1][1] = subprocess.call([
+              'cmake', '--build', '.', '--', '-k', '-j', '2'])
+            result[config][2][1] = subprocess.call([
+              'ctest', '--output-on-failure'])
+          os.chdir('..')
+    pprint.pprint(result)
+    exit(any(status != 0 for l in result.itervalues() for _, status in l))
+    EOF
 
 notifications:
   email: false
