@@ -966,34 +966,22 @@ struct is_invocable_impl<F(Args...),
   static constexpr bool value = true;
   static constexpr bool nothrow =
       noexcept(detail::invoke(std::declval<F>(), std::declval<Args>()...));
-  using result =
-      decltype(slb::detail::invoke(std::declval<F>(), std::declval<Args>()...));
 };
 
-template <typename R,
-          typename F,
-          bool IsVoid = std::is_void<R>::value,
-          bool IsInvocable = is_invocable_impl<F>::value>
+template <typename R, typename F, typename Enable = void>
 struct is_invocable_r_impl {
   static constexpr bool value = false;
   static constexpr bool nothrow = false;
 };
 
-template <typename R, typename F>
-struct is_invocable_r_impl<R, F, /*IsVoid=*/true, /*IsInvocable=*/true>
-    : is_invocable_impl<F> {};
-
-template <typename R, typename F>
-struct is_invocable_r_impl<R, F, /*IsVoid=*/false, /*IsInvocable=*/true> {
-  static void conversion(...);
-  static void conversion(R) noexcept;
-
-  static constexpr bool value =
-      std::is_convertible<typename is_invocable_impl<F>::result, R>::value;
+template <typename R, typename F, typename... Args>
+struct is_invocable_r_impl<R,
+                           F(Args...),
+                           decltype((void)(detail::invoke_r<R>(
+                               std::declval<F>(), std::declval<Args>()...)))> {
+  static constexpr bool value = true;
   static constexpr bool nothrow =
-      is_invocable_impl<F>::nothrow &&
-      noexcept(
-          conversion(std::declval<typename is_invocable_impl<F>::result>()));
+      noexcept(detail::invoke_r<R>(std::declval<F>(), std::declval<Args>()...));
 };
 
 } // namespace detail

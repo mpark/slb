@@ -610,11 +610,20 @@ void check_invocable(std::integral_constant<bool, IsNothrow>,
   CHECK(std::is_base_of<slb::true_type, slb::is_invocable<F, Args...>>::value);
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_invocable_r<R, F, Args...>>::value);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_invocable_r<void, F, Args...>>::value);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_invocable_r<void const, F, Args...>>::value);
 
   CHECK(std::is_base_of<slb::bool_constant<IsNothrow>,
                         slb::is_nothrow_invocable<F, Args...>>::value);
   CHECK(std::is_base_of<slb::bool_constant<IsNothrowR>,
                         slb::is_nothrow_invocable_r<R, F, Args...>>::value);
+  CHECK(std::is_base_of<slb::bool_constant<IsNothrow>,
+                        slb::is_nothrow_invocable_r<void, F, Args...>>::value);
+  CHECK(std::is_base_of<
+        slb::bool_constant<IsNothrow>,
+        slb::is_nothrow_invocable_r<void const, F, Args...>>::value);
 }
 
 template <typename F, typename... Args>
@@ -622,11 +631,16 @@ void check_not_invocable() {
   CHECK(std::is_base_of<slb::false_type, slb::is_invocable<F, Args...>>::value);
   CHECK(std::is_base_of<slb::false_type,
                         slb::is_invocable_r<void, F, Args...>>::value);
+  CHECK(std::is_base_of<slb::false_type,
+                        slb::is_invocable_r<void const, F, Args...>>::value);
 
   CHECK(std::is_base_of<slb::false_type,
                         slb::is_nothrow_invocable<F, Args...>>::value);
   CHECK(std::is_base_of<slb::false_type,
                         slb::is_nothrow_invocable_r<void, F, Args...>>::value);
+  CHECK(std::is_base_of<
+        slb::false_type,
+        slb::is_nothrow_invocable_r<void const, F, Args...>>::value);
 }
 
 TEST_CASE("is_invocable", "[meta.rel]") {

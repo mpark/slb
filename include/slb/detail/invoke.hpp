@@ -333,6 +333,51 @@ constexpr auto invoke(F&& f, Args&&... args) noexcept(
       std::forward<Args>(args)...);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+namespace invoke_impl {
+
+// `INVOKE(f, t1, t2, ..., tN)` implicitly converted to `R`.
+template <typename R, typename RD = typename std::remove_cv<R>::type>
+struct invoke_guard {
+private:
+  static R conversion(R) noexcept;
+
+public:
+  template <typename F, typename... Args>
+  static constexpr auto call(F&& f, Args&&... args) noexcept(
+      noexcept(conversion(detail::invoke(std::forward<F>(f),
+                                         std::forward<Args>(args)...))))
+      -> decltype(conversion(detail::invoke(std::forward<F>(f),
+                                            std::forward<Args>(args)...))) {
+    return detail::invoke(std::forward<F>(f), std::forward<Args>(args)...);
+  }
+};
+
+// `static_cast<void>(INVOKE(f, t1, t2, ..., tN))` if `R` is _cv_ `void`.
+template <typename R>
+struct invoke_guard<R, void> {
+  template <typename F, typename... Args>
+  static constexpr auto call(F&& f, Args&&... args) noexcept(
+      noexcept(detail::invoke(std::forward<F>(f), std::forward<Args>(args)...)))
+      -> decltype((void)(detail::invoke(std::forward<F>(f),
+                                        std::forward<Args>(args)...))) {
+    return static_cast<void>(
+        detail::invoke(std::forward<F>(f), std::forward<Args>(args)...));
+  }
+};
+
+} // namespace invoke_impl
+
+template <typename R, typename F, typename... Args>
+constexpr auto invoke_r(F&& f, Args&&... args) noexcept(
+    noexcept(invoke_impl::invoke_guard<R>::call(std::forward<F>(f),
+                                                std::forward<Args>(args)...)))
+    -> decltype(invoke_impl::invoke_guard<R>::call(
+        std::forward<F>(f), std::forward<Args>(args)...)) {
+  return invoke_impl::invoke_guard<R>::call(std::forward<F>(f),
+                                            std::forward<Args>(args)...);
+}
+
 } // namespace detail
 } // namespace slb
 
