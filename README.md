@@ -21,7 +21,7 @@ backported to __C++11__/__14__/__17__.
 
 ## Documentation
 
-  - [C++ Working Draft](http://wg21.link/standard)
+  - [C++ Working Draft](https://wg21.link/standard)
   - [eel.is/c++draft](http://eel.is/c++draft)
 
 ## CMake Variables
@@ -29,6 +29,10 @@ backported to __C++11__/__14__/__17__.
   - __`SLB_BUILD_TESTING`__: `BOOL`
 
     Build unit tests.
+
+## Status
+
+Refer to [STATUS.md](STATUS.md).
 
 ## Unit Tests
 

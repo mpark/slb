@@ -1,0 +1,707 @@
+# SLB
+
+> C++ Standard Library Backport
+
+[![travis][badge.travis]][travis]
+[![appveyor][badge.appveyor]][appveyor]
+[![license][badge.license]][license]
+
+[badge.travis]: https://travis-ci.org/mpark/slb.svg?branch=master
+[badge.appveyor]: https://ci.appveyor.com/api/projects/status/github/mpark/slb?branch=master&svg=true
+[badge.license]: https://img.shields.io/badge/license-boost-blue.svg
+
+[travis]: https://travis-ci.org/mpark/slb
+[appveyor]: https://ci.appveyor.com/project/mpark/slb
+[license]: https://github.com/mpark/slb/blob/master/LICENSE.md
+
+## Status
+
+### Features
+
+#### `<functional>`
+
+  - `invoke`
+  - `mem_fn`
+  - `not_fn`
+
+#### `<type_traits>`
+
+  - `bool_constant`
+  - `endian`
+  - `is_aggregate`
+  - `is_null_pointer`
+  - `remove_cvref`
+  - `void_t`
+  - Invocable type traits
+    - `std::is_invocable`
+    - `std::is_invocable_r`
+    - `std::is_nothrow_invocable`
+    - `std::is_nothrow_invocable_r`
+  - Logical operator type traits
+    - `conjunction`
+    - `disjunction`
+    - `negation`
+  - Metafunction aliases: `*_t`
+
+#### `<utility>`
+
+  - `exchange`
+  - `integral_constant::operator()`
+  - Compile-time integer sequences
+    - `integer_sequence`
+    - `index_sequence`
+    - `make_integer_sequence`
+    - `make_index_sequence`
+    - `index_sequence_for`
+
+---
+
+### All Papers and Issues
+
+#### C++14
+
+##### Papers
+
+  - [ ] [N3302](https://wg21.link/N3302): Constexpr Library Additions: complex, v2
+  - [ ] [N3346](https://wg21.link/N3346): Terminology for Container Element Requirements
+  - [ ] [N3421](https://wg21.link/N3421): Making Operator Functors `greater<>`
+  - [ ] [N3462](https://wg21.link/N3462): `std::result_of` and SFINAE
+  - [ ] [N3469](https://wg21.link/N3469): Constexpr Library Additions: chrono, v3
+  - [ ] [N3470](https://wg21.link/N3470): Constexpr Library Additions: containers, v2
+  - [ ] [N3471](https://wg21.link/N3471): Constexpr Library Additions: utilities, v3
+  - [X] [N3545](https://wg21.link/N3545): An Incremental Improvement to `integral_constant`
+  - [ ] [N3642](https://wg21.link/N3642): User-defined Literals
+  - [ ] [N3644](https://wg21.link/N3644): Null Forward Iterators
+  - [ ] [N3654](https://wg21.link/N3654): Quoted Strings
+  - [X] [N3655](https://wg21.link/N3655): TransformationTraits Redux (excluding part 4)
+  - [ ] [N3656](https://wg21.link/N3656): `make_unique`
+  - [ ] [N3657](https://wg21.link/N3657): Adding heterogeneous comparison lookup to associative containers
+  - [X] [N3658](https://wg21.link/N3658): Compile-time integer sequences
+  - [ ] [N3659](https://wg21.link/N3659): Shared Locking in C++
+  - [X] [N3668](https://wg21.link/N3668): `std::exchange()` utility function
+  - [ ] [N3669](https://wg21.link/N3669): Fixing `constexpr` member functions without `const`
+  - [ ] [N3670](https://wg21.link/N3670): Addressing Tuples by Type
+  - [ ] [N3671](https://wg21.link/N3671): Making non-modifying sequence operations more robust
+  - [ ] [N3779](https://wg21.link/N3779): User-defined Literals for `std::complex`
+  - [ ] [N3789](https://wg21.link/N3789): Constexpr Library Additions: functional
+  - [ ] [N3887](https://wg21.link/N3887): Consistent Metafunction Aliases
+  - [ ] [N3891](https://wg21.link/N3891): A proposal to rename `shared_mutex` to `shared_timed_mutex`
+  - [ ] [N3924](https://wg21.link/N3924): Discouraging `rand()` in C++14
+
+##### Issues
+
+  - [ ] [LWG1214](https://wg21.link/LWG1214): Insufficient/inconsistent key immutability requirements for associative containers
+  - [ ] [LWG1450](https://wg21.link/LWG1450): Contradiction in `regex_constants`
+  - [ ] [LWG2003](https://wg21.link/LWG2003): String exception inconsistency in erase.
+  - [ ] [LWG2005](https://wg21.link/LWG2005): `unordered_map::insert(T&&)` protection should apply to `map` too
+  - [ ] [LWG2009](https://wg21.link/LWG2009): Reporting out-of-bound values on numeric string conversions
+  - [ ] [LWG2010](https://wg21.link/LWG2010): `is_*` traits for binding operations can't be meaningfully specialized
+  - [ ] [LWG2011](https://wg21.link/LWG2011): Unexpected output required of strings
+  - [ ] [LWG2013](https://wg21.link/LWG2013): Do library implementers have the freedom to add `constexpr`?
+  - [ ] [LWG2015](https://wg21.link/LWG2015): Incorrect pre-conditions for some type traits
+  - [ ] [LWG2018](https://wg21.link/LWG2018): `regex_traits::isctype` _Returns_ clause is wrong
+  - [ ] [LWG2021](https://wg21.link/LWG2021): Further incorrect usages of `result_of`
+  - [ ] [LWG2028](https://wg21.link/LWG2028): `messages_base::catalog` overspecified
+  - [ ] [LWG2033](https://wg21.link/LWG2033): Preconditions of `reserve`, `shrink_to_fit`, and `resize` functions
+  - [ ] [LWG2039](https://wg21.link/LWG2039): Issues with `std::reverse` and `std::copy_if`
+  - [ ] [LWG2044](https://wg21.link/LWG2044): No definition of "Stable" for copy algorithms
+  - [ ] [LWG2045](https://wg21.link/LWG2045): `forward_list::merge` and `forward_list::splice_after` with unequal allocators
+  - [ ] [LWG2047](https://wg21.link/LWG2047): Incorrect "mixed" move-assignment semantics of `unique_ptr`
+  - [X] [LWG2048](https://wg21.link/LWG2048): Unnecessary `mem_fn` overloads
+  - [ ] [LWG2049](https://wg21.link/LWG2049): `is_destructible` is underspecified
+  - [ ] [LWG2050](https://wg21.link/LWG2050): Unordered associative containers do not use `allocator_traits` to define member types
+  - [ ] [LWG2053](https://wg21.link/LWG2053): Errors in `regex` bitmask types
+  - [ ] [LWG2056](https://wg21.link/LWG2056): `future_errc` enums start with value 0 (invalid value for `broken_promise`)
+  - [ ] [LWG2058](https://wg21.link/LWG2058): `valarray` and `begin`/`end`
+  - [ ] [LWG2061](https://wg21.link/LWG2061): `make_move_iterator` and arrays
+  - [ ] [LWG2064](https://wg21.link/LWG2064): More `noexcept` issues in `basic_string`
+  - [ ] [LWG2065](https://wg21.link/LWG2065): Minimal allocator interface
+  - [ ] [LWG2067](https://wg21.link/LWG2067): `packaged_task` should have deleted copy c'tor with const parameter
+  - [ ] [LWG2069](https://wg21.link/LWG2069): Inconsistent exception spec for `basic_string` move constructor
+  - [ ] [LWG2071](https://wg21.link/LWG2071): `std::valarray` move-assignment
+  - [ ] [LWG2074](https://wg21.link/LWG2074): Off by one error in `std::reverse_copy`
+  - [ ] [LWG2075](https://wg21.link/LWG2075): Progress guarantees, lock-free property, and scheduling assumptions
+  - [ ] [LWG2078](https://wg21.link/LWG2078): _Throw_ specification of `async()` incomplete
+  - [ ] [LWG2080](https://wg21.link/LWG2080): Specify when `once_flag` becomes invalid
+  - [ ] [LWG2081](https://wg21.link/LWG2081): Allocator requirements should include `CopyConstructible`
+  - [ ] [LWG2083](https://wg21.link/LWG2083): `const`-qualification on `weak_ptr::owner_before`
+  - [ ] [LWG2085](https://wg21.link/LWG2085): Wrong description of effect 1 of `basic_istream::ignore`
+  - [ ] [LWG2086](https://wg21.link/LWG2086): Overly generic type support for math functions
+  - [ ] [LWG2087](https://wg21.link/LWG2087): `iostream_category()` and `noexcept`
+  - [ ] [LWG2091](https://wg21.link/LWG2091): Misplaced effect in `m.try_lock_for()`
+  - [ ] [LWG2092](https://wg21.link/LWG2092): Vague Wording for `condition_variable_any`
+  - [ ] [LWG2093](https://wg21.link/LWG2093): Throws clause of `condition_variable::wait` with predicate
+  - [ ] [LWG2094](https://wg21.link/LWG2094): `duration` conversion overflow shouldn't participate in overload resolution
+  - [ ] [LWG2096](https://wg21.link/LWG2096): Incorrect constraints of `future::get` in regard to `MoveAssignable`
+  - [ ] [LWG2097](https://wg21.link/LWG2097): `packaged_task` constructors should be constrained
+  - [ ] [LWG2098](https://wg21.link/LWG2098): `promise` throws clauses
+  - [ ] [LWG2099](https://wg21.link/LWG2099): Unnecessary constraints of `va_start()` usage
+  - [ ] [LWG2100](https://wg21.link/LWG2100): Timed waiting functions cannot timeout if `launch::async` policy used
+  - [ ] [LWG2102](https://wg21.link/LWG2102): Why is `std::launch` an implementation-defined type?
+  - [ ] [LWG2103](https://wg21.link/LWG2103): `std::allocator_traits<std::allocator<T>>::propagate_on_container_move_assignment`
+  - [ ] [LWG2104](https://wg21.link/LWG2104): `unique_lock` move-assignment should not be `noexcept`
+  - [ ] [LWG2105](https://wg21.link/LWG2105): Inconsistent requirements on `const_iterator`'s `value_type`
+  - [ ] [LWG2109](https://wg21.link/LWG2109): Incorrect requirements for `hash` specializations
+  - [ ] [LWG2110](https://wg21.link/LWG2110): `remove` can't swap but note says it might
+  - [ ] [LWG2112](https://wg21.link/LWG2112): User-defined classes that cannot be derived from
+  - [ ] [LWG2120](https://wg21.link/LWG2120): What should `async` do if neither `async` nor `deferred` is set in policy?
+  - [ ] [LWG2122](https://wg21.link/LWG2122): `merge()` stability for lists versus forward lists
+  - [ ] [LWG2123](https://wg21.link/LWG2123): `merge()` allocator requirements for lists versus forward lists
+  - [ ] [LWG2128](https://wg21.link/LWG2128): Absence of global functions `cbegin`/`cend`
+  - [ ] [LWG2130](https://wg21.link/LWG2130): missing ordering constraints for fences
+  - [ ] [LWG2132](https://wg21.link/LWG2132): `std::function` ambiguity
+  - [ ] [LWG2135](https://wg21.link/LWG2135): Unclear requirement for exceptions thrown in `condition_variable::wait()`
+  - [ ] [LWG2138](https://wg21.link/LWG2138): `atomic_flag::clear` ordering constraints
+  - [ ] [LWG2140](https://wg21.link/LWG2140): `notify_all_at_thread_exit` synchronization
+  - [ ] [LWG2141](https://wg21.link/LWG2141): `common_type` trait produces reference types
+  - [ ] [LWG2142](https://wg21.link/LWG2142): `packaged_task::operator()` synchronization too broad?
+  - [ ] [LWG2143](https://wg21.link/LWG2143): `ios_base::xalloc` should be thread-safe
+  - [ ] [LWG2144](https://wg21.link/LWG2144): Missing `noexcept` specification in `type_index`
+  - [ ] [LWG2145](https://wg21.link/LWG2145): `error_category` default constructor
+  - [ ] [LWG2147](https://wg21.link/LWG2147): Unclear hint type in `Allocator`'s `allocate` function
+  - [ ] [LWG2148](https://wg21.link/LWG2148): Hashing enums should be supported directly by `std::hash`
+  - [ ] [LWG2149](https://wg21.link/LWG2149): Concerns about 20.8/5
+  - [ ] [LWG2150](https://wg21.link/LWG2150): Unclear specification of `find_end`
+  - [ ] [LWG2159](https://wg21.link/LWG2159): `atomic_flag` initialization
+  - [ ] [LWG2162](https://wg21.link/LWG2162): `allocator_traits::max_size` missing `noexcept`
+  - [ ] [LWG2163](https://wg21.link/LWG2163): `nth_element` requires inconsistent post-conditions
+  - [ ] [LWG2169](https://wg21.link/LWG2169): Missing `reset()` requirements in `unique_ptr` specialization
+  - [ ] [LWG2172](https://wg21.link/LWG2172): Does `atomic_compare_exchange_*` accept `v == nullptr` arguments?
+  - [ ] [LWG2174](https://wg21.link/LWG2174): `wstring_convert::converted()` should be `noexcept`
+  - [ ] [LWG2175](https://wg21.link/LWG2175): `string_convert` and `wbuffer_convert` validity
+  - [ ] [LWG2176](https://wg21.link/LWG2176): Special members for `wstring_convert` and `wbuffer_convert`
+  - [ ] [LWG2177](https://wg21.link/LWG2177): Requirements on `Copy`/`MoveInsertable`
+  - [ ] [LWG2180](https://wg21.link/LWG2180): Exceptions from `std::seed_seq` operations
+  - [ ] [LWG2182](https://wg21.link/LWG2182): `Container::[const_]reference` types are misleadingly specified
+  - [ ] [LWG2185](https://wg21.link/LWG2185): Missing throws clause for `future`/`shared_future::wait_for`/`wait_until`
+  - [ ] [LWG2186](https://wg21.link/LWG2186): Incomplete action on `async`/`launch::deferred`
+  - [ ] [LWG2187](https://wg21.link/LWG2187): `vector<bool>` is missing `emplace` and `emplace_back` member functions
+  - [ ] [LWG2188](https://wg21.link/LWG2188): Reverse iterator does not fully support targets that overload `operator&`
+  - [ ] [LWG2190](https://wg21.link/LWG2190): ordering of condition variable operations, reflects `Posix` discussion
+  - [ ] [LWG2193](https://wg21.link/LWG2193): Default constructors for standard library containers are explicit
+  - [ ] [LWG2194](https://wg21.link/LWG2194): Impossible container requirements for adaptor types
+  - [ ] [LWG2196](https://wg21.link/LWG2196): Specification of `is_*[copy/move]_[constructible/assignable]` unclear for non-referencable types
+  - [ ] [LWG2197](https://wg21.link/LWG2197): Specification of `is_[un]signed` unclear for non-arithmetic types
+  - [ ] [LWG2200](https://wg21.link/LWG2200): Data race avoidance for all containers, not only for sequences
+  - [ ] [LWG2203](https://wg21.link/LWG2203): `scoped_allocator_adaptor` uses wrong argument types for piecewise construction
+  - [ ] [LWG2205](https://wg21.link/LWG2205): Problematic postconditions of `regex_match` and `regex_search`
+  - [ ] [LWG2207](https://wg21.link/LWG2207): `basic_string::at` should not have a _Requires_ clause
+  - [ ] [LWG2209](https://wg21.link/LWG2209): `assign()` overspecified for sequence containers
+  - [ ] [LWG2210](https://wg21.link/LWG2210): Missing allocator-extended constructor for allocator-aware containers
+  - [ ] [LWG2211](https://wg21.link/LWG2211): Replace ambiguous use of "Allocator" in container requirements
+  - [ ] [LWG2213](https://wg21.link/LWG2213): Return value of `std::regex_replace`
+  - [ ] [LWG2222](https://wg21.link/LWG2222): Inconsistency in description of `forward_list::splice_after` single-element overload
+  - [ ] [LWG2225](https://wg21.link/LWG2225): Unrealistic header inclusion checks required
+  - [ ] [LWG2229](https://wg21.link/LWG2229): Standard code conversion facets underspecified
+  - [ ] [LWG2231](https://wg21.link/LWG2231): DR 704 removes complexity guarantee for `clear()`
+  - [ ] [LWG2235](https://wg21.link/LWG2235): Undefined behavior without proper requirements on `basic_string` constructors
+  - [ ] [LWG2240](https://wg21.link/LWG2240): Probable misuse of term "function scope" in [thread.condition]
+  - [ ] [LWG2246](https://wg21.link/LWG2246): `unique_ptr` assignment effects w.r.t. deleter
+  - [X] [LWG2247](https://wg21.link/LWG2247): Type traits and `std::nullptr_t`
+  - [ ] [LWG2252](https://wg21.link/LWG2252): Strong guarantee on `vector::push_back()` still broken with C++11?
+  - [ ] [LWG2257](https://wg21.link/LWG2257): Simplify container requirements with the new algorithms
+  - [ ] [LWG2258](https://wg21.link/LWG2258): `a.erase(q1, q2)` unable to directly return `q2`
+  - [ ] [LWG2263](https://wg21.link/LWG2263): Comparing iterators and allocator pointers with different const-character
+  - [ ] [LWG2268](https://wg21.link/LWG2268): Setting a default argument in the declaration of a member function assign of `std::basic_string`
+  - [ ] [LWG2271](https://wg21.link/LWG2271): `regex_traits::lookup_classname` specification unclear
+  - [ ] [LWG2272](https://wg21.link/LWG2272): quoted should use `char_traits::eq` for character comparison
+  - [ ] [LWG2275](https://wg21.link/LWG2275): Why is `forward_as_tuple` not `constexpr`?
+  - [ ] [LWG2278](https://wg21.link/LWG2278): User-defined literals for Standard Library types
+  - [ ] [LWG2280](https://wg21.link/LWG2280): `begin` / `end` for arrays should be `constexpr` and `noexcept`
+  - [ ] [LWG2284](https://wg21.link/LWG2284): Inconsistency in `allocator_traits::max_size`
+  - [ ] [LWG2285](https://wg21.link/LWG2285): `make_reverse_iterator`
+  - [ ] [LWG2288](https://wg21.link/LWG2288): Inconsistent requirements for shared mutexes
+  - [ ] [LWG2291](https://wg21.link/LWG2291): `std::hash` is vulnerable to collision DoS attack
+  - [ ] [LWG2293](https://wg21.link/LWG2293): Wrong facet used by `num_put::do_put`
+  - [ ] [LWG2298](https://wg21.link/LWG2298): `is_nothrow_constructible` is always false because of `create<>`
+  - [ ] [LWG2299](https://wg21.link/LWG2299): Effects of inaccessible `key_compare::is_transparent` type are not clear
+  - [ ] [LWG2300](https://wg21.link/LWG2300): Redundant sections for `map` and `multimap` members should be removed
+  - [ ] [LWG2301](https://wg21.link/LWG2301): Why is `std::tie` not constexpr?
+  - [ ] [LWG2304](https://wg21.link/LWG2304): Complexity of count in unordered associative containers
+  - [ ] [LWG2306](https://wg21.link/LWG2306): `match_results::reference` should be `value_type&`, not const `value_type&`
+  - [ ] [LWG2308](https://wg21.link/LWG2308): Clarify container destructor requirements w.r.t. `std::array`
+  - [ ] [LWG2313](https://wg21.link/LWG2313): `tuple_size` should always derive from `integral_constant`
+  - [ ] [LWG2314](https://wg21.link/LWG2314): `apply()` should return `decltype(auto)` and use `decay_t` before `tuple_size`
+  - [ ] [LWG2315](https://wg21.link/LWG2315): `weak_ptr` should be movable
+  - [ ] [LWG2316](https://wg21.link/LWG2316): `weak_ptr::lock()` should be atomic
+  - [X] [LWG2317](https://wg21.link/LWG2317): The type property queries should be `UnaryTypeTraits` returning `size_t`
+  - [ ] [LWG2320](https://wg21.link/LWG2320): `select_on_container_copy_construction()` takes allocators, not containers
+  - [ ] [LWG2322](https://wg21.link/LWG2322): `Associative(initializer_list, stuff)` constructors are underspecified
+  - [ ] [LWG2323](https://wg21.link/LWG2323): `vector::resize(n, t)`'s specification should be simplified
+  - [ ] [LWG2324](https://wg21.link/LWG2324): Insert `iterator` constructors should use `addressof()`
+  - [ ] [LWG2329](https://wg21.link/LWG2329): `regex_match()`/`regex_search()` with `match_results` should forbid temporary strings
+  - [ ] [LWG2330](https://wg21.link/LWG2330): `regex("meow", regex::icase)` is technically forbidden but should be permitted
+  - [ ] [LWG2332](https://wg21.link/LWG2332): `regex_iterator`/`regex_token_iterator` should forbid temporary regexes
+  - [ ] [LWG2339](https://wg21.link/LWG2339): Wording issue in `nth_element`
+  - [ ] [LWG2341](https://wg21.link/LWG2341): Inconsistency between `basic_ostream::seekp(pos)` and `basic_ostream::seekp(off, dir)`
+  - [ ] [LWG2344](https://wg21.link/LWG2344): `quoted()`'s interaction with padding is unclear
+  - [X] [LWG2346](https://wg21.link/LWG2346): `integral_constant`'s member functions should be marked `noexcept`
+  - [ ] [LWG2350](https://wg21.link/LWG2350): `min`, `max`, and `minmax` should be `constexpr`
+  - [ ] [LWG2356](https://wg21.link/LWG2356): Stability of erasure in unordered associative containers
+  - [ ] [LWG2357](https://wg21.link/LWG2357): Remaining `Assignable` requirement
+  - [ ] [LWG2359](https://wg21.link/LWG2359): How does `regex_constants::nosubs` affect `basic_regex::mark_count()`?
+  - [ ] [LWG2360](https://wg21.link/LWG2360): `reverse_iterator::operator*()` is unimplementable
+  - [ ] GB9: Remove `gets` from C++14
+
+#### C++17
+
+##### Papers
+
+  - [X] [N3911](https://wg21.link/N3911): TransformationTrait Alias `void_t`.
+  - [ ] [N4089](https://wg21.link/N4089): Safe conversions in `unique_ptr<T[]>`.
+  - [X] [N4169](https://wg21.link/N4169): A proposal to add `invoke` function template
+  - [ ] [N4190](https://wg21.link/N4190): Removing `auto_ptr`, `random_shuffle()`, And Old Stuff.
+  - [ ] [N4258](https://wg21.link/N4258): Cleaning-up noexcept in the Library.
+  - [ ] [N4259](https://wg21.link/N4259): Wording for `std::uncaught_exceptions`
+  - [ ] [N4277](https://wg21.link/N4277): `TriviallyCopyable` `reference_wrapper`.
+  - [ ] [N4279](https://wg21.link/N4279): Improved insertion interface for unique-key maps.
+  - [ ] [N4280](https://wg21.link/N4280): Non-member `size()` and more
+  - [ ] [N4284](https://wg21.link/N4284): Contiguous Iterators.
+  - [ ] [N4285](https://wg21.link/N4285): Cleanup for exception-specification and throw-expression.
+  - [ ] [N4387](https://wg21.link/N4387): improving `pair` and `tuple`
+  - [X] [N4389](https://wg21.link/N4389): `bool_constant`
+  - [ ] [N4508](https://wg21.link/N4508): `shared_mutex` for C++17
+  - [ ] [N4366](https://wg21.link/N4366): LWG 2228 missing SFINAE rule
+  - [ ] [N4510](https://wg21.link/N4510): Minimal incomplete type support for standard containers, revision 4
+  - [ ] [P0004](https://wg21.link/P0004): Remove Deprecated iostreams aliases.
+  - [ ] [P0006](https://wg21.link/P0006): Adopt Type Traits Variable Templates for C++17.
+  - [ ] [P0092](https://wg21.link/P0092): Polishing `<chrono>`
+  - [ ] [P0007](https://wg21.link/P0007): Constant View: A proposal for a `std::as_const` helper function template.
+  - [ ] [P0156](https://wg21.link/P0156): Variadic `lock_guard`(rev 3). Reverted in Kona
+  - [ ] [P0074](https://wg21.link/P0074): Making `std::owner_less` more flexible
+  - [X] [P0013](https://wg21.link/P0013): Logical Operator Type Traits
+  - [ ] [P0024](https://wg21.link/P0024): The Parallelism TS Should be Standardized
+  - [ ] [P0226](https://wg21.link/P0226): Mathematical Special Functions for C++17
+  - [ ] [P0220](https://wg21.link/P0220): Adopt Library Fundamentals V1 TS Components for C++17
+  - [ ] [P0218](https://wg21.link/P0218): Adopt the File System TS for C++17
+  - [ ] [P0033](https://wg21.link/P0033): Re-enabling `shared_from_this`
+  - [X] [P0005](https://wg21.link/P0005): Adopt `not_fn` from Library Fundamentals 2 for C++17
+  - [ ] [P0152](https://wg21.link/P0152): `constexpr atomic::is_always_lock_free`
+  - [ ] [P0185](https://wg21.link/P0185): Adding [nothrow-]swappable traits
+  - [ ] [P0253](https://wg21.link/P0253): Fixing a design mistake in the searchers interface
+  - [ ] [P0025](https://wg21.link/P0025): An algorithm to "clamp" a value between a pair of boundary values
+  - [ ] [P0154](https://wg21.link/P0154): `constexpr std::hardware_{constructive,destructive}_interference_size`
+  - [ ] [P0030](https://wg21.link/P0030): Proposal to Introduce a 3-Argument Overload to `std::hypot`
+  - [ ] [P0031](https://wg21.link/P0031): A Proposal to Add Constexpr Modifiers to `reverse_iterator`, `move_iterator`, `array` and `Range` Access
+  - [ ] [P0272](https://wg21.link/P0272): Give `std::string` a non-const `.data()` member function
+  - [X] [P0077](https://wg21.link/P0077): `is_callable`, the missing `INVOKE` related trait
+  - [ ] [P0032](https://wg21.link/P0032): Homogeneous interface for `variant`, `any` and `optional`
+  - [ ] [P0040](https://wg21.link/P0040): Extending memory management tools
+  - [ ] [P0063](https://wg21.link/P0063): C++17 should refer to C11 instead of C99
+  - [ ] [P0067](https://wg21.link/P0067): Elementary string conversions (P0067R5)
+  - [ ] [P0083](https://wg21.link/P0083): Splicing Maps and Sets
+  - [ ] [P0084](https://wg21.link/P0084): Emplace Return Type
+  - [ ] [P0088](https://wg21.link/P0088): Variant: a type-safe `union` for C++17
+  - [ ] [P0137](https://wg21.link/P0137): Core Issue 1776: Replacement of class objects containing reference members
+  - [ ] [P0163](https://wg21.link/P0163): `shared_ptr::weak_type`
+  - [ ] [P0174](https://wg21.link/P0174): Deprecating Vestigial Library Parts in C++17
+  - [ ] [P0175](https://wg21.link/P0175): Synopses for the C library
+  - [ ] [P0180](https://wg21.link/P0180): Reserve a New Library Namespace for Future Standardization
+  - [ ] [P0209](https://wg21.link/P0209): `make_from_tuple`: `apply` for construction
+  - [ ] [P0219](https://wg21.link/P0219): Relative Paths for Filesystem
+  - [ ] [P0254](https://wg21.link/P0254): Integrating `std::string_view` and `std::string`
+  - [ ] [P0258](https://wg21.link/P0258): `has_unique_object_representations`
+  - [ ] [P0295](https://wg21.link/P0295): Adopt Selected Library Fundamentals V2 Components for C++17
+  - [ ] [P0302](https://wg21.link/P0302): Removing Allocator Support in `std::function`
+  - [ ] [P0307](https://wg21.link/P0307): Making Optional Greater Equal Again
+  - [ ] [P0336](https://wg21.link/P0336): Better Names for Parallel Execution Policies in C++17
+  - [ ] [P0337](https://wg21.link/P0337): Delete `operator=` for `polymorphic_allocator`
+  - [ ] [P0346](https://wg21.link/P0346): A `<random>` Nomenclature Tweak
+  - [X] [P0358](https://wg21.link/P0358): Fixes for `not_fn`
+  - [ ] [P0371](https://wg21.link/P0371): Temporarily discourage `memory_order_consume`
+  - [ ] [P0392](https://wg21.link/P0392): Adapting `string_view` by filesystem paths
+  - [ ] [P0393](https://wg21.link/P0393): Making Variant Greater Equal
+  - [ ] [P0394](https://wg21.link/P0394): Hotel Parallelifornia: `terminate()` for Parallel Algorithms Exception Handling
+  - [ ] [P0003](https://wg21.link/P0003): Removing Deprecated Exception Specifications from C++17
+  - [ ] [P0067](https://wg21.link/P0067): Elementary string conversions, revision 5
+  - [ ] [P0403](https://wg21.link/P0403): Literal suffixes for `basic_string_view`
+  - [ ] [P0414](https://wg21.link/P0414): Merging `shared_ptr` changes from Library Fundamentals to C++17
+  - [ ] [P0418](https://wg21.link/P0418): Fail or succeed: there is no atomic lattice
+  - [ ] [P0426](https://wg21.link/P0426): Constexpr for `std::char_traits`
+  - [ ] [P0435](https://wg21.link/P0435): Resolving LWG Issues re `common_type`
+  - [ ] [P0502](https://wg21.link/P0502): Throwing out of a parallel algorithm terminates - but how?
+  - [ ] [P0503](https://wg21.link/P0503): Correcting library usage of "literal type"
+  - [ ] [P0504](https://wg21.link/P0504): Revisiting in-place tag types for `any`/`optional`/`variant`
+  - [ ] [P0505](https://wg21.link/P0505): Wording for GB 50 - constexpr for `chrono`
+  - [ ] [P0508](https://wg21.link/P0508): Wording for GB 58 - structured bindings for `node_handles`
+  - [ ] [P0509](https://wg21.link/P0509R1): Updating "Restrictions on exception handling"
+  - [ ] [P0510](https://wg21.link/P0510): Disallowing references, incomplete types, arrays, and empty variants
+  - [ ] [P0513](https://wg21.link/P0513): Poisoning the Hash
+  - [ ] [P0516](https://wg21.link/P0516): Clarify That `shared_future`'s Copy Operations have Wide Contracts
+  - [ ] [P0517](https://wg21.link/P0517): Make `future_error` Constructible
+  - [ ] [P0521](https://wg21.link/P0521): Proposed Resolution for CA 14 (`shared_ptr` `use_count`/`unique`)
+  - [ ] [P0156](https://wg21.link/P0156): Variadic Lock guard(rev 5)
+  - [ ] [P0270](https://wg21.link/P0270): Removing C dependencies from signal handler wording
+  - [ ] [P0298](https://wg21.link/P0298): A byte type definition
+  - [ ] [P0317](https://wg21.link/P0317): Directory Entry Caching for Filesystem
+  - [ ] [P0430](https://wg21.link/P0430): File system library on non-POSIX-like operating systems
+  - [ ] [P0433](https://wg21.link/P0433): Toward a resolution of US7 and US14: Integrating template deduction for class templates into the standard library
+  - [ ] [P0452](https://wg21.link/P0452): Unifying `<numeric>` Parallel Algorithms
+  - [ ] [P0467](https://wg21.link/P0467): Iterator Concerns for Parallel Algorithms
+  - [ ] [P0492](https://wg21.link/P0492): Proposed Resolution of C++17 National Body Comments for Filesystems
+  - [ ] [P0518](https://wg21.link/P0518): Allowing copies as arguments to function objects given to parallel algorithms in response to CH11
+  - [ ] [P0523](https://wg21.link/P0523): Wording for CH 10: Complexity of parallel algorithms
+  - [ ] [P0548](https://wg21.link/P0548): `common_type` and `duration`
+  - [ ] [P0558](https://wg21.link/P0558): Resolving `atomic<T>` named base class inconsistencies
+  - [ ] [P0574](https://wg21.link/P0574): Algorithm Complexity Constraints and Parallel Overloads
+  - [ ] [P0599](https://wg21.link/P0599): `noexcept` for hash functions
+  - [X] [P0604](https://wg21.link/P0604): Resolving GB 55, US 84, US 85, US 86
+  - [ ] [P0607](https://wg21.link/P0607): Inline Variables for the Standard Library
+  - [ ] [P0618](https://wg21.link/P0618): Deprecating `<codecvt>`
+  - [ ] [P0623](https://wg21.link/P0623): Final C++17 Parallel Algorithms Fixes
+  - [ ] [P0682](https://wg21.link/P0682): Repairing elementary string conversions
+  - [ ] [P0739](https://wg21.link/P0739): Some improvements to class template argument deduction integration into the standard library
+
+##### Issues
+
+  - [ ] [LWG2016](https://wg21.link/LWG2016): `Allocators` must be no-throw swappable
+  - [ ] [LWG2118](https://wg21.link/LWG2118): `unique_ptr` for `array` does not support _cv_ qualification conversion of actual argument
+  - [ ] [LWG2170](https://wg21.link/LWG2170): Aggregates cannot be `DefaultConstructible`
+  - [ ] [LWG2308](https://wg21.link/LWG2308): Clarify container destructor requirements w.r.t. `std::array`
+  - [ ] [LWG2340](https://wg21.link/LWG2340): Replacement allocation functions declared as `inline`
+  - [ ] [LWG2354](https://wg21.link/LWG2354): Unnecessary copying when inserting into maps with braced-init syntax
+  - [ ] [LWG2377](https://wg21.link/LWG2377): `std::align` requirements overly strict
+  - [ ] [LWG2396](https://wg21.link/LWG2396): `underlying_type` doesn't say what to do for an incomplete enumeration type
+  - [ ] [LWG2399](https://wg21.link/LWG2399): `shared_ptr`'s constructor from `unique_ptr` should be constrained
+  - [ ] [LWG2400](https://wg21.link/LWG2400): `shared_ptr`'s `get_deleter()` should use `addressof()`
+  - [ ] [LWG2401](https://wg21.link/LWG2401): `std::function` needs more `noexcept`
+  - [ ] [LWG2404](https://wg21.link/LWG2404): `mismatch()`'s complexity needs to be updated
+  - [ ] [LWG2408](https://wg21.link/LWG2408): SFINAE-friendly `common_type` / `iterator_traits` is missing in C++14
+  - [ ] [LWG2106](https://wg21.link/LWG2106): `move_iterator` wrapping iterators returning prvalues
+  - [ ] [LWG2129](https://wg21.link/LWG2129): User specializations of `std::initializer_list`
+  - [ ] [LWG2212](https://wg21.link/LWG2212): `tuple_size` for const pair request header
+  - [ ] [LWG2217](https://wg21.link/LWG2217): `operator==(sub_match, string)` slices on embedded '\0's
+  - [ ] [LWG2230](https://wg21.link/LWG2230): "see below" for `initializer_list` constructors of unordered containers
+  - [ ] [LWG2233](https://wg21.link/LWG2233): `bad_function_call::what()` unhelpful
+  - [ ] [LWG2266](https://wg21.link/LWG2266): `vector` and `deque` have incorrect `insert` requirements
+  - [ ] [LWG2325](https://wg21.link/LWG2325): `minmax_element()`'s behavior differing from `max_element()`'s should be noted
+  - [ ] [LWG2361](https://wg21.link/LWG2361): Apply 2299 resolution throughout library
+  - [ ] [LWG2365](https://wg21.link/LWG2365): Missing `noexcept` in `shared_ptr::shared_ptr(nullptr_t)`
+  - [ ] [LWG2376](https://wg21.link/LWG2376): `bad_weak_ptr::what()` overspecified
+  - [ ] [LWG2387](https://wg21.link/LWG2387): More nested types that must be accessible and unambiguous
+  - [ ] [LWG2059](https://wg21.link/LWG2059): C++0x ambiguity problem with `map::erase`
+  - [ ] [LWG2063](https://wg21.link/LWG2063): Contradictory requirements for string move assignment
+  - [ ] [LWG2076](https://wg21.link/LWG2076): Bad `CopyConstructible` requirement in set constructors
+  - [ ] [LWG2160](https://wg21.link/LWG2160): Unintended destruction ordering-specification of resize
+  - [ ] [LWG2168](https://wg21.link/LWG2168): Inconsistent specification of `uniform_real_distribution` constructor
+  - [ ] [LWG2239](https://wg21.link/LWG2239): `min`/`max`/`minmax` requirements
+  - [ ] [LWG2364](https://wg21.link/LWG2364): `deque` and `vector` `pop_back` don't specify iterator invalidation requirements
+  - [ ] [LWG2369](https://wg21.link/LWG2369): `constexpr max(initializer_list)` vs `max_element`
+  - [ ] [LWG2378](https://wg21.link/LWG2378): Behaviour of standard exception types
+  - [ ] [LWG2403](https://wg21.link/LWG2403): `stof()` should call `strtof()` and `wcstof()`
+  - [ ] [LWG2406](https://wg21.link/LWG2406): `negative_binomial_distribution` should reject `p == 1`
+  - [ ] [LWG2407](https://wg21.link/LWG2407): `packaged_task(allocator_arg_t, const Allocator&, F&&)` should neither be constrained nor `explicit`
+  - [ ] [LWG2411](https://wg21.link/LWG2411): `shared_ptr` is only contextually convertible to `bool`
+  - [ ] [LWG2415](https://wg21.link/LWG2415): Inconsistency between `unique_ptr` and `shared_ptr`
+  - [ ] [LWG2420](https://wg21.link/LWG2420): `function<void(ArgTypes...)>` does not discard the return value of the target object
+  - [ ] [LWG2425](https://wg21.link/LWG2425): `operator delete(void*, size_t)` doesn't invalidate pointers sufficiently
+  - [ ] [LWG2427](https://wg21.link/LWG2427): Container adaptors as sequence containers, redux
+  - [ ] [LWG2428](https://wg21.link/LWG2428): "External declaration" used without being defined
+  - [ ] [LWG2433](https://wg21.link/LWG2433): `uninitialized_copy()`/etc. should tolerate overloaded `operator&`
+  - [ ] [LWG2434](https://wg21.link/LWG2434): `shared_ptr::use_count()` is efficient
+  - [ ] [LWG2437](https://wg21.link/LWG2437): `iterator_traits::reference` can and can't be `void`
+  - [ ] [LWG2438](https://wg21.link/LWG2438): `std::iterator` inheritance shouldn't be mandated
+  - [ ] [LWG2439](https://wg21.link/LWG2439): `unique_copy()` sometimes can't fall back to reading its output
+  - [ ] [LWG2440](https://wg21.link/LWG2440): `seed_seq::size()` should be `noexcept`
+  - [ ] [LWG2442](https://wg21.link/LWG2442): `call_once()` shouldn't `DECAY_COPY()`
+  - [ ] [LWG2448](https://wg21.link/LWG2448): Non-normative Container destructor specification
+  - [ ] [LWG2454](https://wg21.link/LWG2454): Add `raw_storage_iterator::base()` member
+  - [ ] [LWG2455](https://wg21.link/LWG2455): Allocator default construction should be allowed to throw
+  - [ ] [LWG2458](https://wg21.link/LWG2458): N3778 and new library deallocation signatures
+  - [ ] [LWG2459](https://wg21.link/LWG2459): `std::polar` should require a non-negative rho
+  - [ ] [LWG2464](https://wg21.link/LWG2464): `try_emplace` and `insert_or_assign` misspecified
+  - [ ] [LWG2467](https://wg21.link/LWG2467): `is_always_equal` has slightly inconsistent default
+  - [ ] [LWG2470](https://wg21.link/LWG2470): Allocator's destroy function should be allowed to fail to instantiate
+  - [ ] [LWG2482](https://wg21.link/LWG2482): [c.strings] Table 73 mentions nonexistent functions
+  - [ ] [LWG2488](https://wg21.link/LWG2488): Placeholders should be allowed and encouraged to be `constexpr`
+  - [ ] [LWG1169](https://wg21.link/LWG1169): `num_get` not fully compatible with ` strto*`
+  - [ ] [LWG2072](https://wg21.link/LWG2072): Unclear wording about capacity of temporary buffers
+  - [ ] [LWG2101](https://wg21.link/LWG2101): Some transformation types can produce impossible types
+  - [ ] [LWG2111](https://wg21.link/LWG2111): Which `unexpected`/`terminate` handler is called from the exception handling runtime?
+  - [ ] [LWG2119](https://wg21.link/LWG2119): Missing `hash` specializations for extended integer types
+  - [ ] [LWG2127](https://wg21.link/LWG2127): Move-construction with `raw_storage_iterator`
+  - [ ] [LWG2133](https://wg21.link/LWG2133): Attitude to overloaded comma for iterators
+  - [ ] [LWG2156](https://wg21.link/LWG2156): Unordered containers' `reserve(n)` reserves for `n-1` elements
+  - [ ] [LWG2218](https://wg21.link/LWG2218): Unclear how containers use `allocator_traits::construct()`
+  - [X] [LWG2219](https://wg21.link/LWG2219): `INVOKE`-ing a pointer to member with a `reference_wrapper` as the object expression
+  - [ ] [LWG2224](https://wg21.link/LWG2224): Ambiguous status of access to non-live objects
+  - [ ] [LWG2234](https://wg21.link/LWG2234): `assert()` should allow usage in constant expressions
+  - [ ] [LWG2244](https://wg21.link/LWG2244): Issue on `basic_istream::seekg`
+  - [ ] [LWG2250](https://wg21.link/LWG2250): Follow-up On Library Issue 2207
+  - [ ] [LWG2259](https://wg21.link/LWG2259): Issues in 17.6.5.5 rules for member functions
+  - [ ] [LWG2273](https://wg21.link/LWG2273): `regex_match` ambiguity
+  - [ ] [LWG2336](https://wg21.link/LWG2336): `is_trivially_constructible`/`is_trivially_assignable` traits are always false
+  - [ ] [LWG2353](https://wg21.link/LWG2353): `std::next` is over-constrained
+  - [ ] [LWG2367](https://wg21.link/LWG2367): `pair` and `tuple` are not correctly implemented for `is_constructible` with no args
+  - [ ] [LWG2380](https://wg21.link/LWG2380): May `<cstdlib>` provide `long ::abs(long)` and `long long ::abs(long long)`?
+  - [ ] [LWG2384](https://wg21.link/LWG2384): Allocator's deallocate function needs better specification
+  - [ ] [LWG2385](https://wg21.link/LWG2385): `function::assign` allocator argument doesn't make sense
+  - [ ] [LWG2435](https://wg21.link/LWG2435): `reference_wrapper::operator()`'s _Remark_ should be deleted
+  - [ ] [LWG2447](https://wg21.link/LWG2447): Allocators and `volatile`-qualified value types
+  - [ ] [LWG2462](https://wg21.link/LWG2462): `std::ios_base::failure` is overspecified
+  - [ ] [LWG2466](https://wg21.link/LWG2466): `allocator_traits::max_size()` default behavior is incorrect
+  - [ ] [LWG2469](https://wg21.link/LWG2469): Wrong specification of _Requires_ clause of `operator[]` for `map` and `unordered_map`
+  - [ ] [LWG2473](https://wg21.link/LWG2473): `basic_filebuf`'s relation to C `FILE` semantics
+  - [ ] [LWG2476](https://wg21.link/LWG2476): `scoped_allocator_adaptor` is not assignable
+  - [ ] [LWG2477](https://wg21.link/LWG2477): Inconsistency of wordings in `std::vector::erase()` and `std::deque::erase()`
+  - [ ] [LWG2483](https://wg21.link/LWG2483): `throw_with_nested()` should use `is_final`
+  - [ ] [LWG2484](https://wg21.link/LWG2484): `rethrow_if_nested()` is doubly unimplementable
+  - [ ] [LWG2485](https://wg21.link/LWG2485): `get()` should be overloaded for `const tuple&&`
+  - [X] [LWG2486](https://wg21.link/LWG2486): `mem_fn()` should be required to use perfect forwarding
+  - [ ] [LWG2487](https://wg21.link/LWG2487): `bind()` should be `const`-overloaded, not _cv_-overloaded
+  - [X] [LWG2489](https://wg21.link/LWG2489): `mem_fn()` should be `noexcept`
+  - [ ] [LWG2492](https://wg21.link/LWG2492): Clarify requirements for `comp`
+  - [ ] [LWG2495](https://wg21.link/LWG2495): There is no such thing as an Exception Safety element
+  - [ ] [LWG2192](https://wg21.link/LWG2192): Validity and return type of `std::abs(0u)` is unclear
+  - [ ] [LWG2276](https://wg21.link/LWG2276): Missing requirement on `std::promise::set_exception`
+  - [ ] [LWG2296](https://wg21.link/LWG2296): `std::addressof` should be `constexpr`
+  - [ ] [LWG2450](https://wg21.link/LWG2450): `(greater|less|greater_equal|less_equal)<void>` do not yield a total order for pointers
+  - [ ] [LWG2520](https://wg21.link/LWG2520): N4089 broke initializing `unique_ptr<T[]>` from a `nullptr`
+  - [ ] [LWG2523](https://wg21.link/LWG2523): `std::promise` synopsis shows two `set_value_at_thread_exit()`'s for no apparent reason
+  - [ ] [LWG2537](https://wg21.link/LWG2537): Constructors for `priority_queue` taking allocators should call `make_heap`
+  - [ ] [LWG2545](https://wg21.link/LWG2545): Simplify wording for `bind` without explicitly specified return type
+  - [X] [LWG2557](https://wg21.link/LWG2557): Logical operator traits are broken in the zero-argument case
+  - [ ] [LWG2559](https://wg21.link/LWG2559): Error in LWG 2234's resolution
+  - [ ] [LWG2560](https://wg21.link/LWG2560): `is_constructible` underspecified when applied to a function type
+  - [ ] [LWG2565](https://wg21.link/LWG2565): `std::function`'s move constructor should guarantee nothrow for `reference_wrapper`s and function pointers
+  - [ ] [LWG2566](https://wg21.link/LWG2566): Requirements on the first template parameter of container adaptors
+  - [ ] [LWG2571](https://wg21.link/LWG2571): `[map.modifiers]/2` imposes nonsensical requirement on `insert(InputIterator, InputIterator)`
+  - [ ] [LWG2572](https://wg21.link/LWG2572): The remarks for `shared_ptr::operator*` should apply to _cv_-qualified void as well
+  - [ ] [LWG2576](https://wg21.link/LWG2576): `istream_iterator` and `ostream_iterator` should use `std::addressof`
+  - [ ] [LWG2577](https://wg21.link/LWG2577): `{shared,unique}_lock` should use `std::addressof`
+  - [ ] [LWG2579](https://wg21.link/LWG2579): Inconsistency wrt Allocators in `basic_string` assignment vs. `basic_string::assign`
+  - [ ] [LWG2581](https://wg21.link/LWG2581): Specialization of `<type_traits>` variable templates should be prohibited
+  - [ ] [LWG2582](https://wg21.link/LWG2582): `[res.on.functions]/2`'s prohibition against incomplete types shouldn't apply to type traits
+  - [ ] [LWG2583](https://wg21.link/LWG2583): There is no way to supply an allocator for `basic_string(str, pos)`
+  - [ ] [LWG2585](https://wg21.link/LWG2585): `forward_list::resize(size_type, const value_type&)` effects incorrect
+  - [ ] [LWG2586](https://wg21.link/LWG2586): Wrong value category used in `scoped_allocator_adaptor::construct()`
+  - [ ] [LWG2590](https://wg21.link/LWG2590): Aggregate initialization for `std::array`
+  - [ ] [LWG2181](https://wg21.link/LWG2181): Exceptions from seed sequence operations
+  - [ ] [LWG2309](https://wg21.link/LWG2309): `mutex::lock()` should not throw `device_or_resource_busy`
+  - [ ] [LWG2310](https://wg21.link/LWG2310): Public exposition only member in `std::array`
+  - [ ] [LWG2312](https://wg21.link/LWG2312): `tuple`'s constructor constraints need to be phrased more precisely
+  - [ ] [LWG2328](https://wg21.link/LWG2328): Rvalue stream extraction should use perfect forwarding
+  - [ ] [LWG2393](https://wg21.link/LWG2393): `std::function`'s `Callable` definition is broken
+  - [ ] [LWG2422](https://wg21.link/LWG2422): `std::numeric_limits<T>::is_modulo description`: "most machines" errata
+  - [ ] [LWG2426](https://wg21.link/LWG2426): Issue about `compare_exchange`
+  - [ ] [LWG2436](https://wg21.link/LWG2436): Comparators for associative containers should always be `CopyConstructible`
+  - [ ] [LWG2441](https://wg21.link/LWG2441): Exact-width `atomic` typedefs should be provided
+  - [ ] [LWG2451](https://wg21.link/LWG2451): [fund.ts.v2] `optional<T>` should `forward` `T`'s implicit conversions
+  - [ ] [LWG2542](https://wg21.link/LWG2542): Missing `const` requirements for associative containers
+  - [ ] [LWG2549](https://wg21.link/LWG2549): Tuple _EXPLICIT_ constructor templates that take `tuple` parameters end up taking references to temporaries and will create dangling references
+  - [ ] [LWG2550](https://wg21.link/LWG2550): Wording of unordered container's `clear()` method complexity
+  - [ ] [LWG2596](https://wg21.link/LWG2596): `vector::data()` should use `addressof`
+  - [ ] [LWG2667](https://wg21.link/LWG2667): `path::root_directory()` description is confusing
+  - [ ] [LWG2669](https://wg21.link/LWG2669): `recursive_directory_iterator` effects refers to non-existent functions
+  - [ ] [LWG2670](https://wg21.link/LWG2670): `system_complete` refers to undefined variable 'base'
+  - [ ] [LWG2671](https://wg21.link/LWG2671): Errors in Copy
+  - [ ] [LWG2673](https://wg21.link/LWG2673): `status()` effects cannot be implemented as specified
+  - [ ] [LWG2674](https://wg21.link/LWG2674): Bidirectional iterator requirement on `path::iterator` is very expensive
+  - [ ] [LWG2683](https://wg21.link/LWG2683): `filesystem::copy()` says "no effects"
+  - [ ] [LWG2684](https://wg21.link/LWG2684): `priority_queue` lacking comparator typedef
+  - [ ] [LWG2685](https://wg21.link/LWG2685): `shared_ptr` deleters must not throw on move construction
+  - [ ] [LWG2687](https://wg21.link/LWG2687): `{inclusive,exclusive}_scan` misspecified
+  - [ ] [LWG2688](https://wg21.link/LWG2688): `clamp` misses preconditions and has extraneous condition on result
+  - [ ] [LWG2689](https://wg21.link/LWG2689): Parallel versions of `std::copy` and `std::move` shouldn't be in order
+  - [ ] [LWG2698](https://wg21.link/LWG2698): Effect of `assign()` on iterators/pointers/references
+  - [ ] [LWG2704](https://wg21.link/LWG2704): `recursive_directory_iterator`'s members should require '`*this` is dereferenceable'
+  - [ ] [LWG2706](https://wg21.link/LWG2706): Error reporting for `recursive_directory_iterator::pop()` is under-specified
+  - [ ] [LWG2707](https://wg21.link/LWG2707): `path` construction and assignment should have `string_type&&` overloads
+  - [ ] [LWG2709](https://wg21.link/LWG2709): `offsetof` is unnecessarily imprecise
+  - [ ] [LWG2710](https://wg21.link/LWG2710): "_Effects:_ Equivalent to ..." doesn't count "_Synchronization:_" as determined semantics
+  - [ ] [LWG2711](https://wg21.link/LWG2711): `path` is convertible from approximately everything under the sun
+  - [ ] [LWG2716](https://wg21.link/LWG2716): Specification of `shuffle` and `sample` disallows lvalue URNGs
+  - [ ] [LWG2718](https://wg21.link/LWG2718): Parallelism bug in [algorithms.parallel.exec] p2
+  - [ ] [LWG2719](https://wg21.link/LWG2719): `permissions` function should not be `noexcept` due to narrow contract
+  - [ ] [LWG2720](https://wg21.link/LWG2720): `permissions` function incorrectly specified for symlinks
+  - [ ] [LWG2721](https://wg21.link/LWG2721): `remove_all` has incorrect post conditions
+  - [ ] [LWG2723](https://wg21.link/LWG2723): Do `directory_iterator` and `recursive_directory_iterator` become the end iterator upon error?
+  - [ ] [LWG2724](https://wg21.link/LWG2724): The protected virtual member functions of `memory_resource` should be private
+  - [ ] [LWG2725](https://wg21.link/LWG2725): `filesystem::exists(const path&, error_code&)` error reporting
+  - [ ] [LWG2726](https://wg21.link/LWG2726): `[recursive_]directory_iterator::increment(error_code&)` is underspecified
+  - [ ] [LWG2727](https://wg21.link/LWG2727): Parallel algorithms with `constexpr` specifier
+  - [ ] [LWG2728](https://wg21.link/LWG2728): `status(p).permissions()` and `symlink_status(p).permissions()` are not specified
+  - [ ] [LWG2062](https://wg21.link/LWG2062): Effect contradictions w/o no-throw guarantee of `std::function` swaps
+  - [ ] [LWG2166](https://wg21.link/LWG2166): Heap property underspecified?
+  - [ ] [LWG2221](https://wg21.link/LWG2221): No formatted output operator for `nullptr`
+  - [ ] [LWG2223](https://wg21.link/LWG2223): `shrink_to_fit` effect on iterator validity
+  - [ ] [LWG2261](https://wg21.link/LWG2261): Are containers required to use their 'pointer' type internally?
+  - [ ] [LWG2394](https://wg21.link/LWG2394): `locale::name` specification unclear - what is implementation-defined?
+  - [ ] [LWG2460](https://wg21.link/LWG2460): LWG issue 2408 and value categories
+  - [ ] [LWG2468](https://wg21.link/LWG2468): Self-move-assignment of library types
+  - [ ] [LWG2475](https://wg21.link/LWG2475): Allow overwriting of `std::basic_string` terminator with `charT()` to allow cleaner interoperation with legacy APIs
+  - [ ] [LWG2503](https://wg21.link/LWG2503): multiline option should be added to `syntax_option_type`
+  - [ ] [LWG2510](https://wg21.link/LWG2510): Tag types should not be `DefaultConstructible`
+  - [ ] [LWG2514](https://wg21.link/LWG2514): Type traits must not be `final`
+  - [ ] [LWG2519](https://wg21.link/LWG2519): Iterator `operator-=` has gratuitous undefined behaviour
+  - [ ] [LWG2531](https://wg21.link/LWG2531): `future::get` should explicitly state that the shared state is released
+  - [ ] [LWG2534](https://wg21.link/LWG2534): Constrain rvalue stream operators
+  - [ ] [LWG2536](https://wg21.link/LWG2536): What should `<complex.h>` do?
+  - [ ] [LWG2540](https://wg21.link/LWG2540): `unordered_multimap::insert` hint iterator
+  - [ ] [LWG2543](https://wg21.link/LWG2543): LWG 2148 (hash support for enum types) seems under-specified
+  - [ ] [LWG2544](https://wg21.link/LWG2544): `istreambuf_iterator(basic_streambuf* s)` effects unclear when `s` is `0`
+  - [ ] [LWG2556](https://wg21.link/LWG2556): Wide contract for `future::share()`
+  - [ ] [LWG2562](https://wg21.link/LWG2562): Consistent total ordering of pointers by comparison functors
+  - [X] [LWG2567](https://wg21.link/LWG2567): Specification of logical operator traits uses `BaseCharacteristic`, which is defined only for `UnaryTypeTraits` and `BinaryTypeTraits`
+  - [X] [LWG2569](https://wg21.link/LWG2569): `conjunction` and `disjunction` requirements are too strict
+  - [ ] [LWG2578](https://wg21.link/LWG2578): Iterator requirements should reference iterator traits
+  - [ ] [LWG2584](https://wg21.link/LWG2584): `<regex>` ECMAScript `IdentityEscape` is ambiguous
+  - [X] [LWG2587](https://wg21.link/LWG2587): "Convertible to `bool`" requirement in `conjunction` and `disjunction`
+  - [ ] [LWG2589](https://wg21.link/LWG2589): `match_results` can't satisfy the requirements of a container
+  - [ ] [LWG2591](https://wg21.link/LWG2591): `std::function`'s member template `target()` should not lead to undefined behaviour
+  - [ ] [LWG2598](https://wg21.link/LWG2598): `addressof` works on temporaries
+  - [ ] [LWG2664](https://wg21.link/LWG2664): `operator/` (and other append) semantics not useful if argument has root
+  - [ ] [LWG2665](https://wg21.link/LWG2665): `remove_filename()` post condition is incorrect
+  - [ ] [LWG2672](https://wg21.link/LWG2672): Should `is_empty` use `error_code` in its specification?
+  - [ ] [LWG2678](https://wg21.link/LWG2678): `std::filesystem` enum classes overspecified
+  - [ ] [LWG2679](https://wg21.link/LWG2679): Inconsistent Use of _Effects_ and _Equivalent To_
+  - [ ] [LWG2680](https://wg21.link/LWG2680): Add "Equivalent to" to filesystem
+  - [ ] [LWG2681](https://wg21.link/LWG2681): `filesystem::copy()` cannot copy symlinks
+  - [ ] [LWG2682](https://wg21.link/LWG2682): `filesystem::copy()` won't create a symlink to a directory
+  - [ ] [LWG2686](https://wg21.link/LWG2686): Why is `std::hash` specialized for `error_code`, but not `error_condition`?
+  - [ ] [LWG2694](https://wg21.link/LWG2694): Application of LWG 436 accidentally deleted definition of "facet"
+  - [ ] [LWG2696](https://wg21.link/LWG2696): Interaction between `make_shared` and `enable_shared_from_this` is underspecified
+  - [ ] [LWG2699](https://wg21.link/LWG2699): Missing restriction in [numeric.requirements]
+  - [ ] [LWG2712](https://wg21.link/LWG2712): `copy_file(from, to, ...)` has a number of unspecified error conditions
+  - [ ] [LWG2722](https://wg21.link/LWG2722): `equivalent` incorrectly specifies throws clause
+  - [ ] [LWG2729](https://wg21.link/LWG2729): Missing SFINAE on `std::pair::operator=`
+  - [ ] [LWG2732](https://wg21.link/LWG2732): Questionable specification of `path::operator/=` and `path::append`
+  - [ ] [LWG2735](https://wg21.link/LWG2735): `std::abs(short)`, `std::abs(signed char)` and others should return int instead of `double` in order to be compatible with C++98 and C
+  - [ ] [LWG2736](https://wg21.link/LWG2736): `nullopt_t` insufficiently constrained
+  - [ ] [LWG2738](https://wg21.link/LWG2738): `is_constructible` with `void` types
+  - [ ] [LWG2739](https://wg21.link/LWG2739): Issue with `time_point` non-member subtraction with an unsigned duration
+  - [ ] [LWG2740](https://wg21.link/LWG2740): `constexpr optional::operator->`
+  - [ ] [LWG2742](https://wg21.link/LWG2742): Inconsistent string interface taking `string_view`
+  - [ ] [LWG2744](https://wg21.link/LWG2744): `any`'s `in_place` constructors
+  - [ ] [LWG2747](https://wg21.link/LWG2747): Possibly redundant `std::move` in [alg.foreach]
+  - [ ] [LWG2748](https://wg21.link/LWG2748): `swappable` traits for optionals
+  - [ ] [LWG2749](https://wg21.link/LWG2749): `swappable` traits for variants
+  - [ ] [LWG2752](https://wg21.link/LWG2752): "Throws:" clauses of `async` and `packaged_task` are unimplementable
+  - [ ] [LWG2755](https://wg21.link/LWG2755): [string.view.io] uses non-existent `basic_string_view::to_string` function
+  - [ ] [LWG2756](https://wg21.link/LWG2756): C++ WP optional should `forward` `T`'s implicit conversions
+  - [ ] [LWG2758](https://wg21.link/LWG2758): `std::string{}.assign("ABCDE", 0, 1)` is ambiguous
+  - [ ] [LWG2759](https://wg21.link/LWG2759): `gcd` / `lcm` and `bool` for the WP
+  - [ ] [LWG2760](https://wg21.link/LWG2760): non-`const` `basic_string::data` should not invalidate iterators
+  - [ ] [LWG2765](https://wg21.link/LWG2765): Did LWG 1123 go too far?
+  - [X] [LWG2767](https://wg21.link/LWG2767): `not_fn` `call_wrapper` can form invalid types
+  - [ ] [LWG2769](https://wg21.link/LWG2769): Redundant const in the return type of `any_cast(const any&)`
+  - [ ] [LWG2771](https://wg21.link/LWG2771): Broken _Effects_ of some `basic_string::compare` functions in terms of `basic_string_view`
+  - [ ] [LWG2773](https://wg21.link/LWG2773): Making `std::ignore` constexpr
+  - [ ] [LWG2777](https://wg21.link/LWG2777): `basic_string_view::copy` should use `char_traits::copy`
+  - [ ] [LWG2778](https://wg21.link/LWG2778): `basic_string_view` is missing `constexpr`
+  - [ ] [LWG2260](https://wg21.link/LWG2260): Missing requirement for `Allocator::pointer`
+  - [ ] [LWG2676](https://wg21.link/LWG2676): Provide `filesystem::path` overloads for File-based streams
+  - [ ] [LWG2768](https://wg21.link/LWG2768): `any_cast` and move semantics
+  - [ ] [LWG2769](https://wg21.link/LWG2769): Redundant `const` in the return type of `any_cast(const any&)`
+  - [ ] [LWG2781](https://wg21.link/LWG2781): Contradictory requirements for `std::function` and `std::reference_wrapper`
+  - [ ] [LWG2782](https://wg21.link/LWG2782): `scoped_allocator_adaptor` constructors must be constrained
+  - [ ] [LWG2784](https://wg21.link/LWG2784): Resolution to LWG 2484 is missing "otherwise, no effects" and is hard to parse
+  - [ ] [LWG2785](https://wg21.link/LWG2785): `quoted` should work with `basic_string_view`
+  - [ ] [LWG2786](https://wg21.link/LWG2786): Annex C should mention `shared_ptr` changes for array support
+  - [ ] [LWG2787](https://wg21.link/LWG2787): `[file_status.cons]` doesn't match class definition
+  - [ ] [LWG2788](https://wg21.link/LWG2788): `basic_string` range mutators unintentionally require a default constructible allocator
+  - [ ] [LWG2789](https://wg21.link/LWG2789): Equivalence of contained objects
+  - [ ] [LWG2790](https://wg21.link/LWG2790): Missing specification of `istreambuf_iterator::operator->`
+  - [ ] [LWG2794](https://wg21.link/LWG2794): Missing requirements for allocator pointers
+  - [ ] [LWG2795](https://wg21.link/LWG2795): `[global.functions]` provides incorrect example of ADL use
+  - [ ] [LWG2796](https://wg21.link/LWG2796): `tuple` should be a literal type
+  - [ ] [LWG2801](https://wg21.link/LWG2801): Default-constructibility of `unique_ptr`
+  - [ ] [LWG2802](https://wg21.link/LWG2802): `shared_ptr` constructor requirements for a deleter
+  - [ ] [LWG2804](https://wg21.link/LWG2804): Unconditional `constexpr` default constructor for `istream_iterator`
+  - [ ] [LWG2806](https://wg21.link/LWG2806): Base class of `bad_optional_access`
+  - [X] [LWG2807](https://wg21.link/LWG2807): `std::invoke` should use `std::is_nothrow_callable`
+  - [ ] [LWG2812](https://wg21.link/LWG2812): Range access is available with `<string_view>`
+  - [ ] [LWG2824](https://wg21.link/LWG2824): `list::sort` should say that the order of elements is unspecified if an exception is thrown
+  - [ ] [LWG2826](https://wg21.link/LWG2826): `string_view` iterators use old wording
+  - [ ] [LWG2834](https://wg21.link/LWG2834): Resolution LWG 2223 is missing wording about end iterators
+  - [ ] [LWG2835](https://wg21.link/LWG2835): LWG 2536 seems to misspecify `<tgmath.h>`
+  - [ ] [LWG2837](https://wg21.link/LWG2837): `gcd` and `lcm` should support a wider range of input values
+  - [ ] [LWG2838](https://wg21.link/LWG2838): `is_literal_type` specification needs a little cleanup
+  - [ ] [LWG2842](https://wg21.link/LWG2842): `in_place_t` check for `optional::optional(U&&)` should decay `U`
+  - [ ] [LWG2850](https://wg21.link/LWG2850): `std::function` move constructor does unnecessary work
+  - [ ] [LWG2853](https://wg21.link/LWG2853): Possible inconsistency in specification of erase in `[vector.modifiers]`
+  - [ ] [LWG2855](https://wg21.link/LWG2855): `std::throw_with_nested("string_literal")`
+  - [ ] [LWG2857](https://wg21.link/LWG2857): `{variant,optional,any}::emplace` should return the constructed value
+  - [ ] [LWG2861](https://wg21.link/LWG2861): `basic_string` should require that `charT` match `traits::char_type`
+  - [ ] [LWG2866](https://wg21.link/LWG2866): Incorrect derived classes constraints
+  - [ ] [LWG2868](https://wg21.link/LWG2868): Missing specification of `bad_any_cast::what()`
+  - [ ] [LWG2872](https://wg21.link/LWG2872): Add definition for direct-non-list-initialization
+  - [ ] [LWG2873](https://wg21.link/LWG2873): Add `noexcept` to several `shared_ptr` related functions
+  - [ ] [LWG2874](https://wg21.link/LWG2874): Constructor `shared_ptr::shared_ptr(Y*)` should be constrained
+  - [ ] [LWG2875](https://wg21.link/LWG2875): `shared_ptr::shared_ptr(Y*, D, [...])` constructors should be constrained
+  - [ ] [LWG2876](https://wg21.link/LWG2876): `shared_ptr::shared_ptr(const weak_ptr<Y>&)` constructor should be constrained
+  - [ ] [LWG2878](https://wg21.link/LWG2878): Missing `DefaultConstructible` requirement for `istream_iterator` default constructor
+  - [ ] [LWG2890](https://wg21.link/LWG2890): The definition of 'object state' applies only to class types
+  - [ ] [LWG2900](https://wg21.link/LWG2900): The copy and move constructors of optional are not `constexpr`
+  - [ ] [LWG2903](https://wg21.link/LWG2903): The form of initialization for the emplace-constructors is not specified
+  - [ ] [LWG2904](https://wg21.link/LWG2904): Make variant move-assignment more exception safe
+  - [ ] [LWG2905](https://wg21.link/LWG2905): `is_constructible_v<unique_ptr<P, D>, P, D const &>` should be false when `D` is not copy constructible
+  - [ ] [LWG2908](https://wg21.link/LWG2908): The less-than operator for shared pointers could do more
+  - [X] [LWG2911](https://wg21.link/LWG2911): An `is_aggregate` type trait is needed
+  - [ ] [LWG2921](https://wg21.link/LWG2921): `packaged_task` and type-erased allocators
+  - [ ] [LWG2934](https://wg21.link/LWG2934): `optional<const T>` doesn't compare with `T`
+  - [ ] [LWG2901](https://wg21.link/LWG2901): Variants cannot properly support allocators
+  - [ ] [LWG2955](https://wg21.link/LWG2955): `to_chars` / `from_chars` depend on `std::string` (P0682R1)
+  - [ ] [LWG2956](https://wg21.link/LWG2956): `filesystem::canonical()` still defined in terms of `absolute(p, base)`
+
+#### C++2a
+
+##### Papers
+
+- [X] [P0463](https://wg21.link/P0463): `endian`, just `endian`
+- [ ] [P0674](https://wg21.link/P0674): Extending `make_shared` to Support Arrays
+- [ ] [P0020](https://wg21.link/P0020): Floating Point Atomic
+- [ ] [P0053](https://wg21.link/P0053): C++ Synchronized Buffered Ostream
+- [ ] [P0202](https://wg21.link/P0202): Add constexpr modifiers to functions in `<algorithm>` and `<utility>` Headers
+- [ ] [P0415](https://wg21.link/P0415): Constexpr for `std::complex`
+- [ ] [P0439](https://wg21.link/P0439): Make `std::memory_order` a scoped enumeration
+- [ ] [P0457](https://wg21.link/P0457): String Prefix and Suffix Checking
+- [X] [P0550](https://wg21.link/P0550): Transformation Trait `remove_cvref`
+- [ ] [P0600](https://wg21.link/P0600): `nodiscard` in the Library
+- [ ] [P0616](https://wg21.link/P0616): de-pessimize legacy algorithms with `std::move`
+- [ ] [P0653](https://wg21.link/P0653): Utility to convert a pointer to a raw pointer
+- [ ] [P0718](https://wg21.link/P0718): Atomic `shared_ptr`
+- [ ] [P0767](https://wg21.link/P0767): Deprecate POD
+- [ ] [P0768](https://wg21.link/P0768): Library Support for the Spaceship (Comparison) Operator
+- [ ] [P0777](https://wg21.link/P0777): Treating Unnecessary `decay`
+
+##### Issues
+
+- [ ] [LWG2070](https://wg21.link/LWG2070): `allocate_shared` should use `allocator_traits<A>::construct` (P0674R1)
+- [ ] [LWG2444](https://wg21.link/LWG2444): Inconsistent complexity for `std::sort_heap`
+- [ ] [LWG2593](https://wg21.link/LWG2593): Moved-from state of Allocators
+- [ ] [LWG2597](https://wg21.link/LWG2597): `std::log` misspecified for complex numbers
+- [ ] [LWG2783](https://wg21.link/LWG2783): `stack::emplace()` and `queue::emplace()` should return `decltype(auto)`
+- [ ] [LWG2932](https://wg21.link/LWG2932): Constraints on parallel algorithm implementations are underspecified
+- [ ] [LWG2937](https://wg21.link/LWG2937): Is `equivalent("existing_thing", "not_existing_thing")` an error
+- [ ] [LWG2940](https://wg21.link/LWG2940): `result_of` specification also needs a little cleanup
+- [ ] [LWG2942](https://wg21.link/LWG2942): LWG 2873's resolution missed `weak_ptr::owner_before`
+- [ ] [LWG2954](https://wg21.link/LWG2954): Specialization of the convenience variable templates should be prohibited
+- [ ] [LWG2961](https://wg21.link/LWG2961): Bad postcondition for `set_default_resource`
+- [ ] [LWG2966](https://wg21.link/LWG2966): Incomplete resolution of US 74
+- [ ] [LWG2974](https://wg21.link/LWG2974): Diagnose out of bounds `tuple_element`/`variant_alternative`
+- [ ] [LWG2870](https://wg21.link/LWG2870): Default value of parameter theta of polar should be dependent
+- [ ] [LWG2935](https://wg21.link/LWG2935): What should `create_directories` do when p already exists but is not a directory?
+- [ ] [LWG2941](https://wg21.link/LWG2941): [thread.req.timing] wording should apply to both member and namespace-level functions
+- [ ] [LWG2944](https://wg21.link/LWG2944): LWG 2905 accidentally removed requirement that construction of the deleter doesn't throw an exception
+- [ ] [LWG2945](https://wg21.link/LWG2945): Order of template parameters in `optional` comparisons
+- [ ] [LWG2948](https://wg21.link/LWG2948): `unique_ptr` does not define `operator<<` for stream output
+- [ ] [LWG2950](https://wg21.link/LWG2950): `std::byte` operations are misspecified
+- [ ] [LWG2952](https://wg21.link/LWG2952): `iterator_traits` should work for pointers to _cv_ `T`
+- [ ] [LWG2953](https://wg21.link/LWG2953): LWG 2853 should apply to `deque::erase` too
+- [ ] [LWG2958](https://wg21.link/LWG2958): Moves improperly defined as deleted
+- [ ] [LWG2964](https://wg21.link/LWG2964): Apparently redundant requirement for `dynamic_pointer_cast`
+- [ ] [LWG2965](https://wg21.link/LWG2965): Non-existing `path::native_string()` in `filesystem_error::what()` specification
+- [ ] [LWG2972](https://wg21.link/LWG2972): What is `is_trivially_destructible_v`?
+- [ ] [LWG2976](https://wg21.link/LWG2976): Dangling `uses_allocator` specialization for `packaged_task`
+- [ ] [LWG2977](https://wg21.link/LWG2977): `unordered_meow::merge()` has incorrect _Throws:_ clause
+- [ ] [LWG2978](https://wg21.link/LWG2978): Hash support for `pmr::string` and friends
+- [ ] [LWG2979](https://wg21.link/LWG2979): `aligned_union` should require  object types
+- [ ] [LWG2980](https://wg21.link/LWG2980): Cannot `compare_exchange` empty pointers
+- [ ] [LWG2981](https://wg21.link/LWG2981): Remove redundant deduction guides from standard library
+- [ ] [LWG2982](https://wg21.link/LWG2982): Making `size_type` consistent in associative container deduction guides
+- [ ] [LWG2988](https://wg21.link/LWG2988): Clause 32 cleanup missed one `typename`
+- [ ] [LWG2993](https://wg21.link/LWG2993): `reference_wrapper` conversion from `T&&`
+- [ ] [LWG2998](https://wg21.link/LWG2998): Requirements on function objects passed to `{forward_,}list`-specific algorithms
+- [ ] [LWG3001](https://wg21.link/LWG3001): `weak_ptr::element_type` needs `remove_extent_t`
+- [ ] [LWG3024](https://wg21.link/LWG3024): `variant`'s copies must be deleted instead of disabled via SFINAE
