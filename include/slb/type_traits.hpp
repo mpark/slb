@@ -475,12 +475,9 @@ using std::is_array;
 using std::is_pointer;
 using std::is_lvalue_reference;
 using std::is_rvalue_reference;
-using std::is_member_object_pointer;
-using std::is_member_function_pointer;
 using std::is_enum;
 using std::is_union;
 using std::is_class;
-using std::is_function;
 #else
 template <typename T>
 struct is_void : slb::bool_constant<std::is_void<T>::value> {};
@@ -507,14 +504,6 @@ struct is_rvalue_reference
     : slb::bool_constant<std::is_rvalue_reference<T>::value> {};
 
 template <typename T>
-struct is_member_object_pointer
-    : slb::bool_constant<std::is_member_object_pointer<T>::value> {};
-
-template <typename T>
-struct is_member_function_pointer
-    : slb::bool_constant<std::is_member_function_pointer<T>::value> {};
-
-template <typename T>
 struct is_enum : slb::bool_constant<std::is_enum<T>::value> {};
 
 template <typename T>
@@ -522,9 +511,6 @@ struct is_union : slb::bool_constant<std::is_union<T>::value> {};
 
 template <typename T>
 struct is_class : slb::bool_constant<std::is_class<T>::value> {};
-
-template <typename T>
-struct is_function : slb::bool_constant<std::is_function<T>::value> {};
 #endif
 
 #if SLB_INTEGRAL_CONSTANT == 2 && __cpp_lib_is_null_pointer // C++14
@@ -537,13 +523,53 @@ struct is_null_pointer
                        typename std::remove_cv<T>::type>::value> {};
 #endif
 
+// libstdc++ `is_function` does not recognize `noexcept` until version 7.
+#if !defined(__GLIBCXX__) || __has_include(<variant>) // >= libstdc++-7
+#define SLB_IS_FUNCTION SLB_INTEGRAL_CONSTANT
+#else
+#define SLB_IS_FUNCTION 0 // not available
+#endif
+
+#if SLB_IS_FUNCTION == 2
+using std::is_member_object_pointer;
+using std::is_member_function_pointer;
+using std::is_function;
+#elif SLB_IS_FUNCTION == 1
+template <typename T>
+struct is_member_object_pointer
+    : slb::bool_constant<std::is_member_object_pointer<T>::value> {};
+
+template <typename T>
+struct is_member_function_pointer
+    : slb::bool_constant<std::is_member_function_pointer<T>::value> {};
+
+template <typename T>
+struct is_function : slb::bool_constant<std::is_function<T>::value> {};
+#else
+template <typename T>
+struct is_member_object_pointer : slb::false_type {};
+
+template <typename T, typename C>
+struct is_member_object_pointer<T C::*>
+    : slb::bool_constant<!detail::lib::is_function<T>::value> {};
+
+template <typename T>
+struct is_member_function_pointer : slb::false_type {};
+
+template <typename T, typename C>
+struct is_member_function_pointer<T C::*>
+    : slb::bool_constant<detail::lib::is_function<T>::value> {};
+
+template <typename T>
+struct is_function : slb::bool_constant<detail::lib::is_function<T>::value> {};
+#endif
+
 // [meta.unary.comp], composite type categories
 
 #if SLB_INTEGRAL_CONSTANT == 2 // C++14
 using std::is_reference;
 using std::is_arithmetic;
 using std::is_fundamental;
-using std::is_object;
 using std::is_scalar;
 using std::is_compound;
 using std::is_member_pointer;
@@ -558,9 +584,6 @@ template <typename T>
 struct is_fundamental : slb::bool_constant<std::is_fundamental<T>::value> {};
 
 template <typename T>
-struct is_object : slb::bool_constant<std::is_object<T>::value> {};
-
-template <typename T>
 struct is_scalar : slb::bool_constant<std::is_scalar<T>::value> {};
 
 template <typename T>
@@ -569,6 +592,18 @@ struct is_compound : slb::bool_constant<std::is_compound<T>::value> {};
 template <typename T>
 struct is_member_pointer
     : slb::bool_constant<std::is_member_pointer<T>::value> {};
+#endif
+
+#if SLB_IS_FUNCTION == 2
+using std::is_object;
+#elif SLB_IS_FUNCTION == 1
+template <typename T>
+struct is_object : slb::bool_constant<std::is_object<T>::value> {};
+#else
+template <typename T>
+struct is_object : slb::bool_constant<!detail::lib::is_function<T>::value &&
+                                      !std::is_reference<T>::value &&
+                                      !std::is_void<T>::value> {};
 #endif
 
 // [meta.unary.prop], type properties

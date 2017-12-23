@@ -152,6 +152,12 @@ TEST_CASE("is_member_object_pointer", "[meta.unary.cat]") {
   class C {};
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_member_object_pointer<int C::*>>::value);
+
+  CHECK(std::is_base_of<slb::false_type,
+                        slb::is_member_object_pointer<int (C::*)()>>::value);
+  CHECK(std::is_base_of<
+        slb::false_type,
+        slb::is_member_object_pointer<int (C::*)() noexcept>>::value);
 }
 
 // template<class T> struct is_member_function_pointer;
@@ -159,6 +165,12 @@ TEST_CASE("is_member_function_pointer", "[meta.unary.cat]") {
   class C {};
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_member_function_pointer<int (C::*)()>>::value);
+  CHECK(std::is_base_of<
+        slb::true_type,
+        slb::is_member_function_pointer<int (C::*)() noexcept>>::value);
+
+  CHECK(std::is_base_of<slb::false_type,
+                        slb::is_member_function_pointer<int C::*>>::value);
 }
 
 // template<class T> struct is_enum;
@@ -182,6 +194,15 @@ TEST_CASE("is_class", "[meta.unary.cat]") {
 // template<class T> struct is_function;
 TEST_CASE("is_function", "[meta.unary.cat]") {
   CHECK(std::is_base_of<slb::true_type, slb::is_function<void()>>::value);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_function<void() noexcept>>::value);
+
+  CHECK(std::is_base_of<slb::true_type, slb::is_function<void(...)>>::value);
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_function<void(...) noexcept>>::value);
+
+  CHECK(std::is_base_of<slb::false_type, slb::is_function<int const>>::value);
+  CHECK(std::is_base_of<slb::false_type, slb::is_function<int&>>::value);
 }
 
 // template<class T> struct is_null_pointer;
@@ -219,6 +240,10 @@ TEST_CASE("is_fundamental", "[meta.unary.comp]") {
 // template<class T> struct is_object;
 TEST_CASE("is_object", "[meta.unary.comp]") {
   CHECK(std::is_base_of<slb::true_type, slb::is_object<int>>::value);
+
+  CHECK(std::is_base_of<slb::false_type, slb::is_object<void()>>::value);
+  CHECK(
+      std::is_base_of<slb::false_type, slb::is_object<void() noexcept>>::value);
 }
 
 // template<class T> struct is_scalar;

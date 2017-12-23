@@ -20,6 +20,21 @@ namespace lib {
 template <typename>
 struct always_false : std::false_type {};
 
+////////////////////////////////////////////////////////////////////////////////
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4180) // qualifier applied to function type has no
+                                // meaning; ignored
+#endif
+template <typename T>
+struct is_function : std::integral_constant<bool,
+                                            !std::is_const<T const>::value &&
+                                                !std::is_reference<T>::value> {
+};
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 } // namespace lib
 } // namespace detail
 } // namespace slb
