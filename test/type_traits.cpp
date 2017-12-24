@@ -437,26 +437,70 @@ TEST_CASE("is_trivially_constructible", "[meta.unary.prop]") {
                           slb::is_trivially_constructible<NTD>>::value);
   }
 }
+#endif
 
 // template<class T> struct is_trivially_default_constructible;
 TEST_CASE("is_trivially_default_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_default_constructible<int>>::value);
 
-  /* destructible */ {
+  {
+    struct E {};
+    struct S {
+      int m;
+    };
+    struct D {
+      int m;
+      D() = default;
+    };
+    struct U {
+      int m;
+      U() : m(0) {}
+    };
     struct ND {
+      int m;
       ND() = default;
       ~ND() = delete;
     };
     struct NTD {
+      int m;
       NTD() = default;
       ~NTD() {}
     };
 
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_default_constructible<int>>::value);
+    CHECK(
+        std::is_base_of<slb::false_type,
+                        slb::is_trivially_default_constructible<int&>>::value);
+    CHECK(
+        std::is_base_of<slb::false_type,
+                        slb::is_trivially_default_constructible<int&&>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_default_constructible<E>>::value);
+    CHECK(std::is_base_of<
+          slb::true_type,
+          slb::is_trivially_default_constructible<E const>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_default_constructible<S>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_default_constructible<D>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_default_constructible<U>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_default_constructible<U&>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_default_constructible<U&&>>::value);
     CHECK(std::is_base_of<slb::false_type,
                           slb::is_trivially_default_constructible<ND>>::value);
     CHECK(std::is_base_of<slb::false_type,
                           slb::is_trivially_default_constructible<NTD>>::value);
+    CHECK(
+        std::is_base_of<slb::false_type,
+                        slb::is_trivially_default_constructible<NTD&>>::value);
+    CHECK(
+        std::is_base_of<slb::false_type,
+                        slb::is_trivially_default_constructible<NTD&&>>::value);
   }
 }
 
@@ -465,20 +509,56 @@ TEST_CASE("is_trivially_copy_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_copy_constructible<int>>::value);
 
-  /* destructible */ {
+  {
+    struct S {
+      int m;
+    };
+    struct D {
+      int m;
+      D(D const&) = default;
+    };
+    struct U {
+      int m;
+      U(U const& u) : m(u.m) {}
+    };
     struct ND {
+      int m;
       ND(ND const&) = default;
       ~ND() = delete;
     };
     struct NTD {
+      int m;
       NTD(NTD const&) = default;
       ~NTD() {}
     };
 
+    CHECK(std::is_base_of<
+          slb::true_type,
+          slb::is_trivially_copy_constructible<int const>>::value);
+    CHECK(std::is_base_of<
+          slb::true_type,
+          slb::is_trivially_copy_constructible<int const&>>::value);
+    CHECK(std::is_base_of<
+          slb::false_type,
+          slb::is_trivially_copy_constructible<int const&&>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_copy_constructible<S>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_copy_constructible<D>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_copy_constructible<U>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_copy_constructible<U&>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_copy_constructible<U&&>>::value);
     CHECK(std::is_base_of<slb::false_type,
                           slb::is_trivially_copy_constructible<ND>>::value);
     CHECK(std::is_base_of<slb::false_type,
                           slb::is_trivially_copy_constructible<NTD>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_copy_constructible<NTD&>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_copy_constructible<NTD&&>>::value);
   }
 }
 
@@ -487,23 +567,58 @@ TEST_CASE("is_trivially_move_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_move_constructible<int>>::value);
 
-  /* destructible */ {
+  {
+    struct S {
+      int m;
+    };
+    struct D {
+      int m;
+      D(D&&) = default;
+    };
+    struct U {
+      int m;
+      U(U&& u) : m(u.m) {}
+    };
     struct ND {
+      int m;
       ND(ND&&) = default;
       ~ND() = delete;
     };
     struct NTD {
+      int m;
       NTD(NTD&&) = default;
       ~NTD() {}
     };
 
+    CHECK(std::is_base_of<
+          slb::true_type,
+          slb::is_trivially_move_constructible<int const>>::value);
+    CHECK(std::is_base_of<
+          slb::true_type,
+          slb::is_trivially_move_constructible<int const&>>::value);
+    CHECK(std::is_base_of<
+          slb::true_type,
+          slb::is_trivially_move_constructible<int const&&>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_move_constructible<S>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_move_constructible<D>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_move_constructible<U>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_move_constructible<U&>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_move_constructible<U&&>>::value);
     CHECK(std::is_base_of<slb::false_type,
                           slb::is_trivially_move_constructible<ND>>::value);
     CHECK(std::is_base_of<slb::false_type,
                           slb::is_trivially_move_constructible<NTD>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_move_constructible<NTD&>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_move_constructible<NTD&&>>::value);
   }
 }
-#endif
 
 // template<class T, class ...Args> struct is_nothrow_constructible;
 TEST_CASE("is_nothrow_constructible", "[meta.unary.prop]") {
@@ -631,19 +746,87 @@ TEST_CASE("is_trivially_assignable", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_assignable<int&, int>>::value);
 }
+#endif
 
 // template<class T> struct is_trivially_copy_assignable;
 TEST_CASE("is_trivially_copy_assignable", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_copy_assignable<int>>::value);
+
+  {
+    struct S {
+      int m;
+    };
+    struct D {
+      int m;
+      D& operator=(D const&) = default;
+    };
+    struct U {
+      int m;
+      U& operator=(U const& u) { return m = u.m, *this; }
+    };
+    struct NTD {
+      int m;
+      NTD& operator=(NTD const&) = default;
+      ~NTD() {}
+    };
+
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_copy_assignable<int&>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_copy_assignable<int&&>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_copy_assignable<S>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_copy_assignable<D>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_copy_assignable<U>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_copy_assignable<U&>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_copy_assignable<NTD>>::value);
+  }
 }
 
 // template<class T> struct is_trivially_move_assignable;
 TEST_CASE("is_trivially_move_assignable", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_move_assignable<int>>::value);
+
+  {
+    struct S {
+      int m;
+    };
+    struct D {
+      int m;
+      D& operator=(D&&) = default;
+    };
+    struct U {
+      int m;
+      U& operator=(U&& u) { return m = u.m, *this; }
+    };
+    struct NTD {
+      int m;
+      NTD& operator=(NTD&&) = default;
+      ~NTD() {}
+    };
+
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_move_assignable<int&>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_move_assignable<int&&>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_move_assignable<S>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_move_assignable<D>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_move_assignable<U>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_move_assignable<U&>>::value);
+    CHECK(std::is_base_of<slb::true_type,
+                          slb::is_trivially_move_assignable<NTD>>::value);
+  }
 }
-#endif
 
 // template<class T, class U> struct is_nothrow_assignable;
 TEST_CASE("is_nothrow_assignable", "[meta.unary.prop]") {

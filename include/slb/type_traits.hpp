@@ -899,24 +899,120 @@ struct is_trivially_constructible {
                 "`is_trivially_constructible` is not available.");
 };
 
+namespace detail {
+// A defaulted default constructor for class `X` is defined as deleted if `X` is
+// a union that has a variant member with a non-trivial default constructor and
+// no variant member of `X` has a default member initializer.
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4624) // destructor was implicitly defined as deleted
+#endif
 template <typename T>
-struct is_trivially_default_constructible {
-  static_assert(detail::lib::always_false<T>::value,
-                "`is_trivially_default_constructible` is not available.");
+union trivial_default_constructor {
+  T member;
+  trivial_default_constructor() = default;
+};
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+template <typename T>
+using is_trivially_default_constructible =
+    std::is_default_constructible<detail::trivial_default_constructor<T>>;
+} // namespace detail
+
+template <typename T>
+struct is_trivially_default_constructible
+    : slb::bool_constant<
+          std::conditional<std::is_default_constructible<T>::value,
+                           detail::is_trivially_default_constructible<
+                               typename std::remove_const<T>::type>,
+                           std::false_type>::type::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+          && std::is_trivially_destructible<T>::value
+#endif
+          > {
+};
+
+namespace detail {
+// A defaulted copy/move constructor for a class `X` is defined as deleted if
+// `X` has a variant member whose corresponding constructor as selected by
+// overload resolution is non-trivial.
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4624) // destructor was implicitly defined as deleted
+#endif
+template <typename T>
+union trivial_copy_constructor {
+  T member;
+  trivial_copy_constructor(trivial_copy_constructor const&) = default;
+};
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+template <typename T>
+using is_trivially_copy_constructible =
+    std::is_copy_constructible<detail::trivial_copy_constructor<T>>;
+} // namespace detail
+
+template <typename T>
+struct is_trivially_copy_constructible
+    : slb::bool_constant<
+          std::conditional<std::is_copy_constructible<T>::value,
+                           detail::is_trivially_copy_constructible<T>,
+                           std::false_type>::type::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+          && std::is_trivially_destructible<T>::value
+#endif
+          > {
 };
 
 template <typename T>
-struct is_trivially_copy_constructible {
-  static_assert(detail::lib::always_false<T>::value,
-                "`is_trivially_copy_constructible` is not available.");
-};
+struct is_trivially_copy_constructible<T&> : slb::true_type {};
 
 template <typename T>
-struct is_trivially_move_constructible {
-  static_assert(detail::lib::always_false<T>::value,
-                "`is_trivially_move_constructible` is not available.");
+struct is_trivially_copy_constructible<T&&> : slb::false_type {};
+
+namespace detail {
+// A defaulted copy/move constructor for a class `X` is defined as deleted if
+// `X` has a variant member whose corresponding constructor as selected by
+// overload resolution is non-trivial. A defaulted move constructor that is
+// defined as deleted is ignored by overload resolution.
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4624) // destructor was implicitly defined as deleted
+#endif
+template <typename T>
+union trivial_move_constructor {
+  T member;
+  trivial_move_constructor(trivial_move_constructor&&) = default;
+  trivial_move_constructor(trivial_move_constructor const&) = delete;
+};
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+template <typename T>
+using is_trivially_move_constructible =
+    std::is_move_constructible<detail::trivial_move_constructor<T>>;
+} // namespace detail
+
+template <typename T>
+struct is_trivially_move_constructible
+    : slb::bool_constant<
+          std::conditional<std::is_move_constructible<T>::value,
+                           detail::is_trivially_move_constructible<T>,
+                           std::false_type>::type::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+          && std::is_trivially_destructible<T>::value
+#endif
+          > {
 };
 #endif
+
+template <typename T>
+struct is_trivially_move_constructible<T&> : slb::true_type {};
+
+template <typename T>
+struct is_trivially_move_constructible<T&&> : slb::true_type {};
 
 #if SLB_TRIVIALITY_TRAITS == 2
 using std::is_trivially_assignable;
@@ -941,17 +1037,65 @@ struct is_trivially_assignable {
                 "`is_trivially_assignable` is not available.");
 };
 
+namespace detail {
+// A defaulted copy/move assignment operator for class `X` is defined as deleted
+// if `X` has a variant member with a non-trivial corresponding assignment
+// operator and `X` is a union-like class.
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4624) // destructor was implicitly defined as deleted
+#endif
 template <typename T>
-struct is_trivially_copy_assignable {
-  static_assert(detail::lib::always_false<T>::value,
-                "`is_trivially_copy_assignable` is not available.");
+union trivial_copy_assign {
+  T member;
+  trivial_copy_assign& operator=(trivial_copy_assign const&) = default;
 };
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+template <typename T>
+using is_trivially_copy_assignable =
+    std::is_copy_assignable<detail::trivial_copy_assign<T>>;
+} // namespace detail
 
 template <typename T>
-struct is_trivially_move_assignable {
-  static_assert(detail::lib::always_false<T>::value,
-                "`is_trivially_move_assignable` is not available.");
+struct is_trivially_copy_assignable
+    : slb::bool_constant<
+          std::conditional<std::is_copy_assignable<T>::value,
+                           detail::is_trivially_copy_assignable<
+                               typename std::remove_reference<T>::type>,
+                           std::false_type>::type::value> {};
+
+namespace detail {
+// A defaulted copy/move assignment operator for class `X` is defined as deleted
+// if `X` has a variant member with a non-trivial corresponding assignment
+// operator and `X` is a union-like class. A defaulted move assignment operator
+// that is defined as deleted is ignored by overload resolution.
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4624) // destructor was implicitly defined as deleted
+#endif
+template <typename T>
+union trivial_move_assign {
+  T member;
+  trivial_move_assign& operator=(trivial_move_assign&&) = default;
+  trivial_move_assign& operator=(trivial_move_assign const&) = delete;
 };
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+template <typename T>
+using is_trivially_move_assignable =
+    std::is_move_assignable<detail::trivial_move_assign<T>>;
+} // namespace detail
+
+template <typename T>
+struct is_trivially_move_assignable
+    : slb::bool_constant<
+          std::conditional<std::is_move_assignable<T>::value,
+                           detail::is_trivially_move_assignable<
+                               typename std::remove_reference<T>::type>,
+                           std::false_type>::type::value> {};
 #endif
 
 #if __cpp_lib_is_swappable // C++17
