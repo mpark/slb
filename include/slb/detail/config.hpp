@@ -27,4 +27,13 @@
 #define __has_feature(x) 0
 #endif
 
+// N3652: "Relaxing constraints on constexpr functions / constexpr member
+// functions and implicit const"
+#if (defined(__cpp_constexpr) && __cpp_constexpr >= 201304) ||                 \
+    (defined(_MSC_VER) && _MSC_VER >= 1910)
+#define SLB_CXX14_CONSTEXPR constexpr
+#else
+#define SLB_CXX14_CONSTEXPR
+#endif
+
 #endif // SLB_DETAIL_CONFIG_HPP

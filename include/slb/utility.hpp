@@ -161,6 +161,15 @@ namespace std {
 
 namespace slb {
 
+// [utility.exchange], exchange
+
+template <typename T, typename U = T>
+SLB_CXX14_CONSTEXPR T exchange(T& obj, U&& new_val) {
+  T old_val = std::move(obj);
+  obj = std::forward<U>(new_val);
+  return old_val;
+}
+
 #if __cpp_lib_integer_sequence ||                                              \
     (_LIBCPP_VERSION >= 1101 && _LIBCPP_STD_VER > 11) || defined(_MSC_VER)
 // libstdc++ did not mark `size()` as `noexcept` until version 8.

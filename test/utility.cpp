@@ -17,6 +17,81 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
+#define CHECK_CXX14_CONSTEXPR(Tag, ...)                                        \
+  struct check_cxx14_constexpr_helper_##Tag {                                  \
+    static SLB_CXX14_CONSTEXPR bool check(){__VA_ARGS__};                      \
+  };                                                                           \
+  SLB_CXX14_CONSTEXPR bool check_cxx14_constexpr_##Tag =                       \
+      check_cxx14_constexpr_helper_##Tag::check();                             \
+  CHECK(check_cxx14_constexpr_##Tag)
+
+// [utility.exchange], exchange
+
+// template<class T, class U = T>
+//   constexpr T exchange(T& obj, U&& new_val);
+TEST_CASE("exchange", "[utility.exchange]") {
+  struct T {
+    int val;
+    T(int val) : val(val) {}
+    T(T&&) = default;
+    void operator=(int x) { val = x; }
+    T& operator=(T&&) = default;
+  } obj(42);
+  CHECK(std::is_same<decltype(slb::exchange(obj, 43)), T>::value);
+  CHECK(slb::exchange(obj, 43).val == 42);
+  CHECK(slb::exchange(obj, {44}).val == 43);
+  CHECK(obj.val == 44);
+  CHECK_CXX14_CONSTEXPR(exchange, {
+    int obj = 42;
+    int old_obj = slb::exchange(obj, 43);
+    return old_obj == 42 && obj == 43;
+  });
+
+  /* T old_value = std::move(obj); */ {
+    struct T {
+      int val;
+      T(int val) : val(val) {}
+      T(T const&) : val(-1) {}
+      explicit T(T&&) = default;
+      void operator=(int x) { val = x; }
+    } obj1(42);
+    CHECK(slb::exchange(obj1, 43).val == -1);
+    CHECK(obj1.val == 43);
+
+    /* throws */ {
+      struct T {
+        T() {}
+        T(T const&) { throw 0; }
+        explicit T(T&&) noexcept = default;
+        T& operator=(T&&) noexcept = default;
+      } tobj1;
+      CHECK_THROWS(slb::exchange(tobj1, {}));
+    }
+  }
+
+  /* obj = std::forward<U>(new_val); */ {
+    struct T {
+      int val;
+      T(int val) : val(val) {}
+      T(T&&) = default;
+      void operator=(int const& x) { val = x; }
+      void operator=(int&&) { val = -1; }
+    } obj2(42);
+    CHECK(slb::exchange(obj2, 43).val == 42);
+    CHECK(obj2.val == -1);
+
+    /* throws */ {
+      struct T {
+        T() {}
+        T(T&&) noexcept = default;
+        T& operator=(T const&) noexcept = default;
+        T& operator=(T&&) { throw 0; }
+      } tobj2;
+      CHECK_THROWS(slb::exchange(tobj2, {}));
+    }
+  }
+}
+
 // [intseq], Compile-time integer sequences
 
 // template<class T, T...>
