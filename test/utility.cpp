@@ -14,7 +14,6 @@
 #include <type_traits>
 #include <utility>
 
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
 #define CHECK_CXX14_CONSTEXPR(Tag, ...)                                        \

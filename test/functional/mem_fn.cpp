@@ -13,7 +13,6 @@
 #include <type_traits>
 #include <utility>
 
-#define CATCH_CONFIG_MAIN
 #include "../catch.hpp"
 
 #define CHECK_NESTED(...)                                                      \
