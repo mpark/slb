@@ -355,24 +355,64 @@ TEST_CASE("is_unsigned", "[meta.unary.prop]") {
 TEST_CASE("is_constructible", "[meta.unary.prop]") {
   CHECK(
       std::is_base_of<slb::true_type, slb::is_constructible<int, int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND(int) {}
+      ~ND() = delete;
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_constructible<ND, int>>::value);
+  }
 }
 
 // template<class T> struct is_default_constructible;
 TEST_CASE("is_default_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_default_constructible<int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND() {}
+      ~ND() = delete;
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_default_constructible<ND>>::value);
+  }
 }
 
 // template<class T> struct is_copy_constructible;
 TEST_CASE("is_copy_constructible", "[meta.unary.prop]") {
   CHECK(
       std::is_base_of<slb::true_type, slb::is_copy_constructible<int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND(ND const&) {}
+      ~ND() = delete;
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_copy_constructible<ND>>::value);
+  }
 }
 
 // template<class T> struct is_move_constructible;
 TEST_CASE("is_move_constructible", "[meta.unary.prop]") {
   CHECK(
       std::is_base_of<slb::true_type, slb::is_move_constructible<int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND(ND&&) {}
+      ~ND() = delete;
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_move_constructible<ND>>::value);
+  }
 }
 
 #if SLB_TRIVIALITY_TRAITS
@@ -380,24 +420,88 @@ TEST_CASE("is_move_constructible", "[meta.unary.prop]") {
 TEST_CASE("is_trivially_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_constructible<int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND() = default;
+      ~ND() = delete;
+    };
+    struct NTD {
+      NTD() = default;
+      ~NTD() {}
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_constructible<ND>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_constructible<NTD>>::value);
+  }
 }
 
 // template<class T> struct is_trivially_default_constructible;
 TEST_CASE("is_trivially_default_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_default_constructible<int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND() = default;
+      ~ND() = delete;
+    };
+    struct NTD {
+      NTD() = default;
+      ~NTD() {}
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_default_constructible<ND>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_default_constructible<NTD>>::value);
+  }
 }
 
 // template<class T> struct is_trivially_copy_constructible;
 TEST_CASE("is_trivially_copy_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_copy_constructible<int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND(ND const&) = default;
+      ~ND() = delete;
+    };
+    struct NTD {
+      NTD(NTD const&) = default;
+      ~NTD() {}
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_copy_constructible<ND>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_copy_constructible<NTD>>::value);
+  }
 }
 
 // template<class T> struct is_trivially_move_constructible;
 TEST_CASE("is_trivially_move_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_trivially_move_constructible<int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND(ND&&) = default;
+      ~ND() = delete;
+    };
+    struct NTD {
+      NTD(NTD&&) = default;
+      ~NTD() {}
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_move_constructible<ND>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_trivially_move_constructible<NTD>>::value);
+  }
 }
 #endif
 
@@ -405,24 +509,88 @@ TEST_CASE("is_trivially_move_constructible", "[meta.unary.prop]") {
 TEST_CASE("is_nothrow_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_nothrow_constructible<int, int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND(int) noexcept {}
+      ~ND() = delete;
+    };
+    struct NND {
+      NND(int) noexcept {}
+      ~NND() noexcept(false) {}
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_nothrow_constructible<ND, int>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_nothrow_constructible<NND, int>>::value);
+  }
 }
 
 // template<class T> struct is_nothrow_default_constructible;
 TEST_CASE("is_nothrow_default_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_nothrow_default_constructible<int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND() noexcept {}
+      ~ND() = delete;
+    };
+    struct NND {
+      NND() noexcept {}
+      ~NND() noexcept(false) {}
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_nothrow_default_constructible<ND>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_nothrow_default_constructible<NND>>::value);
+  }
 }
 
 // template<class T> struct is_nothrow_copy_constructible;
 TEST_CASE("is_nothrow_copy_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_nothrow_copy_constructible<int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND(ND const&) noexcept {}
+      ~ND() = delete;
+    };
+    struct NND {
+      NND(NND const&) noexcept {}
+      ~NND() noexcept(false) {}
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_nothrow_copy_constructible<ND>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_nothrow_copy_constructible<NND>>::value);
+  }
 }
 
 // template<class T> struct is_nothrow_move_constructible;
 TEST_CASE("is_nothrow_move_constructible", "[meta.unary.prop]") {
   CHECK(std::is_base_of<slb::true_type,
                         slb::is_nothrow_move_constructible<int>>::value);
+
+  /* destructible */ {
+    struct ND {
+      ND(ND&&) noexcept {}
+      ~ND() = delete;
+    };
+    struct NND {
+      NND(NND&&) noexcept {}
+      ~NND() noexcept(false) {}
+    };
+
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_nothrow_move_constructible<ND>>::value);
+    CHECK(std::is_base_of<slb::false_type,
+                          slb::is_nothrow_move_constructible<NND>>::value);
+  }
 }
 
 // template<class T> struct is_destructible;

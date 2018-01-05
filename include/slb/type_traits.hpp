@@ -692,16 +692,6 @@ struct is_aggregate {
 using std::is_signed;
 using std::is_unsigned;
 
-using std::is_constructible;
-using std::is_default_constructible;
-using std::is_copy_constructible;
-using std::is_move_constructible;
-
-using std::is_nothrow_constructible;
-using std::is_nothrow_default_constructible;
-using std::is_nothrow_copy_constructible;
-using std::is_nothrow_move_constructible;
-
 using std::is_destructible;
 using std::is_trivially_destructible;
 using std::is_nothrow_destructible;
@@ -719,38 +709,6 @@ struct is_signed : slb::bool_constant<std::is_signed<T>::value> {};
 
 template <typename T>
 struct is_unsigned : slb::bool_constant<std::is_unsigned<T>::value> {};
-
-template <typename T, typename... Args>
-struct is_constructible
-    : slb::bool_constant<std::is_constructible<T, Args...>::value> {};
-
-template <typename T>
-struct is_default_constructible
-    : slb::bool_constant<std::is_default_constructible<T>::value> {};
-
-template <typename T>
-struct is_copy_constructible
-    : slb::bool_constant<std::is_copy_constructible<T>::value> {};
-
-template <typename T>
-struct is_move_constructible
-    : slb::bool_constant<std::is_move_constructible<T>::value> {};
-
-template <typename T, typename... Args>
-struct is_nothrow_constructible
-    : slb::bool_constant<std::is_nothrow_constructible<T, Args...>::value> {};
-
-template <typename T>
-struct is_nothrow_default_constructible
-    : slb::bool_constant<std::is_nothrow_default_constructible<T>::value> {};
-
-template <typename T>
-struct is_nothrow_copy_constructible
-    : slb::bool_constant<std::is_nothrow_copy_constructible<T>::value> {};
-
-template <typename T>
-struct is_nothrow_move_constructible
-    : slb::bool_constant<std::is_nothrow_move_constructible<T>::value> {};
 
 template <typename T>
 struct is_destructible : slb::bool_constant<std::is_destructible<T>::value> {};
@@ -787,42 +745,138 @@ struct is_nothrow_move_assignable
     : slb::bool_constant<std::is_nothrow_move_assignable<T>::value> {};
 #endif
 
-#if SLB_TRIVIALITY_TRAITS == 2
+// MSVC does not consider destructors in its `constructible` traits.
+#if !defined(_MSC_VER) || _MSC_VER >= 1910
+#define SLB_CONSTRUCTIBLE_TRAITS 2 // available / conforming
+#else
+#define SLB_CONSTRUCTIBLE_TRAITS 1 // available / non-conforming
+#endif
+
+#if SLB_INTEGRAL_CONSTANT == 2 && SLB_CONSTRUCTIBLE_TRAITS == 2
+using std::is_constructible;
+using std::is_default_constructible;
+using std::is_copy_constructible;
+using std::is_move_constructible;
+
+using std::is_nothrow_constructible;
+using std::is_nothrow_default_constructible;
+using std::is_nothrow_copy_constructible;
+using std::is_nothrow_move_constructible;
+#else
+template <typename T, typename... Args>
+struct is_constructible
+    : slb::bool_constant<std::is_constructible<T, Args...>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_destructible<T>::value
+#endif
+                         > {
+};
+
+template <typename T>
+struct is_default_constructible
+    : slb::bool_constant<std::is_default_constructible<T>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_destructible<T>::value
+#endif
+                         > {
+};
+
+template <typename T>
+struct is_copy_constructible
+    : slb::bool_constant<std::is_copy_constructible<T>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_destructible<T>::value
+#endif
+                         > {
+};
+
+template <typename T>
+struct is_move_constructible
+    : slb::bool_constant<std::is_move_constructible<T>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_destructible<T>::value
+#endif
+                         > {
+};
+
+template <typename T, typename... Args>
+struct is_nothrow_constructible
+    : slb::bool_constant<std::is_nothrow_constructible<T, Args...>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_nothrow_destructible<T>::value
+#endif
+                         > {
+};
+
+template <typename T>
+struct is_nothrow_default_constructible
+    : slb::bool_constant<std::is_nothrow_default_constructible<T>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_nothrow_destructible<T>::value
+#endif
+                         > {
+};
+
+template <typename T>
+struct is_nothrow_copy_constructible
+    : slb::bool_constant<std::is_nothrow_copy_constructible<T>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_nothrow_destructible<T>::value
+#endif
+                         > {
+};
+
+template <typename T>
+struct is_nothrow_move_constructible
+    : slb::bool_constant<std::is_nothrow_move_constructible<T>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_nothrow_destructible<T>::value
+#endif
+                         > {
+};
+#endif
+
+#if SLB_TRIVIALITY_TRAITS == 2 && SLB_CONSTRUCTIBLE_TRAITS == 2
 using std::is_trivially_constructible;
 using std::is_trivially_default_constructible;
 using std::is_trivially_copy_constructible;
 using std::is_trivially_move_constructible;
-using std::is_trivially_assignable;
-using std::is_trivially_copy_assignable;
-using std::is_trivially_move_assignable;
 #elif SLB_TRIVIALITY_TRAITS == 1
 template <typename T, typename... Args>
 struct is_trivially_constructible
-    : slb::bool_constant<std::is_trivially_constructible<T, Args...>::value> {};
+    : slb::bool_constant<std::is_trivially_constructible<T, Args...>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_trivially_destructible<T>::value
+#endif
+                         > {
+};
 
 template <typename T>
 struct is_trivially_default_constructible
-    : slb::bool_constant<std::is_trivially_default_constructible<T>::value> {};
+    : slb::bool_constant<std::is_trivially_default_constructible<T>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_trivially_destructible<T>::value
+#endif
+                         > {
+};
 
 template <typename T>
 struct is_trivially_copy_constructible
-    : slb::bool_constant<std::is_trivially_copy_constructible<T>::value> {};
+    : slb::bool_constant<std::is_trivially_copy_constructible<T>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_trivially_destructible<T>::value
+#endif
+                         > {
+};
 
 template <typename T>
 struct is_trivially_move_constructible
-    : slb::bool_constant<std::is_trivially_move_constructible<T>::value> {};
-
-template <typename T, typename U>
-struct is_trivially_assignable
-    : slb::bool_constant<std::is_trivially_assignable<T, U>::value> {};
-
-template <typename T>
-struct is_trivially_copy_assignable
-    : slb::bool_constant<std::is_trivially_copy_assignable<T>::value> {};
-
-template <typename T>
-struct is_trivially_move_assignable
-    : slb::bool_constant<std::is_trivially_move_assignable<T>::value> {};
+    : slb::bool_constant<std::is_trivially_move_constructible<T>::value
+#if SLB_CONSTRUCTIBLE_TRAITS == 1
+                         && std::is_trivially_destructible<T>::value
+#endif
+                         > {
+};
 #else
 template <typename T, typename... Args>
 struct is_trivially_constructible {
@@ -847,7 +901,25 @@ struct is_trivially_move_constructible {
   static_assert(detail::lib::always_false<T>::value,
                 "`is_trivially_move_constructible` is not available.");
 };
+#endif
 
+#if SLB_TRIVIALITY_TRAITS == 2
+using std::is_trivially_assignable;
+using std::is_trivially_copy_assignable;
+using std::is_trivially_move_assignable;
+#elif SLB_TRIVIALITY_TRAITS == 1
+template <typename T, typename U>
+struct is_trivially_assignable
+    : slb::bool_constant<std::is_trivially_assignable<T, U>::value> {};
+
+template <typename T>
+struct is_trivially_copy_assignable
+    : slb::bool_constant<std::is_trivially_copy_assignable<T>::value> {};
+
+template <typename T>
+struct is_trivially_move_assignable
+    : slb::bool_constant<std::is_trivially_move_assignable<T>::value> {};
+#else
 template <typename T, typename U>
 struct is_trivially_assignable {
   static_assert(detail::lib::always_false<T>::value,
