@@ -359,7 +359,7 @@ namespace std {
       = is_nothrow_default_constructible<T>::value;
   template<class T>
     inline constexpr bool is_nothrow_copy_constructible_v
-    = is_nothrow_copy_constructible<T>::value;
+      = is_nothrow_copy_constructible<T>::value;
   template<class T>
     inline constexpr bool is_nothrow_move_constructible_v
       = is_nothrow_move_constructible<T>::value;
@@ -1360,6 +1360,312 @@ enum class endian {
   native = __BYTE_ORDER__
 #endif
 };
+
+#if SLB_HAS_CXX14_VARIABLE_TEMPLATES
+
+// [meta.unary.cat], primary type categories
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_void_v = slb::is_void<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_null_pointer_v =
+    slb::is_null_pointer<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_integral_v =
+    slb::is_integral<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_floating_point_v =
+    slb::is_floating_point<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_array_v = slb::is_array<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_pointer_v =
+    slb::is_pointer<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_lvalue_reference_v =
+    slb::is_lvalue_reference<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_rvalue_reference_v =
+    slb::is_rvalue_reference<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_member_object_pointer_v =
+    slb::is_member_object_pointer<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_member_function_pointer_v =
+    slb::is_member_function_pointer<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_enum_v = slb::is_enum<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_union_v = slb::is_union<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_class_v = slb::is_class<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_function_v =
+    slb::is_function<T>::value;
+
+// [meta.unary.comp], composite type categories
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_reference_v =
+    slb::is_reference<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_arithmetic_v =
+    slb::is_arithmetic<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_fundamental_v =
+    slb::is_fundamental<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_object_v = slb::is_object<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_scalar_v = slb::is_scalar<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_compound_v =
+    slb::is_compound<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_member_pointer_v =
+    slb::is_member_pointer<T>::value;
+
+// [meta.unary.prop], type properties
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_const_v = slb::is_const<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_volatile_v =
+    slb::is_volatile<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_trivial_v =
+    slb::is_trivial<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_trivially_copyable_v =
+    slb::is_trivially_copyable<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_standard_layout_v =
+    slb::is_standard_layout<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_empty_v = slb::is_empty<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_polymorphic_v =
+    slb::is_polymorphic<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_abstract_v =
+    slb::is_abstract<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_final_v = slb::is_final<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_aggregate_v =
+    slb::is_aggregate<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_signed_v = slb::is_signed<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_unsigned_v =
+    slb::is_unsigned<T>::value;
+
+template <typename T, typename... Args>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_constructible_v =
+    slb::is_constructible<T, Args...>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_default_constructible_v =
+    slb::is_default_constructible<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_copy_constructible_v =
+    slb::is_copy_constructible<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_move_constructible_v =
+    slb::is_move_constructible<T>::value;
+
+template <typename T, typename U>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_assignable_v =
+    slb::is_assignable<T, U>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_copy_assignable_v =
+    slb::is_copy_assignable<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_move_assignable_v =
+    slb::is_move_assignable<T>::value;
+
+// TODO
+// template <typename T, typename U>
+// SLB_CXX17_INLINE_VARIABLE constexpr bool is_swappable_with_v =
+//     slb::is_swappable_with<T, U>::value;
+//
+// template <typename T>
+// SLB_CXX17_INLINE_VARIABLE constexpr bool is_swappable_v =
+//     slb::is_swappable<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_destructible_v =
+    slb::is_destructible<T>::value;
+
+template <typename T, typename... Args>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_trivially_constructible_v =
+    slb::is_trivially_constructible<T, Args...>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_trivially_default_constructible_v =
+    slb::is_trivially_default_constructible<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_trivially_copy_constructible_v =
+    slb::is_trivially_copy_constructible<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_trivially_move_constructible_v =
+    slb::is_trivially_move_constructible<T>::value;
+
+template <typename T, typename U>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_trivially_assignable_v =
+    slb::is_trivially_assignable<T, U>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_trivially_copy_assignable_v =
+    slb::is_trivially_copy_assignable<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_trivially_move_assignable_v =
+    slb::is_trivially_move_assignable<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_trivially_destructible_v =
+    slb::is_trivially_destructible<T>::value;
+
+template <typename T, typename... Args>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_constructible_v =
+    slb::is_nothrow_constructible<T, Args...>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_default_constructible_v =
+    slb::is_nothrow_default_constructible<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_copy_constructible_v =
+    slb::is_nothrow_copy_constructible<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_move_constructible_v =
+    slb::is_nothrow_move_constructible<T>::value;
+
+template <typename T, typename U>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_assignable_v =
+    slb::is_nothrow_assignable<T, U>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_copy_assignable_v =
+    slb::is_nothrow_copy_assignable<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_move_assignable_v =
+    slb::is_nothrow_move_assignable<T>::value;
+
+// TODO
+// template <typename T, typename U>
+// SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_swappable_with_v =
+//     slb::is_nothrow_swappable_with<T, U>::value;
+//
+// template <typename T>
+// SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_swappable_v =
+//     slb::is_nothrow_swappable<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_destructible_v =
+    slb::is_nothrow_destructible<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool has_virtual_destructor_v =
+    slb::has_virtual_destructor<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool has_unique_object_representations_v =
+    slb::has_unique_object_representations<T>::value;
+
+// [meta.unary.prop.query], type property queries
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr std::size_t alignment_of_v =
+    slb::alignment_of<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr std::size_t rank_v = slb::rank<T>::value;
+
+template <typename T, unsigned I = 0>
+SLB_CXX17_INLINE_VARIABLE constexpr std::size_t extent_v =
+    slb::extent<T, I>::value;
+
+// [meta.rel], type relations
+
+template <typename T, typename U>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_same_v = slb::is_same<T, U>::value;
+
+template <typename Base, typename Derived>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_base_of_v =
+    slb::is_base_of<Base, Derived>::value;
+
+template <typename From, typename To>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_convertible_v =
+    slb::is_convertible<From, To>::value;
+
+template <typename F, typename... Args>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_invocable_v =
+    slb::is_invocable<F, Args...>::value;
+
+template <typename R, typename F, typename... Args>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_invocable_r_v =
+    slb::is_invocable_r<R, F, Args...>::value;
+
+template <typename F, typename... Args>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_invocable_v =
+    slb::is_nothrow_invocable<F, Args...>::value;
+
+template <typename R, typename F, typename... Args>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_invocable_r_v =
+    slb::is_nothrow_invocable_r<R, F, Args...>::value;
+
+// [meta.logical], logical operator traits
+
+template <typename... Bs>
+SLB_CXX17_INLINE_VARIABLE constexpr bool conjunction_v =
+    slb::conjunction<Bs...>::value;
+
+template <typename... Bs>
+SLB_CXX17_INLINE_VARIABLE constexpr bool disjunction_v =
+    slb::disjunction<Bs...>::value;
+
+template <typename B>
+SLB_CXX17_INLINE_VARIABLE constexpr bool negation_v = slb::negation<B>::value;
+
+#endif
 
 } // namespace slb
 

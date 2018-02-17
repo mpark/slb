@@ -36,4 +36,21 @@
 #define SLB_CXX14_CONSTEXPR
 #endif
 
+// N3651: "Variable Templates"
+#if (defined(__cpp_variable_templates) &&                                      \
+     __cpp_variable_templates >= 201304) ||                                    \
+    (defined(_MSC_VER) && _MSC_VER >= 1900)
+#define SLB_HAS_CXX14_VARIABLE_TEMPLATES 1
+#else
+#define SLB_HAS_CXX14_VARIABLE_TEMPLATES 0
+#endif
+
+// P0386: "Inline Variables"
+#if (defined(__cpp_inline_variables) && __cpp_inline_variables >= 201606) ||   \
+    (defined(_MSC_VER) && _MSC_VER >= 1912 && _HAS_CXX17)
+#define SLB_CXX17_INLINE_VARIABLE inline
+#else
+#define SLB_CXX17_INLINE_VARIABLE
+#endif
+
 #endif // SLB_DETAIL_CONFIG_HPP
