@@ -170,6 +170,57 @@ SLB_CXX14_CONSTEXPR T exchange(T& obj, U&& new_val) {
   return old_val;
 }
 
+// [forward], forward/move
+
+#if !defined(_LIBCPP_STD_VER) ||                                               \
+    (_LIBCPP_STD_VER > 11 && !defined(_LIBCPP_HAS_NO_CXX14_CONSTEXPR))
+#define SLB_FORWARD_AND_MOVE 2 // available / conforming
+#define SLB_MOVE_IF_NOEXCEPT 2 // available / conforming
+#else
+#if defined(_LIBCPP_VERSION) && _LIBCPP_VERSION >= 4000
+#define SLB_FORWARD_AND_MOVE 2 // available / conforming
+#else
+#define SLB_FORWARD_AND_MOVE 1 // available / non-conforming
+#endif
+#define SLB_MOVE_IF_NOEXCEPT 1 // available / non-conforming
+#endif
+
+#if SLB_FORWARD_AND_MOVE == 2
+using std::forward;
+using std::move;
+#else
+template <typename T>
+constexpr T&& forward(typename std::remove_reference<T>::type& t) noexcept {
+  return static_cast<T&&>(t);
+}
+
+template <typename T>
+constexpr T&& forward(typename std::remove_reference<T>::type&& t) noexcept {
+  static_assert(!std::is_lvalue_reference<T>::value,
+                "can not forward an rvalue as an lvalue");
+  return static_cast<T&&>(t);
+}
+
+template <typename T>
+constexpr typename std::remove_reference<T>::type&& move(T&& t) noexcept {
+  return static_cast<typename std::remove_reference<T>::type&&>(t);
+}
+#endif
+
+#if SLB_MOVE_IF_NOEXCEPT == 2
+using std::move_if_noexcept;
+#else
+template <typename T>
+constexpr
+    typename std::conditional<(!std::is_nothrow_move_constructible<T>::value &&
+                               std::is_copy_constructible<T>::value),
+                              T const&,
+                              T&&>::type
+    move_if_noexcept(T& x) noexcept {
+  return slb::move(x);
+}
+#endif
+
 // [utility.as_const], as_const
 
 template <typename T>

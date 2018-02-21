@@ -91,6 +91,320 @@ TEST_CASE("exchange", "[utility.exchange]") {
   }
 }
 
+// [forward], forward/move
+
+// template<class T>
+//   constexpr T&& forward(remove_reference_t<T>& t) noexcept;
+// template<class T>
+//   constexpr T&& forward(remove_reference_t<T>&& t) noexcept;
+TEST_CASE("forward", "[forward]") {
+  struct S {};
+
+  static S s;
+  static S const cs{};
+
+  // lvalue -> lvalue
+  /* type */ {
+    CHECK(std::is_same<decltype(slb::forward<S&>(s)), S&>::value);
+    CHECK(std::is_same<decltype(slb::forward<S const&>(s)), S const&>::value);
+    CHECK(std::is_same<decltype(slb::forward<S const&>(cs)), S const&>::value);
+  }
+  /* `noexcept` */ {
+    CHECK(noexcept(slb::forward<S&>(s)));
+    CHECK(noexcept(slb::forward<S const&>(s)));
+    CHECK(noexcept(slb::forward<S const&>(cs)));
+  }
+  /* C++11 `constexpr` */ {
+    constexpr S& a = slb::forward<S&>(s);
+    constexpr S const& b = slb::forward<S const&>(s);
+    constexpr S const& c = slb::forward<S const&>(cs);
+    (void)a;
+    (void)b;
+    (void)c;
+  }
+
+  // lvalue -> rvalue
+  /* type */ {
+    CHECK(std::is_same<decltype(slb::forward<S>(s)), S&&>::value);
+    CHECK(std::is_same<decltype(slb::forward<S&&>(s)), S&&>::value);
+    CHECK(std::is_same<decltype(slb::forward<S const>(s)), S const&&>::value);
+    CHECK(std::is_same<decltype(slb::forward<S const&&>(s)), S const&&>::value);
+    CHECK(std::is_same<decltype(slb::forward<S const>(cs)), S const&&>::value);
+    CHECK(
+        std::is_same<decltype(slb::forward<S const&&>(cs)), S const&&>::value);
+  }
+  /* `noexcept` */ {
+    CHECK(noexcept(slb::forward<S>(s)));
+    CHECK(noexcept(slb::forward<S&&>(s)));
+    CHECK(noexcept(slb::forward<S const>(s)));
+    CHECK(noexcept(slb::forward<S const&&>(s)));
+    CHECK(noexcept(slb::forward<S const>(cs)));
+    CHECK(noexcept(slb::forward<S const&&>(cs)));
+  }
+#ifndef _MSC_VER // MSVC doesn't like constexpr rvalue-refs to static variables.
+  /* C++11 `constexpr` */ {
+    constexpr S&& a = slb::forward<S>(s);
+    constexpr S&& b = slb::forward<S&&>(s);
+    constexpr S const&& c = slb::forward<S const>(s);
+    constexpr S const&& d = slb::forward<S const&&>(s);
+    constexpr S const&& e = slb::forward<S const>(cs);
+    constexpr S const&& f = slb::forward<S const&&>(cs);
+    (void)a;
+    (void)b;
+    (void)c;
+    (void)d;
+    (void)e;
+    (void)f;
+  }
+#endif
+
+  // rvalue -> rvalue
+  struct {
+    constexpr S operator()() const noexcept { return S{}; }
+  } make_s;
+
+  struct {
+    constexpr S const operator()() const noexcept { return S{}; }
+  } make_cs;
+
+  /* type */ {
+    CHECK(std::is_same<decltype(slb::forward<S>(make_s())), S&&>::value);
+    CHECK(std::is_same<decltype(slb::forward<S&&>(make_s())), S&&>::value);
+    CHECK(std::is_same<decltype(slb::forward<S const>(make_s())),
+                       S const&&>::value);
+    CHECK(std::is_same<decltype(slb::forward<S const&&>(make_s())),
+                       S const&&>::value);
+    CHECK(std::is_same<decltype(slb::forward<S const>(make_cs())),
+                       S const&&>::value);
+    CHECK(std::is_same<decltype(slb::forward<S const&&>(make_cs())),
+                       S const&&>::value);
+  }
+  /* `noexcept` */ {
+    CHECK(noexcept(slb::forward<S>(make_s())));
+    CHECK(noexcept(slb::forward<S&&>(make_s())));
+    CHECK(noexcept(slb::forward<S const>(make_s())));
+    CHECK(noexcept(slb::forward<S const&&>(make_s())));
+    CHECK(noexcept(slb::forward<S const>(make_cs())));
+    CHECK(noexcept(slb::forward<S const&&>(make_cs())));
+  }
+  /* C++11 `constexpr` */ {
+    constexpr S a = slb::forward<S>(make_s());
+    constexpr S b = slb::forward<S&&>(make_s());
+    constexpr S c = slb::forward<S const>(make_s());
+    constexpr S d = slb::forward<S const&&>(make_s());
+    constexpr S e = slb::forward<S const>(make_cs());
+    constexpr S f = slb::forward<S const&&>(make_cs());
+    (void)a;
+    (void)b;
+    (void)c;
+    (void)d;
+    (void)e;
+    (void)f;
+  }
+
+  CHECK_CXX14_CONSTEXPR(forward, {
+    int x = 0;
+    int const cx = 1;
+    struct {
+      constexpr int operator()() const noexcept { return 2; }
+    } make_x{};
+    return slb::forward<int&>(x) == 0 && slb::forward<int const&>(x) == 0 &&
+           slb::forward<int const&>(cx) == 1 && slb::forward<int>(x) == 0 &&
+           slb::forward<int&&>(x) == 0 && slb::forward<int const>(x) == 0 &&
+           slb::forward<int const&&>(x) == 0 &&
+           slb::forward<int const>(cx) == 1 &&
+           slb::forward<int const&&>(cx) == 1 &&
+           slb::forward<int>(make_x()) == 2 &&
+           slb::forward<int&&>(make_x()) == 2 &&
+           slb::forward<int const>(make_x()) == 2 &&
+           slb::forward<int const&&>(make_x()) == 2;
+  });
+}
+
+// template<class T>
+//   constexpr remove_reference_t<T>&& move(T&&) noexcept;
+TEST_CASE("move", "[forward]") {
+  struct S {};
+
+  // lvalue -> rvalue
+  static S s;
+  static S const cs{};
+
+  /* type */ {
+    CHECK(std::is_same<decltype(slb::move(s)), S&&>::value);
+    CHECK(std::is_same<decltype(slb::move(cs)), S const&&>::value);
+  }
+  /* `noexcept` */ {
+    CHECK(noexcept(slb::move(s)));
+    CHECK(noexcept(slb::move(cs)));
+  }
+#ifndef _MSC_VER // MSVC doesn't like constexpr rvalue-refs to static variables.
+  /* C++11 `constexpr` */ {
+    constexpr S&& a = slb::move(s);
+    constexpr S const&& b = slb::move(cs);
+    (void)a;
+    (void)b;
+  }
+#endif
+
+  // rvalue -> rvalue
+  struct {
+    constexpr S operator()() const noexcept { return S{}; }
+  } make_s;
+
+  struct {
+    constexpr S const operator()() const noexcept { return S{}; }
+  } make_cs;
+
+  /* type */ {
+    CHECK(std::is_same<decltype(slb::move(make_s())), S&&>::value);
+    CHECK(std::is_same<decltype(slb::move(make_cs())), S const&&>::value);
+  }
+  /* `noexcept` */ {
+    CHECK(noexcept(slb::move(make_s())));
+    CHECK(noexcept(slb::move(make_cs())));
+  }
+  /* C++11 `constexpr` */ {
+#if __has_warning("-Wpessimizing-move")
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpessimizing-move"
+#endif
+    constexpr S a = slb::move(make_s());
+    constexpr S b = slb::move(make_cs());
+#if __has_warning("-Wpessimizing-move")
+#pragma clang diagnostic pop
+#endif
+    (void)a;
+    (void)b;
+  }
+
+  CHECK_CXX14_CONSTEXPR(move, {
+    int x = 0;
+    int const cx = 1;
+    struct {
+      constexpr int operator()() const noexcept { return 2; }
+    } make_x{};
+    return slb::move(x) == 0 && slb::move(cx) == 1 && slb::move(make_x()) == 2;
+  });
+}
+
+// template<class T>
+//   constexpr conditional_t<
+//       !is_nothrow_move_constructible_v<T> && is_copy_constructible_v<T>,
+//       const T&,
+//       T&&>
+//     move_if_noexcept(T& x) noexcept;
+
+template <bool IsNothrow = true>
+struct MoveNothrow {
+  MoveNothrow() = default;
+  MoveNothrow(MoveNothrow const&) {}
+  MoveNothrow(MoveNothrow&&) noexcept(IsNothrow) {}
+};
+
+TEST_CASE("move_if_noexcept", "[forward]") {
+  struct MoveOnly {
+    MoveOnly() = default;
+    MoveOnly(MoveOnly const&) = delete;
+    MoveOnly(MoveOnly&&) {}
+  };
+
+  struct Legacy {
+    Legacy() = default;
+    Legacy(Legacy const&) {}
+  };
+
+  struct Weird {
+    Weird() = default;
+    Weird(Weird const&) {}
+    Weird(Weird const&&) noexcept {}
+  };
+
+  // lvalue -> rvalue
+  static MoveNothrow<true> mnt;
+  static MoveOnly mo;
+  static MoveOnly const cmo{};
+  static Weird w{};
+  static Weird const cw{};
+
+  /* type */ {
+    CHECK(std::is_same<decltype(slb::move_if_noexcept(mnt)),
+                       MoveNothrow<true>&&>::value);
+    CHECK(std::is_same<decltype(slb::move_if_noexcept(mo)), MoveOnly&&>::value);
+    CHECK(std::is_same<decltype(slb::move_if_noexcept(cmo)),
+                       MoveOnly const&&>::value);
+    CHECK(std::is_same<decltype(slb::move_if_noexcept(w)), Weird&&>::value);
+    CHECK(std::is_same<decltype(slb::move_if_noexcept(cw)),
+                       Weird const&&>::value);
+  }
+  /* `noexcept` */ {
+    CHECK(noexcept(slb::move_if_noexcept(mnt)));
+    CHECK(noexcept(slb::move_if_noexcept(mo)));
+    CHECK(noexcept(slb::move_if_noexcept(cmo)));
+    CHECK(noexcept(slb::move_if_noexcept(w)));
+    CHECK(noexcept(slb::move_if_noexcept(cw)));
+  }
+#ifndef _MSC_VER // MSVC doesn't like constexpr rvalue-refs to static variables.
+  /* C++11 `constexpr` */ {
+    constexpr MoveNothrow<true>&& a = slb::move_if_noexcept(mnt);
+    constexpr MoveOnly&& b = slb::move_if_noexcept(mo);
+    constexpr MoveOnly const&& c = slb::move_if_noexcept(cmo);
+    constexpr Weird&& d = slb::move_if_noexcept(w);
+    constexpr Weird const&& e = slb::move_if_noexcept(cw);
+    (void)a;
+    (void)b;
+    (void)c;
+    (void)d;
+    (void)e;
+  }
+#endif
+
+  // lvalue -> lvalue const
+  static MoveNothrow<true> const cmnt{};
+  static MoveNothrow<false> mnf;
+  static MoveNothrow<false> const cmnf{};
+  static Legacy l;
+  static Legacy const cl{};
+
+  /* type */ {
+    CHECK(std::is_same<decltype(slb::move_if_noexcept(cmnt)),
+                       MoveNothrow<true> const&>::value);
+    CHECK(std::is_same<decltype(slb::move_if_noexcept(mnf)),
+                       MoveNothrow<false> const&>::value);
+    CHECK(std::is_same<decltype(slb::move_if_noexcept(cmnf)),
+                       MoveNothrow<false> const&>::value);
+    CHECK(
+        std::is_same<decltype(slb::move_if_noexcept(l)), Legacy const&>::value);
+    CHECK(std::is_same<decltype(slb::move_if_noexcept(cl)),
+                       Legacy const&>::value);
+  }
+  /* `noexcept` */ {
+    CHECK(noexcept(slb::move_if_noexcept(cmnt)));
+    CHECK(noexcept(slb::move_if_noexcept(mnf)));
+    CHECK(noexcept(slb::move_if_noexcept(cmnf)));
+    CHECK(noexcept(slb::move_if_noexcept(l)));
+    CHECK(noexcept(slb::move_if_noexcept(cl)));
+  }
+  /* C++11 `constexpr` */ {
+    constexpr MoveNothrow<true> const& a = slb::move_if_noexcept(cmnt);
+    constexpr MoveNothrow<false> const& b = slb::move_if_noexcept(mnf);
+    constexpr MoveNothrow<false> const& c = slb::move_if_noexcept(cmnf);
+    constexpr Legacy const& d = slb::move_if_noexcept(l);
+    constexpr Legacy const& e = slb::move_if_noexcept(cl);
+    (void)a;
+    (void)b;
+    (void)c;
+    (void)d;
+    (void)e;
+  }
+
+  CHECK_CXX14_CONSTEXPR(move_if_noexcept, {
+    int x = 0;
+    int const cx = 1;
+    return slb::move_if_noexcept(x) == 0 && slb::move_if_noexcept(cx) == 1;
+  });
+}
+
 // [utility.as_const], as_const
 
 // template<class T>

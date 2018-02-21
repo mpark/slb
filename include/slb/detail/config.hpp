@@ -27,6 +27,10 @@
 #define __has_feature(x) 0
 #endif
 
+#ifndef __has_warning
+#define __has_warning(x) 0
+#endif
+
 // N3652: "Relaxing constraints on constexpr functions / constexpr member
 // functions and implicit const"
 #if (defined(__cpp_constexpr) && __cpp_constexpr >= 201304) ||                 \
