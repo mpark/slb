@@ -14,12 +14,7 @@
 #include <utility>
 
 #include "../catch.hpp"
-
-#define CHECK_NESTED(...)                                                      \
-  do {                                                                         \
-    INFO(__FILE__ "(" << __LINE__ << "): " #__VA_ARGS__);                      \
-    check_##__VA_ARGS__;                                                       \
-  } while (false)
+#include "../test_utils.hpp"
 
 // [func.memfn], member function adaptors
 
@@ -70,8 +65,8 @@ void check_mem_obj(R&& r,
                    F mem,
                    T1&& t1) {
   CHECK(::addressof(mem(std::forward<T1>(t1))) == ::addressof(r));
-  CHECK(std::is_same<decltype(mem(std::forward<T1>(t1))), R&&>::value);
-  CHECK(noexcept(mem(std::forward<T1>(t1))) == IsNothrow);
+  CHECK_DECLTYPE(R&&, mem(std::forward<T1>(t1)));
+  CHECK_NOEXCEPT_IF(IsNothrow, mem(std::forward<T1>(t1)));
 }
 
 template <typename R, bool IsNothrow, typename F, typename... Tn>
@@ -80,13 +75,13 @@ void check_mem_fun(R const& r,
                    F mem,
                    Tn&&... tn) {
   CHECK(mem(std::forward<Tn>(tn)...) == r);
-  CHECK(std::is_same<decltype(mem(std::forward<Tn>(tn)...)), R>::value);
-  CHECK(noexcept(mem(std::forward<Tn>(tn)...)) == IsNothrow);
+  CHECK_DECLTYPE(R, mem(std::forward<Tn>(tn)...));
+  CHECK_NOEXCEPT_IF(IsNothrow, mem(std::forward<Tn>(tn)...));
 }
 
 TEST_CASE("mem_fn(mem-obj-ptr)", "[func.memfn]") {
   auto mem = slb::mem_fn(&C::obj);
-  CHECK(noexcept(slb::mem_fn(&C::obj)));
+  CHECK_NOEXCEPT(slb::mem_fn(&C::obj));
 
   /* simple call wrapper */ {
     using call_wrapper = decltype(mem);
@@ -158,7 +153,7 @@ TEST_CASE("mem_fn(mem-obj-ptr)", "[func.memfn]") {
 
 TEST_CASE("mem_fn(mem-fun-ptr)", "[func.memfn]") {
   auto mem = slb::mem_fn(&C::fun);
-  CHECK(noexcept(slb::mem_fn(&C::fun)));
+  CHECK_NOEXCEPT(slb::mem_fn(&C::fun));
 
   /* simple call wrapper */ {
     using call_wrapper = decltype(mem);

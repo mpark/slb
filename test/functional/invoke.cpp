@@ -14,12 +14,7 @@
 #include <utility>
 
 #include "../catch.hpp"
-
-#define CHECK_NESTED(...)                                                      \
-  do {                                                                         \
-    INFO(__FILE__ "(" << __LINE__ << "): " #__VA_ARGS__);                      \
-    check_##__VA_ARGS__;                                                       \
-  } while (false)
+#include "../test_utils.hpp"
 
 // [func.invoke], invoke
 
@@ -81,11 +76,9 @@ void check_invoke_obj(R&& r,
                       A1&& a1) {
   CHECK(::addressof(slb::invoke(std::forward<F>(f), std::forward<A1>(a1))) ==
         ::addressof(r));
-  CHECK(std::is_same<decltype(
-                         slb::invoke(std::forward<F>(f), std::forward<A1>(a1))),
-                     R&&>::value);
-  CHECK(noexcept(slb::invoke(std::forward<F>(f), std::forward<A1>(a1))) ==
-        IsNothrow);
+  CHECK_DECLTYPE(R&&, slb::invoke(std::forward<F>(f), std::forward<A1>(a1)));
+  CHECK_NOEXCEPT_IF(IsNothrow,
+                    slb::invoke(std::forward<F>(f), std::forward<A1>(a1)));
 }
 
 template <typename R, bool IsNothrow, typename F, typename... Args>
@@ -94,11 +87,10 @@ void check_invoke_fun(R&& r,
                       F&& f,
                       Args&&... args) {
   CHECK(slb::invoke(std::forward<F>(f), std::forward<Args>(args)...) == r);
-  CHECK(std::is_same<decltype(slb::invoke(std::forward<F>(f),
-                                          std::forward<Args>(args)...)),
-                     R>::value);
-  CHECK(noexcept(slb::invoke(std::forward<F>(f),
-                             std::forward<Args>(args)...)) == IsNothrow);
+  CHECK_DECLTYPE(R,
+                 slb::invoke(std::forward<F>(f), std::forward<Args>(args)...));
+  CHECK_NOEXCEPT_IF(
+      IsNothrow, slb::invoke(std::forward<F>(f), std::forward<Args>(args)...));
 }
 
 TEST_CASE("invoke(mem-obj-ptr)", "[func.invoke]") {

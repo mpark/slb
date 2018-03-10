@@ -14,6 +14,7 @@
 #include <type_traits>
 
 #include "catch.hpp"
+#include "test_utils.hpp"
 
 #define CHECK_NESTED(...)                                                      \
   do {                                                                         \
@@ -43,7 +44,7 @@ TEST_CASE("integral_constant", "[meta.help]") {
   /* constexpr operator value_type() const noexcept; */ {
     slb::integral_constant<int, 0> ic;
     CHECK(std::is_convertible<decltype(ic), int>::value);
-    CHECK(noexcept(static_cast<int>(ic)));
+    CHECK_NOEXCEPT(static_cast<int>(ic));
     CHECK(static_cast<int>(ic) == 0);
     constexpr int ic_value = ic;
     CHECK(ic_value == 0);
@@ -51,8 +52,8 @@ TEST_CASE("integral_constant", "[meta.help]") {
 
   /* constexpr value_type operator()() const noexcept; */ {
     slb::integral_constant<int, 0> ic;
-    CHECK(std::is_same<decltype(ic()), int>::value);
-    CHECK(noexcept(ic()));
+    CHECK_DECLTYPE(int, ic());
+    CHECK_NOEXCEPT(ic());
     CHECK(ic() == 0);
     constexpr int ic_value = ic();
     CHECK(ic_value == 0);
@@ -1084,11 +1085,9 @@ TEST_CASE("aligned_union", "[meta.trans.other]") {
   // `Types`.
   {
     using au0 = slb::aligned_union<0, int, double>;
-    CHECK(
-        std::is_same<decltype(au0::alignment_value), std::size_t const>::value);
+    CHECK_DECLTYPE(std::size_t const, au0::alignment_value);
     CHECK(au0::alignment_value == alignof(U));
-    constexpr std::size_t au0_alignment_value = au0::alignment_value;
-    (void)au0_alignment_value;
+    CHECK_CXX11_CONSTEXPR(member, au0::alignment_value);
   }
 }
 
@@ -1512,84 +1511,72 @@ TEST_CASE("endian", "[meta.endian]") {
 // template<class T>
 //   inline constexpr bool is_void_v = is_void<T>::value;
 TEST_CASE("is_void_v", "[meta.unary.cat]") {
-  CHECK(std::is_same<decltype(slb::is_void_v<void>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_void_v<void>);
   CHECK(slb::is_void_v<void> == slb::is_void<void>::value);
-  constexpr bool v = slb::is_void_v<void>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_void_v<void>);
 }
 
 // template<class T>
 //   inline constexpr bool is_null_pointer_v = is_null_pointer<T>::value;
 TEST_CASE("is_null_pointer_v", "[meta.unary.cat]") {
   using nullptr_t = decltype(nullptr);
-  CHECK(std::is_same<decltype(slb::is_null_pointer_v<nullptr_t>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_null_pointer_v<nullptr_t>);
   CHECK(slb::is_null_pointer_v<nullptr_t> ==
         slb::is_null_pointer<nullptr_t>::value);
-  constexpr bool v = slb::is_null_pointer_v<nullptr_t>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_null_pointer_v<nullptr_t>);
 }
 
 // template<class T>
 //   inline constexpr bool is_integral_v = is_integral<T>::value;
 TEST_CASE("is_integral_v", "[meta.unary.cat]") {
-  CHECK(std::is_same<decltype(slb::is_integral_v<int>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_integral_v<int>);
   CHECK(slb::is_integral_v<int> == slb::is_integral<int>::value);
-  constexpr bool v = slb::is_integral_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_integral_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_floating_point_v = is_floating_point<T>::value;
 TEST_CASE("is_floating_point_v", "[meta.unary.cat]") {
-  CHECK(std::is_same<decltype(slb::is_floating_point_v<double>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_floating_point_v<double>);
   CHECK(slb::is_floating_point_v<double> ==
         slb::is_floating_point<double>::value);
-  constexpr bool v = slb::is_floating_point_v<double>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_floating_point_v<double>);
 }
 
 // template<class T>
 //   inline constexpr bool is_array_v = is_array<T>::value;
 TEST_CASE("is_array_v", "[meta.unary.cat]") {
-  CHECK(std::is_same<decltype(slb::is_array_v<int[3]>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_array_v<int[3]>);
   CHECK(slb::is_array_v<int[3]> == slb::is_array<int[3]>::value);
-  constexpr bool v = slb::is_array_v<int[3]>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_array_v<int[3]>);
 }
 
 // template<class T>
 //   inline constexpr bool is_pointer_v = is_pointer<T>::value;
 TEST_CASE("is_pointer_v", "[meta.unary.cat]") {
-  CHECK(std::is_same<decltype(slb::is_pointer_v<int*>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_pointer_v<int*>);
   CHECK(slb::is_pointer_v<int*> == slb::is_pointer<int*>::value);
-  constexpr bool v = slb::is_pointer_v<int*>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_pointer_v<int*>);
 }
 
 // template<class T>
 //   inline constexpr bool is_lvalue_reference_v
 //     = is_lvalue_reference<T>::value;
 TEST_CASE("is_lvalue_reference_v", "[meta.unary.cat]") {
-  CHECK(std::is_same<decltype(slb::is_lvalue_reference_v<int&>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_lvalue_reference_v<int&>);
   CHECK(slb::is_lvalue_reference_v<int&> ==
         slb::is_lvalue_reference<int&>::value);
-  constexpr bool v = slb::is_lvalue_reference_v<int&>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_lvalue_reference_v<int&>);
 }
 
 // template<class T>
 //   inline constexpr bool is_rvalue_reference_v =
 //   is_rvalue_reference<T>::value;
 TEST_CASE("is_rvalue_reference_v", "[meta.unary.cat]") {
-  CHECK(std::is_same<decltype(slb::is_rvalue_reference_v<int&&>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_rvalue_reference_v<int&&>);
   CHECK(slb::is_rvalue_reference_v<int&&> ==
         slb::is_rvalue_reference<int&&>::value);
-  constexpr bool v = slb::is_rvalue_reference_v<int&&>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_rvalue_reference_v<int&&>);
 }
 
 // template<class T>
@@ -1597,12 +1584,10 @@ TEST_CASE("is_rvalue_reference_v", "[meta.unary.cat]") {
 //     = is_member_object_pointer<T>::value;
 TEST_CASE("is_member_object_pointer_v", "[meta.unary.cat]") {
   class C {};
-  CHECK(std::is_same<decltype(slb::is_member_object_pointer_v<int C::*>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_member_object_pointer_v<int C::*>);
   CHECK(slb::is_member_object_pointer_v<int C::*> ==
         slb::is_member_object_pointer<int C::*>::value);
-  constexpr bool v = slb::is_member_object_pointer_v<int C::*>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_member_object_pointer_v<int C::*>);
 }
 
 // template<class T>
@@ -1610,62 +1595,53 @@ TEST_CASE("is_member_object_pointer_v", "[meta.unary.cat]") {
 //     = is_member_function_pointer<T>::value;
 TEST_CASE("is_member_function_pointer_v", "[meta.unary.cat]") {
   class C {};
-  CHECK(std::is_same<decltype(slb::is_member_function_pointer_v<int (C::*)()>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_member_function_pointer_v<int (C::*)()>);
   CHECK(slb::is_member_function_pointer_v<int (C::*)()> ==
         slb::is_member_function_pointer<int (C::*)()>::value);
-  constexpr bool v = slb::is_member_function_pointer_v<int (C::*)()>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_member_function_pointer_v<int (C::*)()>);
 }
 
 // template<class T>
 //   inline constexpr bool is_enum_v = is_enum<T>::value;
 TEST_CASE("is_enum_v", "[meta.unary.cat]") {
   enum E {};
-  CHECK(std::is_same<decltype(slb::is_enum_v<E>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_enum_v<E>);
   CHECK(slb::is_enum_v<E> == slb::is_enum<E>::value);
-  constexpr bool v = slb::is_enum_v<E>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_enum_v<E>);
 }
 
 // template<class T>
 //   inline constexpr bool is_union_v = is_union<T>::value;
 TEST_CASE("is_union_v", "[meta.unary.cat]") {
   union U {};
-  CHECK(std::is_same<decltype(slb::is_union_v<U>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_union_v<U>);
   CHECK(slb::is_union_v<U> == slb::is_union<U>::value);
-  constexpr bool v = slb::is_union_v<U>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_union_v<U>);
 }
 
 // template<class T>
 //   inline constexpr bool is_class_v = is_class<T>::value;
 TEST_CASE("is_class_v", "[meta.unary.cat]") {
   class C {};
-  CHECK(std::is_same<decltype(slb::is_class_v<C>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_class_v<C>);
   CHECK(slb::is_class_v<C> == slb::is_class<C>::value);
-  constexpr bool v = slb::is_class_v<C>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_class_v<C>);
 }
 
 // template<class T>
 //   inline constexpr bool is_function_v = is_function<T>::value;
 TEST_CASE("is_function_v", "[meta.unary.cat]") {
   {
-    CHECK(
-        std::is_same<decltype(slb::is_function_v<void()>), bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::is_function_v<void()>);
     CHECK(slb::is_function_v<void()> == slb::is_function<void()>::value);
-    constexpr bool v = slb::is_function_v<void()>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::is_function_v<void()>);
   }
 
   {
-    CHECK(std::is_same<decltype(slb::is_function_v<void() noexcept>),
-                       bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::is_function_v<void() noexcept>);
     CHECK(slb::is_function_v<void() noexcept> ==
           slb::is_function<void() noexcept>::value);
-    constexpr bool v = slb::is_function_v<void() noexcept>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::is_function_v<void() noexcept>);
   }
 }
 
@@ -1674,67 +1650,59 @@ TEST_CASE("is_function_v", "[meta.unary.cat]") {
 // template<class T>
 //   inline constexpr bool is_reference_v = is_reference<T>::value;
 TEST_CASE("is_reference_v", "[meta.unary.comp]") {
-  CHECK(std::is_same<decltype(slb::is_reference_v<int&>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_reference_v<int&>);
   CHECK(slb::is_reference_v<int&> == slb::is_reference<int&>::value);
-  constexpr bool v = slb::is_reference_v<int&>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_reference_v<int&>);
 }
 
 // template<class T>
 //   inline constexpr bool is_arithmetic_v = is_arithmetic<T>::value;
 TEST_CASE("is_arithmetic_v", "[meta.unary.comp]") {
-  CHECK(std::is_same<decltype(slb::is_arithmetic_v<int>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_arithmetic_v<int>);
   CHECK(slb::is_arithmetic_v<int> == slb::is_arithmetic<int>::value);
-  constexpr bool v = slb::is_arithmetic_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_arithmetic_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_fundamental_v = is_fundamental<T>::value;
 TEST_CASE("is_fundamental_v", "[meta.unary.comp]") {
-  CHECK(std::is_same<decltype(slb::is_fundamental_v<int>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_fundamental_v<int>);
   CHECK(slb::is_fundamental_v<int> == slb::is_fundamental<int>::value);
-  constexpr bool v = slb::is_fundamental_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_fundamental_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_object_v = is_object<T>::value;
 TEST_CASE("is_object_v", "[meta.unary.comp]") {
-  CHECK(std::is_same<decltype(slb::is_object_v<int>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_object_v<int>);
   CHECK(slb::is_object_v<int> == slb::is_object<int>::value);
-  constexpr bool v = slb::is_object_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_object_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_scalar_v = is_scalar<T>::value;
 TEST_CASE("is_scalar_v", "[meta.unary.comp]") {
-  CHECK(std::is_same<decltype(slb::is_scalar_v<int>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_scalar_v<int>);
   CHECK(slb::is_scalar_v<int> == slb::is_scalar<int>::value);
-  constexpr bool v = slb::is_scalar_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_scalar_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_compound_v = is_compound<T>::value;
 TEST_CASE("is_compound_v", "[meta.unary.comp]") {
-  CHECK(std::is_same<decltype(slb::is_compound_v<int[3]>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_compound_v<int[3]>);
   CHECK(slb::is_compound_v<int[3]> == slb::is_compound<int[3]>::value);
-  constexpr bool v = slb::is_compound_v<int[3]>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_compound_v<int[3]>);
 }
 
 // template<class T>
 //   inline constexpr bool is_member_pointer_v = is_member_pointer<T>::value;
 TEST_CASE("is_member_pointer_v", "[meta.unary.comp]") {
   class C {};
-  CHECK(std::is_same<decltype(slb::is_member_pointer_v<int C::*>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_member_pointer_v<int C::*>);
   CHECK(slb::is_member_pointer_v<int C::*> ==
         slb::is_member_pointer<int C::*>::value);
-  constexpr bool v = slb::is_member_pointer_v<int C::*>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_member_pointer_v<int C::*>);
 }
 
 // [meta.unary.prop], type properties
@@ -1742,30 +1710,26 @@ TEST_CASE("is_member_pointer_v", "[meta.unary.comp]") {
 // template<class T>
 //   inline constexpr bool is_const_v = is_const<T>::value;
 TEST_CASE("is_const_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_const_v<int const>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_const_v<int const>);
   CHECK(slb::is_const_v<int const> == slb::is_const<int const>::value);
-  constexpr bool v = slb::is_const_v<int const>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_const_v<int const>);
 }
 
 // template<class T>
 //   inline constexpr bool is_volatile_v = is_volatile<T>::value;
 TEST_CASE("is_volatile_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_volatile_v<int volatile>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_volatile_v<int volatile>);
   CHECK(slb::is_volatile_v<int volatile> ==
         slb::is_volatile<int volatile>::value);
-  constexpr bool v = slb::is_volatile_v<int volatile>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_volatile_v<int volatile>);
 }
 
 // template<class T>
 //   inline constexpr bool is_trivial_v = is_trivial<T>::value;
 TEST_CASE("is_trivial_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_trivial_v<int>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_trivial_v<int>);
   CHECK(slb::is_trivial_v<int> == slb::is_trivial<int>::value);
-  constexpr bool v = slb::is_trivial_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_trivial_v<int>);
 }
 
 #if SLB_TRIVIALITY_TRAITS
@@ -1773,33 +1737,28 @@ TEST_CASE("is_trivial_v", "[meta.unary.prop]") {
 //   inline constexpr bool is_trivially_copyable_v
 //     = is_trivially_copyable<T>::value;
 TEST_CASE("is_trivially_copyable_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_trivially_copyable_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_trivially_copyable_v<int>);
   CHECK(slb::is_trivially_copyable_v<int> ==
         slb::is_trivially_copyable<int>::value);
-  constexpr bool v = slb::is_trivially_copyable_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_trivially_copyable_v<int>);
 }
 #endif
 
 // template<class T>
 //   inline constexpr bool is_standard_layout_v = is_standard_layout<T>::value;
 TEST_CASE("is_standard_layout_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_standard_layout_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_standard_layout_v<int>);
   CHECK(slb::is_standard_layout_v<int> == slb::is_standard_layout<int>::value);
-  constexpr bool v = slb::is_standard_layout_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_standard_layout_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_empty_v = is_empty<T>::value;
 TEST_CASE("is_empty_v", "[meta.unary.prop]") {
   struct Empty {};
-  CHECK(std::is_same<decltype(slb::is_empty_v<Empty>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_empty_v<Empty>);
   CHECK(slb::is_empty_v<Empty> == slb::is_empty<Empty>::value);
-  constexpr bool v = slb::is_empty_v<Empty>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_empty_v<Empty>);
 }
 
 // template<class T>
@@ -1808,12 +1767,10 @@ TEST_CASE("is_polymorphic_v", "[meta.unary.prop]") {
   class Polymorphic {
     virtual void fun() {}
   };
-  CHECK(std::is_same<decltype(slb::is_polymorphic_v<Polymorphic>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_polymorphic_v<Polymorphic>);
   CHECK(slb::is_polymorphic_v<Polymorphic> ==
         slb::is_polymorphic<Polymorphic>::value);
-  constexpr bool v = slb::is_polymorphic_v<Polymorphic>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_polymorphic_v<Polymorphic>);
 }
 
 // template<class T>
@@ -1822,11 +1779,9 @@ TEST_CASE("is_abstract_v", "[meta.unary.prop]") {
   class Abstract {
     virtual void fun() = 0;
   };
-  CHECK(
-      std::is_same<decltype(slb::is_abstract_v<Abstract>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_abstract_v<Abstract>);
   CHECK(slb::is_abstract_v<Abstract> == slb::is_abstract<Abstract>::value);
-  constexpr bool v = slb::is_abstract_v<Abstract>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_abstract_v<Abstract>);
 }
 
 #if __cpp_lib_is_final || __has_feature(is_final) || (__GNUC__ > 4) ||         \
@@ -1835,10 +1790,9 @@ TEST_CASE("is_abstract_v", "[meta.unary.prop]") {
 //   inline constexpr bool is_final_v = is_final<T>::value;
 TEST_CASE("is_final_v", "[meta.unary.prop]") {
   class Final final {};
-  CHECK(std::is_same<decltype(slb::is_final_v<Final>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_final_v<Final>);
   CHECK(slb::is_final_v<Final> == slb::is_final<Final>::value);
-  constexpr bool v = slb::is_final_v<Final>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_final_v<Final>);
 }
 #endif
 
@@ -1849,121 +1803,100 @@ TEST_CASE("is_aggregate_v", "[meta.unary.prop]") {
   struct Aggregate {
     int obj;
   };
-  CHECK(std::is_same<decltype(slb::is_aggregate_v<Aggregate>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_aggregate_v<Aggregate>);
   CHECK(slb::is_aggregate_v<Aggregate> == slb::is_aggregate<Aggregate>::value);
-  constexpr bool v = slb::is_aggregate_v<Aggregate>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_aggregate_v<Aggregate>);
 }
 #endif
 
 // template<class T>
 //   inline constexpr bool is_signed_v = is_signed<T>::value;
 TEST_CASE("is_signed_v", "[meta.unary.prop]") {
-  CHECK(
-      std::is_same<decltype(slb::is_signed_v<signed int>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_signed_v<signed int>);
   CHECK(slb::is_signed_v<signed int> == slb::is_signed<signed int>::value);
-  constexpr bool v = slb::is_signed_v<signed int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_signed_v<signed int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_unsigned_v = is_unsigned<T>::value;
 TEST_CASE("is_unsigned_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_unsigned_v<unsigned int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_unsigned_v<unsigned int>);
   CHECK(slb::is_unsigned_v<unsigned int> ==
         slb::is_unsigned<unsigned int>::value);
-  constexpr bool v = slb::is_unsigned_v<unsigned int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_unsigned_v<unsigned int>);
 }
 
 // template<class T, class... Args>
 //   inline constexpr bool is_constructible_v
 //     = is_constructible<T, Args...>::value;
 TEST_CASE("is_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_constructible_v<int, int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_constructible_v<int, int>);
   CHECK(slb::is_constructible_v<int, int> ==
         slb::is_constructible<int, int>::value);
-  constexpr bool v = slb::is_constructible_v<int, int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_constructible_v<int, int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_default_constructible_v
 //     = is_default_constructible<T>::value;
 TEST_CASE("is_default_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_default_constructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_default_constructible_v<int>);
   CHECK(slb::is_default_constructible_v<int> ==
         slb::is_default_constructible<int>::value);
-  constexpr bool v = slb::is_default_constructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_default_constructible_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_copy_constructible_v
 //     = is_copy_constructible<T>::value;
 TEST_CASE("is_copy_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_copy_constructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_copy_constructible_v<int>);
   CHECK(slb::is_copy_constructible_v<int> ==
         slb::is_copy_constructible<int>::value);
-  constexpr bool v = slb::is_copy_constructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_copy_constructible_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_move_constructible_v
 //     = is_move_constructible<T>::value;
 TEST_CASE("is_move_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_move_constructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_move_constructible_v<int>);
   CHECK(slb::is_move_constructible_v<int> ==
         slb::is_move_constructible<int>::value);
-  constexpr bool v = slb::is_move_constructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_move_constructible_v<int>);
 }
 
 // template<class T, class U>
 //   inline constexpr bool is_assignable_v = is_assignable<T, U>::value;
 TEST_CASE("is_assignable_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_assignable_v<int&, int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_assignable_v<int&, int>);
   CHECK(slb::is_assignable_v<int&, int> ==
         slb::is_assignable<int&, int>::value);
-  constexpr bool v = slb::is_assignable_v<int&, int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_assignable_v<int&, int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_copy_assignable_v = is_copy_assignable<T>::value;
 TEST_CASE("is_copy_assignable_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_copy_assignable_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_copy_assignable_v<int>);
   CHECK(slb::is_copy_assignable_v<int> == slb::is_copy_assignable<int>::value);
-  constexpr bool v = slb::is_copy_assignable_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_copy_assignable_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_move_assignable_v = is_move_assignable<T>::value;
 TEST_CASE("is_move_assignable_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_move_assignable_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_move_assignable_v<int>);
   CHECK(slb::is_move_assignable_v<int> == slb::is_move_assignable<int>::value);
-  constexpr bool v = slb::is_move_assignable_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_move_assignable_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_destructible_v = is_destructible<T>::value;
 TEST_CASE("is_destructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_destructible_v<int>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_destructible_v<int>);
   CHECK(slb::is_destructible_v<int> == slb::is_destructible<int>::value);
-  constexpr bool v = slb::is_destructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_destructible_v<int>);
 }
 
 #if SLB_TRIVIALITY_TRAITS
@@ -1972,84 +1905,70 @@ TEST_CASE("is_destructible_v", "[meta.unary.prop]") {
 //   inline constexpr bool is_trivially_constructible_v
 //     = is_trivially_constructible<T, Args...>::value;
 TEST_CASE("is_trivially_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_trivially_constructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_trivially_constructible_v<int>);
   CHECK(slb::is_trivially_constructible_v<int> ==
         slb::is_trivially_constructible<int>::value);
-  constexpr bool v = slb::is_trivially_constructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_trivially_constructible_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_trivially_default_constructible_v
 //     = is_trivially_default_constructible<T>::value;
 TEST_CASE("is_trivially_default_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_trivially_default_constructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_trivially_default_constructible_v<int>);
   CHECK(slb::is_trivially_default_constructible_v<int> ==
         slb::is_trivially_default_constructible<int>::value);
-  constexpr bool v = slb::is_trivially_default_constructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_trivially_default_constructible_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_trivially_copy_constructible_v
 //     = is_trivially_copy_constructible<T>::value;
 TEST_CASE("is_trivially_copy_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_trivially_copy_constructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_trivially_copy_constructible_v<int>);
   CHECK(slb::is_trivially_copy_constructible_v<int> ==
         slb::is_trivially_copy_constructible<int>::value);
-  constexpr bool v = slb::is_trivially_copy_constructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_trivially_copy_constructible_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_trivially_move_constructible_v
 //     = is_trivially_move_constructible<T>::value;
 TEST_CASE("is_trivially_move_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_trivially_move_constructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_trivially_move_constructible_v<int>);
   CHECK(slb::is_trivially_move_constructible_v<int> ==
         slb::is_trivially_move_constructible<int>::value);
-  constexpr bool v = slb::is_trivially_move_constructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_trivially_move_constructible_v<int>);
 }
 
 // template<class T, class U>
 //   inline constexpr bool is_trivially_assignable_v
 //     = is_trivially_assignable<T, U>::value;
 TEST_CASE("is_trivially_assignable_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_trivially_assignable_v<int&, int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_trivially_assignable_v<int&, int>);
   CHECK(slb::is_trivially_assignable_v<int&, int> ==
         slb::is_trivially_assignable<int&, int>::value);
-  constexpr bool v = slb::is_trivially_assignable_v<int&, int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_trivially_assignable_v<int&, int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_trivially_copy_assignable_v
 //     = is_trivially_copy_assignable<T>::value;
 TEST_CASE("is_trivially_copy_assignable_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_trivially_copy_assignable_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_trivially_copy_assignable_v<int>);
   CHECK(slb::is_trivially_copy_assignable_v<int> ==
         slb::is_trivially_copy_assignable<int>::value);
-  constexpr bool v = slb::is_trivially_copy_assignable_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_trivially_copy_assignable_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_trivially_move_assignable_v
 //     = is_trivially_move_assignable<T>::value;
 TEST_CASE("is_trivially_move_assignable_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_trivially_move_assignable_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_trivially_move_assignable_v<int>);
   CHECK(slb::is_trivially_move_assignable_v<int> ==
         slb::is_trivially_move_assignable<int>::value);
-  constexpr bool v = slb::is_trivially_move_assignable_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_trivially_move_assignable_v<int>);
 }
 
 #endif
@@ -2058,108 +1977,90 @@ TEST_CASE("is_trivially_move_assignable_v", "[meta.unary.prop]") {
 //   inline constexpr bool is_trivially_destructible_v
 //     = is_trivially_destructible<T>::value;
 TEST_CASE("is_trivially_destructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_trivially_destructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_trivially_destructible_v<int>);
   CHECK(slb::is_trivially_destructible_v<int> ==
         slb::is_trivially_destructible<int>::value);
-  constexpr bool v = slb::is_trivially_destructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_trivially_destructible_v<int>);
 }
 
 // template<class T, class... Args>
 //   inline constexpr bool is_nothrow_constructible_v
 //     = is_nothrow_constructible<T, Args...>::value;
 TEST_CASE("is_nothrow_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_nothrow_constructible_v<int, int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_nothrow_constructible_v<int, int>);
   CHECK(slb::is_nothrow_constructible_v<int, int> ==
         slb::is_nothrow_constructible<int, int>::value);
-  constexpr bool v = slb::is_nothrow_constructible_v<int, int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_nothrow_constructible_v<int, int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_nothrow_default_constructible_v
 //     = is_nothrow_default_constructible<T>::value;
 TEST_CASE("is_nothrow_default_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_nothrow_default_constructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_nothrow_default_constructible_v<int>);
   CHECK(slb::is_nothrow_default_constructible_v<int> ==
         slb::is_nothrow_default_constructible<int>::value);
-  constexpr bool v = slb::is_nothrow_default_constructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_nothrow_default_constructible_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_nothrow_copy_constructible_v
 //     = is_nothrow_copy_constructible<T>::value;
 TEST_CASE("is_nothrow_copy_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_nothrow_copy_constructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_nothrow_copy_constructible_v<int>);
   CHECK(slb::is_nothrow_copy_constructible_v<int> ==
         slb::is_nothrow_copy_constructible<int>::value);
-  constexpr bool v = slb::is_nothrow_copy_constructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_nothrow_copy_constructible_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_nothrow_move_constructible_v
 //     = is_nothrow_move_constructible<T>::value;
 TEST_CASE("is_nothrow_move_constructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_nothrow_move_constructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_nothrow_move_constructible_v<int>);
   CHECK(slb::is_nothrow_move_constructible_v<int> ==
         slb::is_nothrow_move_constructible<int>::value);
-  constexpr bool v = slb::is_nothrow_move_constructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_nothrow_move_constructible_v<int>);
 }
 
 // template<class T, class U>
 //   inline constexpr bool is_nothrow_assignable_v
 //     = is_nothrow_assignable<T, U>::value;
 TEST_CASE("is_nothrow_assignable_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_nothrow_assignable_v<int&, int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_nothrow_assignable_v<int&, int>);
   CHECK(slb::is_nothrow_assignable_v<int&, int> ==
         slb::is_nothrow_assignable<int&, int>::value);
-  constexpr bool v = slb::is_nothrow_assignable_v<int&, int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_nothrow_assignable_v<int&, int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_nothrow_copy_assignable_v
 //     = is_nothrow_copy_assignable<T>::value;
 TEST_CASE("is_nothrow_copy_assignable_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_nothrow_copy_assignable_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_nothrow_copy_assignable_v<int>);
   CHECK(slb::is_nothrow_copy_assignable_v<int> ==
         slb::is_nothrow_copy_assignable<int>::value);
-  constexpr bool v = slb::is_nothrow_copy_assignable_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_nothrow_copy_assignable_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_nothrow_move_assignable_v
 //     = is_nothrow_move_assignable<T>::value;
 TEST_CASE("is_nothrow_move_assignable_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_nothrow_move_assignable_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_nothrow_move_assignable_v<int>);
   CHECK(slb::is_nothrow_move_assignable_v<int> ==
         slb::is_nothrow_move_assignable<int>::value);
-  constexpr bool v = slb::is_nothrow_move_assignable_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_nothrow_move_assignable_v<int>);
 }
 
 // template<class T>
 //   inline constexpr bool is_nothrow_destructible_v
 //     = is_nothrow_destructible<T>::value;
 TEST_CASE("is_nothrow_destructible_v", "[meta.unary.prop]") {
-  CHECK(std::is_same<decltype(slb::is_nothrow_destructible_v<int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_nothrow_destructible_v<int>);
   CHECK(slb::is_nothrow_destructible_v<int> ==
         slb::is_nothrow_destructible<int>::value);
-  constexpr bool v = slb::is_nothrow_destructible_v<int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_nothrow_destructible_v<int>);
 }
 
 // template<class T>
@@ -2169,13 +2070,12 @@ TEST_CASE("has_virtual_destructor_v", "[meta.unary.prop]") {
   class WithVirtualDestructor {
     virtual ~WithVirtualDestructor() {}
   };
-  CHECK(std::is_same<decltype(
-                         slb::has_virtual_destructor_v<WithVirtualDestructor>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const,
+                 slb::has_virtual_destructor_v<WithVirtualDestructor>);
   CHECK(slb::has_virtual_destructor_v<WithVirtualDestructor> ==
         slb::has_virtual_destructor<WithVirtualDestructor>::value);
-  constexpr bool v = slb::has_virtual_destructor_v<WithVirtualDestructor>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v,
+                        slb::has_virtual_destructor_v<WithVirtualDestructor>);
 }
 
 // template<class T>
@@ -2188,16 +2088,15 @@ TEST_CASE("has_unique_object_representations_v", "[meta.unary.prop]") {
   class WithUniqueObjectRepresentations {
     int obj;
   };
-  CHECK(std::is_same<decltype(slb::has_unique_object_representations_v<
-                              WithUniqueObjectRepresentations>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const,
+                 slb::has_unique_object_representations_v<
+                     WithUniqueObjectRepresentations>);
   CHECK(slb::has_unique_object_representations_v<
             WithUniqueObjectRepresentations> ==
         slb::has_unique_object_representations<
             WithUniqueObjectRepresentations>::value);
   constexpr bool v =
       slb::has_unique_object_representations_v<WithUniqueObjectRepresentations>;
-  (void)v;
 }
 #endif
 
@@ -2206,31 +2105,25 @@ TEST_CASE("has_unique_object_representations_v", "[meta.unary.prop]") {
 // template<class T>
 //   inline constexpr size_t alignment_of_v = alignment_of<T>::value;
 TEST_CASE("alignment_of_v", "[meta.unary.prop.query]") {
-  CHECK(std::is_same<decltype(slb::alignment_of_v<int>),
-                     std::size_t const>::value);
+  CHECK_DECLTYPE(std::size_t const, slb::alignment_of_v<int>);
   CHECK(slb::alignment_of_v<int> == slb::alignment_of<int>::value);
   constexpr std::size_t v = slb::alignment_of_v<int>;
-  (void)v;
 }
 
 // template<class T>
 //   inline constexpr size_t rank_v = rank<T>::value;
 TEST_CASE("rank_v", "[meta.unary.prop.query]") {
-  CHECK(std::is_same<decltype(slb::rank_v<int[2][2][2]>),
-                     std::size_t const>::value);
+  CHECK_DECLTYPE(std::size_t const, slb::rank_v<int[2][2][2]>);
   CHECK(slb::rank_v<int[2][2][2]> == slb::rank<int[2][2][2]>::value);
   constexpr std::size_t v = slb::rank_v<int[2][2][2]>;
-  (void)v;
 }
 
 // template<class T, unsigned I = 0>
 //   inline constexpr size_t extent_v = extent<T, I>::value;
 TEST_CASE("extent_v", "[meta.unary.prop.query]") {
-  CHECK(std::is_same<decltype(slb::extent_v<int[2][3]>),
-                     std::size_t const>::value);
+  CHECK_DECLTYPE(std::size_t const, slb::extent_v<int[2][3]>);
   CHECK(slb::extent_v<int[2][3]> == slb::extent<int[2][3]>::value);
   constexpr std::size_t v = slb::extent_v<int[2][3]>;
-  (void)v;
 }
 
 // [meta.rel], type relations
@@ -2238,10 +2131,9 @@ TEST_CASE("extent_v", "[meta.unary.prop.query]") {
 // template<class T, class U>
 //   inline constexpr bool is_same_v = is_same<T, U>::value;
 TEST_CASE("is_same_v", "[meta.rel]") {
-  CHECK(std::is_same<decltype(slb::is_same_v<int, int>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_same_v<int, int>);
   CHECK(slb::is_same_v<int, int> == slb::is_same<int, int>::value);
-  constexpr bool v = slb::is_same_v<int, int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_same_v<int, int>);
 }
 
 // template<class Base, class Derived>
@@ -2249,23 +2141,19 @@ TEST_CASE("is_same_v", "[meta.rel]") {
 TEST_CASE("is_base_of_v", "[meta.rel]") {
   class Base {};
   class Derived : public Base {};
-  CHECK(std::is_same<decltype(slb::is_base_of_v<Base, Derived>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_base_of_v<Base, Derived>);
   CHECK(slb::is_base_of_v<Base, Derived> ==
         slb::is_base_of<Base, Derived>::value);
-  constexpr bool v = slb::is_base_of_v<Base, Derived>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_base_of_v<Base, Derived>);
 }
 
 // template<class From, class To>
 //   inline constexpr bool is_convertible_v = is_convertible<From, To>::value;
 TEST_CASE("is_convertible_v", "[meta.rel]") {
-  CHECK(std::is_same<decltype(slb::is_convertible_v<float, int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_convertible_v<float, int>);
   CHECK(slb::is_convertible_v<float, int> ==
         slb::is_convertible<float, int>::value);
-  constexpr bool v = slb::is_convertible_v<float, int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_convertible_v<float, int>);
 }
 
 // template<class Fn, class... ArgTypes>
@@ -2275,10 +2163,9 @@ TEST_CASE("is_invocable_v", "[meta.rel]") {
   struct F {
     int operator()(int) const noexcept { return 0; }
   };
-  CHECK(std::is_same<decltype(slb::is_invocable_v<F, int>), bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_invocable_v<F, int>);
   CHECK(slb::is_invocable_v<F, int> == slb::is_invocable<F, int>::value);
-  constexpr bool v = slb::is_invocable_v<F, int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_invocable_v<F, int>);
 }
 
 // template<class R, class Fn, class... ArgTypes>
@@ -2290,21 +2177,17 @@ TEST_CASE("is_invocable_r_v", "[meta.rel]") {
   };
 
   {
-    CHECK(std::is_same<decltype(slb::is_invocable_r_v<int, F, int>),
-                       bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::is_invocable_r_v<int, F, int>);
     CHECK(slb::is_invocable_r_v<int, F, int> ==
           slb::is_invocable_r<int, F, int>::value);
-    constexpr bool v = slb::is_invocable_r_v<int, F, int>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::is_invocable_r_v<int, F, int>);
   }
 
   {
-    CHECK(std::is_same<decltype(slb::is_invocable_r_v<void, F, int>),
-                       bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::is_invocable_r_v<void, F, int>);
     CHECK(slb::is_invocable_r_v<void, F, int> ==
           slb::is_invocable_r<void, F, int>::value);
-    constexpr bool v = slb::is_invocable_r_v<void, F, int>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::is_invocable_r_v<void, F, int>);
   }
 }
 
@@ -2315,12 +2198,10 @@ TEST_CASE("is_nothrow_invocable_v", "[meta.rel]") {
   struct F {
     int operator()(int) const noexcept { return 0; }
   };
-  CHECK(std::is_same<decltype(slb::is_nothrow_invocable_v<F, int>),
-                     bool const>::value);
+  CHECK_DECLTYPE(bool const, slb::is_nothrow_invocable_v<F, int>);
   CHECK(slb::is_nothrow_invocable_v<F, int> ==
         slb::is_nothrow_invocable<F, int>::value);
-  constexpr bool v = slb::is_nothrow_invocable_v<F, int>;
-  (void)v;
+  CHECK_CXX11_CONSTEXPR(v, slb::is_nothrow_invocable_v<F, int>);
 }
 
 // template<class R, class Fn, class... ArgTypes>
@@ -2332,21 +2213,17 @@ TEST_CASE("is_nothrow_invocable_r_v", "[meta.rel]") {
   };
 
   {
-    CHECK(std::is_same<decltype(slb::is_nothrow_invocable_r_v<int, F, int>),
-                       bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::is_nothrow_invocable_r_v<int, F, int>);
     CHECK(slb::is_nothrow_invocable_r_v<int, F, int> ==
           slb::is_nothrow_invocable_r<int, F, int>::value);
-    constexpr bool v = slb::is_nothrow_invocable_r_v<int, F, int>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::is_nothrow_invocable_r_v<int, F, int>);
   }
 
   {
-    CHECK(std::is_same<decltype(slb::is_nothrow_invocable_r_v<void, F, int>),
-                       bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::is_nothrow_invocable_r_v<void, F, int>);
     CHECK(slb::is_nothrow_invocable_r_v<void, F, int> ==
           slb::is_nothrow_invocable_r<void, F, int>::value);
-    constexpr bool v = slb::is_nothrow_invocable_r_v<void, F, int>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::is_nothrow_invocable_r_v<void, F, int>);
   }
 }
 
@@ -2356,28 +2233,23 @@ TEST_CASE("is_nothrow_invocable_r_v", "[meta.rel]") {
 //   inline constexpr bool conjunction_v = conjunction<B...>::value;
 TEST_CASE("conjunction_v", "[meta.logical]") {
   {
-    CHECK(std::is_same<decltype(slb::conjunction_v<>), bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::conjunction_v<>);
     CHECK(slb::conjunction_v<> == slb::conjunction<>::value);
-    constexpr bool v = slb::conjunction_v<>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::conjunction_v<>);
   }
 
   {
-    CHECK(std::is_same<decltype(slb::conjunction_v<slb::true_type>),
-                       bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::conjunction_v<slb::true_type>);
     CHECK(slb::conjunction_v<slb::true_type> ==
           slb::conjunction<slb::true_type>::value);
-    constexpr bool v = slb::conjunction_v<slb::true_type>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::conjunction_v<slb::true_type>);
   }
 
   {
-    CHECK(std::is_same<decltype(slb::conjunction_v<slb::false_type>),
-                       bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::conjunction_v<slb::false_type>);
     CHECK(slb::conjunction_v<slb::false_type> ==
           slb::conjunction<slb::false_type>::value);
-    constexpr bool v = slb::conjunction_v<slb::false_type>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::conjunction_v<slb::false_type>);
   }
 }
 
@@ -2385,28 +2257,23 @@ TEST_CASE("conjunction_v", "[meta.logical]") {
 //   inline constexpr bool disjunction_v = disjunction<B...>::value;
 TEST_CASE("disjunction_v", "[meta.logical]") {
   {
-    CHECK(std::is_same<decltype(slb::disjunction_v<>), bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::disjunction_v<>);
     CHECK(slb::disjunction_v<> == slb::disjunction<>::value);
-    constexpr bool v = slb::disjunction_v<>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::disjunction_v<>);
   }
 
   {
-    CHECK(std::is_same<decltype(slb::disjunction_v<slb::true_type>),
-                       bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::disjunction_v<slb::true_type>);
     CHECK(slb::disjunction_v<slb::true_type> ==
           slb::disjunction<slb::true_type>::value);
-    constexpr bool v = slb::disjunction_v<slb::true_type>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::disjunction_v<slb::true_type>);
   }
 
   {
-    CHECK(std::is_same<decltype(slb::disjunction_v<slb::false_type>),
-                       bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::disjunction_v<slb::false_type>);
     CHECK(slb::disjunction_v<slb::false_type> ==
           slb::disjunction<slb::false_type>::value);
-    constexpr bool v = slb::disjunction_v<slb::false_type>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::disjunction_v<slb::false_type>);
   }
 }
 
@@ -2414,21 +2281,17 @@ TEST_CASE("disjunction_v", "[meta.logical]") {
 //   inline constexpr bool negation_v = negation<B>::value;
 TEST_CASE("negation_v", "[meta.logical]") {
   {
-    CHECK(std::is_same<decltype(slb::negation_v<slb::true_type>),
-                       bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::negation_v<slb::true_type>);
     CHECK(slb::negation_v<slb::true_type> ==
           slb::negation<slb::true_type>::value);
-    constexpr bool v = slb::negation_v<slb::true_type>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::negation_v<slb::true_type>);
   }
 
   {
-    CHECK(std::is_same<decltype(slb::negation_v<slb::false_type>),
-                       bool const>::value);
+    CHECK_DECLTYPE(bool const, slb::negation_v<slb::false_type>);
     CHECK(slb::negation_v<slb::false_type> ==
           slb::negation<slb::false_type>::value);
-    constexpr bool v = slb::negation_v<slb::false_type>;
-    (void)v;
+    CHECK_CXX11_CONSTEXPR(v, slb::negation_v<slb::false_type>);
   }
 }
 

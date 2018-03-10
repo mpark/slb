@@ -15,14 +15,7 @@
 #include <utility>
 
 #include "catch.hpp"
-
-#define CHECK_CXX14_CONSTEXPR(Tag, ...)                                        \
-  struct check_cxx14_constexpr_helper_##Tag {                                  \
-    static SLB_CXX14_CONSTEXPR bool check(){__VA_ARGS__};                      \
-  };                                                                           \
-  SLB_CXX14_CONSTEXPR bool check_cxx14_constexpr_##Tag =                       \
-      check_cxx14_constexpr_helper_##Tag::check();                             \
-  CHECK(check_cxx14_constexpr_##Tag)
+#include "test_utils.hpp"
 
 // [utility.exchange], exchange
 
@@ -36,7 +29,7 @@ TEST_CASE("exchange", "[utility.exchange]") {
     void operator=(int x) { val = x; }
     T& operator=(T&&) = default;
   } obj(42);
-  CHECK(std::is_same<decltype(slb::exchange(obj, 43)), T>::value);
+  CHECK_DECLTYPE(T, slb::exchange(obj, 43));
   CHECK(slb::exchange(obj, 43).val == 42);
   CHECK(slb::exchange(obj, {44}).val == 43);
   CHECK(obj.val == 44);
@@ -471,11 +464,10 @@ TEST_CASE("integer_sequence", "[intseq.intseq]") {
 
   /* static constexpr size_t size() noexcept; */ {
     using is = slb::integer_sequence<int, 0, 1, 3, 2>;
-    CHECK(std::is_same<decltype(is::size()), std::size_t>::value);
-    CHECK(noexcept(is::size()));
+    CHECK_DECLTYPE(std::size_t, is::size());
+    CHECK_NOEXCEPT(is::size());
     CHECK(is::size() == 4);
-    constexpr std::size_t size = is::size();
-    (void)size;
+    CHECK_CXX11_CONSTEXPR(size, is::size());
   }
 
   /* integer_sequence<bool, Bs...> */ {
@@ -523,7 +515,7 @@ TEST_CASE("index_sequence", "[utility.syn]") {
 // template<class T, T N>
 //   using make_integer_sequence = integer_sequence<T, see below>;
 template <typename T>
-void test_make_integer_sequence() {
+void check_make_integer_sequence() {
   CHECK(std::is_same<slb::make_integer_sequence<T, 0>,
                      slb::integer_sequence<T>>::value);
 
@@ -550,21 +542,21 @@ void test_make_integer_sequence() {
 }
 
 TEST_CASE("make_integer_sequence", "[intseq.make]") {
-  test_make_integer_sequence<char>();
-  test_make_integer_sequence<signed char>();
-  test_make_integer_sequence<unsigned char>();
-  test_make_integer_sequence<char16_t>();
-  test_make_integer_sequence<char32_t>();
-  test_make_integer_sequence<wchar_t>();
-  test_make_integer_sequence<short>();
-  test_make_integer_sequence<int>();
-  test_make_integer_sequence<long>();
-  test_make_integer_sequence<long long>();
-  test_make_integer_sequence<unsigned short>();
-  test_make_integer_sequence<unsigned int>();
-  test_make_integer_sequence<unsigned long>();
-  test_make_integer_sequence<unsigned long long>();
-  test_make_integer_sequence<std::size_t>();
+  CHECK_NESTED(make_integer_sequence<char>());
+  CHECK_NESTED(make_integer_sequence<signed char>());
+  CHECK_NESTED(make_integer_sequence<unsigned char>());
+  CHECK_NESTED(make_integer_sequence<char16_t>());
+  CHECK_NESTED(make_integer_sequence<char32_t>());
+  CHECK_NESTED(make_integer_sequence<wchar_t>());
+  CHECK_NESTED(make_integer_sequence<short>());
+  CHECK_NESTED(make_integer_sequence<int>());
+  CHECK_NESTED(make_integer_sequence<long>());
+  CHECK_NESTED(make_integer_sequence<long long>());
+  CHECK_NESTED(make_integer_sequence<unsigned short>());
+  CHECK_NESTED(make_integer_sequence<unsigned int>());
+  CHECK_NESTED(make_integer_sequence<unsigned long>());
+  CHECK_NESTED(make_integer_sequence<unsigned long long>());
+  CHECK_NESTED(make_integer_sequence<std::size_t>());
 }
 
 // template<size_t N>

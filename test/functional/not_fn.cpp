@@ -15,12 +15,7 @@
 #include <utility>
 
 #include "../catch.hpp"
-
-#define CHECK_NESTED(...)                                                      \
-  do {                                                                         \
-    INFO(__FILE__ "(" << __LINE__ << "): " #__VA_ARGS__);                      \
-    check_##__VA_ARGS__;                                                       \
-  } while (false)
+#include "../test_utils.hpp"
 
 // [func.not_fn], function template not_fn
 
@@ -98,8 +93,8 @@ void check_not_fn(R&& r,
   CHECK(std::forward<F>(nf)(std::forward<Args>(args)...) == r);
   CHECK(std::is_same<decltype(std::forward<F>(nf)(std::forward<Args>(args)...)),
                      R>::value);
-  CHECK(noexcept(std::forward<F>(nf)(std::forward<Args>(args)...)) ==
-        IsNothrow);
+  CHECK_NOEXCEPT_IF(IsNothrow,
+                    std::forward<F>(nf)(std::forward<Args>(args)...));
 }
 
 TEST_CASE("not_fn(mem-obj-ptr)", "[func.not_fn]") {
