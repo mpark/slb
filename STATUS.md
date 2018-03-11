@@ -45,6 +45,7 @@
 
 #### `<utility>`
 
+  - `as_const`
   - `exchange`
   - `integral_constant::operator()`
   - Compile-time integer sequences
@@ -266,7 +267,7 @@
   - [ ] [P0004](https://wg21.link/P0004): Remove Deprecated iostreams aliases.
   - [ ] [P0006](https://wg21.link/P0006): Adopt Type Traits Variable Templates for C++17.
   - [ ] [P0092](https://wg21.link/P0092): Polishing `<chrono>`
-  - [ ] [P0007](https://wg21.link/P0007): Constant View: A proposal for a `std::as_const` helper function template.
+  - [X] [P0007](https://wg21.link/P0007): Constant View: A proposal for a `std::as_const` helper function template.
   - [ ] [P0156](https://wg21.link/P0156): Variadic `lock_guard`(rev 3). Reverted in Kona
   - [ ] [P0074](https://wg21.link/P0074): Making `std::owner_less` more flexible
   - [X] [P0013](https://wg21.link/P0013): Logical Operator Type Traits

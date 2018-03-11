@@ -91,6 +91,53 @@ TEST_CASE("exchange", "[utility.exchange]") {
   }
 }
 
+// [utility.as_const], as_const
+
+// template<class T>
+//   constexpr add_const_t<T>& as_const(T& t) noexcept;
+// template<class T>
+//   void as_const(const T&&) = delete;
+namespace as_const_deleted {
+void as_const(...);
+using slb::as_const;
+
+template <typename T, typename Enable = void>
+struct no_result : std::true_type {};
+
+template <typename T>
+struct no_result<T,
+                 decltype(
+                     (void)(as_const_deleted::as_const(std::declval<T>())))>
+    : std::false_type {};
+} // namespace as_const_deleted
+
+TEST_CASE("as_const", "[utility.as_const]") {
+  static int t = 42;
+  CHECK(std::is_same<decltype(slb::as_const(t)), int const&>::value);
+  CHECK(noexcept(slb::as_const(t)));
+  CHECK(slb::as_const(t) == 42);
+  constexpr int const& tr = slb::as_const(t);
+  (void)tr;
+  CHECK_CXX14_CONSTEXPR(tv, {
+    int t = 42;
+    return slb::as_const(t) == t;
+  });
+
+  static constexpr int const ct = 42;
+  CHECK(std::is_same<decltype(slb::as_const(ct)), int const&>::value);
+  CHECK(noexcept(slb::as_const(ct)));
+  CHECK(slb::as_const(ct) == 42);
+  constexpr int const& ctr = slb::as_const(ct);
+  constexpr bool ctv = slb::as_const(ct) == ct;
+  (void)ctr;
+  (void)ctv;
+
+  using as_const_deleted::no_result;
+  CHECK(no_result<int&&>::value);
+  CHECK(no_result<int const&&>::value);
+  CHECK_FALSE(no_result<int&>::value);
+}
+
 // [intseq], Compile-time integer sequences
 
 // template<class T, T...>

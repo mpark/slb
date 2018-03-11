@@ -170,6 +170,18 @@ SLB_CXX14_CONSTEXPR T exchange(T& obj, U&& new_val) {
   return old_val;
 }
 
+// [utility.as_const], as_const
+
+template <typename T>
+constexpr typename std::add_const<T>::type& as_const(T& t) noexcept {
+  return t;
+}
+
+template <typename T>
+void as_const(T const&&) = delete;
+
+// [intseq], Compile-time integer sequences
+
 #if __cpp_lib_integer_sequence ||                                              \
     (_LIBCPP_VERSION >= 1101 && _LIBCPP_STD_VER > 11) || defined(_MSC_VER)
 // libstdc++ did not mark `size()` as `noexcept` until version 8.
@@ -181,8 +193,6 @@ SLB_CXX14_CONSTEXPR T exchange(T& obj, U&& new_val) {
 #else
 #define SLB_INTEGER_SEQUENCE 0 // not available
 #endif
-
-// [intseq], Compile-time integer sequences
 
 #if SLB_INTEGER_SEQUENCE == 2
 using std::integer_sequence;
