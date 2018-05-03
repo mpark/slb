@@ -514,8 +514,13 @@ template <typename T>
 struct is_class : slb::bool_constant<std::is_class<T>::value> {};
 #endif
 
-#if SLB_INTEGRAL_CONSTANT == 2 && __cpp_lib_is_null_pointer // C++14
+#if __cpp_lib_is_null_pointer // C++14
+#if SLB_INTEGRAL_CONSTANT == 2
 using std::is_null_pointer;
+#else
+template <typename T>
+struct is_null_pointer : slb::bool_constant<std::is_null_pointer<T>::value> {};
+#endif
 #else
 template <typename T>
 struct is_null_pointer
@@ -661,8 +666,13 @@ struct is_trivially_copyable {
 };
 #endif
 
-#if SLB_INTEGRAL_CONSTANT == 2 && __cpp_lib_is_final // C++14
+#if __cpp_lib_is_final // C++14
+#if SLB_INTEGRAL_CONSTANT == 2
 using std::is_final;
+#else
+template <typename T>
+struct is_final : slb::bool_constant<std::is_final<T>::value> {};
+#endif
 #elif __has_feature(is_final) || (__GNUC__ > 4) ||                             \
     ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7))
 template <typename T>
@@ -675,8 +685,13 @@ struct is_final {
 };
 #endif
 
-#if SLB_INTEGRAL_CONSTANT == 2 && __cpp_lib_is_aggregate // C++17
+#if __cpp_lib_is_aggregate // C++17
+#if SLB_INTEGRAL_CONSTANT == 2
 using std::is_aggregate;
+#else
+template <typename T>
+struct is_aggregate : slb::bool_constant<std::is_aggregate<T>::value> {};
+#endif
 #elif __has_feature(is_aggregate) || (__GNUC__ >= 7)
 template <typename T>
 struct is_aggregate : slb::bool_constant<__is_aggregate(T)> {};
@@ -939,11 +954,25 @@ struct is_trivially_move_assignable {
 };
 #endif
 
-#if SLB_INTEGRAL_CONSTANT == 2 && __cpp_lib_is_swappable // C++17
+#if __cpp_lib_is_swappable // C++17
+#if SLB_INTEGRAL_CONSTANT == 2
 using std::is_swappable_with;
 using std::is_swappable;
 using std::is_nothrow_swappable_with;
 using std::is_nothrow_swappable;
+#else
+template <typename T, typename U>
+struct is_swappable_with
+    : slb::bool_constant<std::is_swappable_with<T, U>::value> {};
+template <typename T>
+struct is_swappable : slb::bool_constant<std::is_swappable<T>::value> {};
+template <typename T, typename U>
+struct is_nothrow_swappable_with
+    : slb::bool_constant<std::is_nothrow_swappable_with<T, U>::value> {};
+template <typename T>
+struct is_nothrow_swappable
+    : slb::bool_constant<std::is_nothrow_swappable<T>::value> {};
+#endif
 #else
 // TODO
 // template <typename T, typename U> struct is_swappable_with;
@@ -960,9 +989,14 @@ struct has_virtual_destructor
     : slb::bool_constant<std::has_virtual_destructor<T>::value> {};
 #endif
 
-#if SLB_INTEGRAL_CONSTANT == 2 &&                                              \
-    __cpp_lib_has_unique_object_representations // C++17
+#if __cpp_lib_has_unique_object_representations // C++17
+#if SLB_INTEGRAL_CONSTANT == 2
 using std::has_unique_object_representations;
+#else
+template <typename T>
+struct has_unique_object_representations
+    : slb::bool_constant<std::has_unique_object_representations<T>::value> {};
+#endif
 #elif __has_feature(has_unique_object_representations) || (__GNUC__ >= 7)
 template <typename T>
 struct has_unique_object_representations
@@ -1016,12 +1050,29 @@ struct is_convertible
 // We only enable the C++17 implementation under C++2a here to account for
 // P0704: "Fixing const-qualified pointers to members".
 
-#if SLB_INTEGRAL_CONSTANT == 2 && __cpp_lib_is_invocable /* C++17 */ &&        \
-    __cplusplus > 201703L /* C++2a */
+#if __cpp_lib_is_invocable /* C++17 */ && __cplusplus > 201703L /* C++2a */
+#if SLB_INTEGRAL_CONSTANT == 2
 using std::is_invocable;
 using std::is_invocable_r;
 using std::is_nothrow_invocable;
 using std::is_nothrow_invocable_r;
+#else
+template <typename F, typename... Args>
+struct is_invocable : slb::bool_constant<std::is_invocable<F, Args...>::value> {
+};
+
+template <typename R, typename F, typename... Args>
+struct is_invocable_r
+    : slb::bool_constant<std::is_invocable_r<R, F, Args...>::value> {};
+
+template <typename F, typename... Args>
+struct is_nothrow_invocable
+    : slb::bool_constant<std::is_nothrow_invocable<F, Args...>::value> {};
+
+template <typename R, typename F, typename... Args>
+struct is_nothrow_invocable_r
+    : slb::bool_constant<std::is_nothrow_invocable_r<R, F, Args...>::value> {};
+#endif
 #else
 namespace detail {
 
