@@ -252,6 +252,121 @@ detail::not_fn_result<FD> not_fn(F&& f) {
 }
 #endif
 
+// [func.bind], bind
+
+#if SLB_INTEGRAL_CONSTANT == 2 // C++14
+using std::is_bind_expression;
+using std::is_placeholder;
+#else
+template <typename T>
+struct is_bind_expression
+    : slb::bool_constant<std::is_bind_expression<T>::value> {};
+
+template <typename T>
+struct is_placeholder
+    : slb::integral_constant<int, std::is_placeholder<T>::value> {};
+#endif
+
+// We only enable the C++17 implementation under C++2a here to account for
+// P0704: "Fixing const-qualified pointers to members" and LWG2210: "INVOKE-ing
+// a pointer to member with a `reference_wrapper` as the object expression".
+
+#if __cpp_lib_invoke /* C++17 */ && __cplusplus > 201703L /* C++2a */
+using std::bind;
+#else
+namespace detail {
+struct bind_tag {
+  explicit bind_tag() = default;
+};
+
+template <typename FD>
+class bound {
+  FD fd;
+
+public:
+  template <typename F>
+  bound(bind_tag, F&& f) : fd(std::forward<F>(f)) {}
+
+  template <typename... Args>
+  auto operator()(Args&&... args) noexcept(noexcept(
+      detail::invoke(std::declval<FD&>(), std::forward<Args>(args)...)))
+      -> decltype(detail::invoke(std::declval<FD&>(),
+                                 std::forward<Args>(args)...)) {
+    return detail::invoke(fd, std::forward<Args>(args)...);
+  }
+
+  template <typename... Args>
+  auto operator()(Args&&... args) const
+      noexcept(noexcept(detail::invoke(std::declval<FD const&>(),
+                                       std::forward<Args>(args)...)))
+          -> decltype(detail::invoke(std::declval<FD const&>(),
+                                     std::forward<Args>(args)...)) {
+    return detail::invoke(fd, std::forward<Args>(args)...);
+  }
+};
+
+template <typename FD, typename... BoundArgs>
+struct bind_result {
+  using type = decltype(std::bind(std::declval<detail::bound<FD>>(),
+                                  std::declval<BoundArgs>()...));
+};
+
+template <typename R, typename FD>
+class bound_r {
+  FD fd;
+
+public:
+  template <typename F>
+  bound_r(bind_tag, F&& f) : fd(std::forward<F>(f)) {}
+
+  template <typename... Args>
+  auto operator()(Args&&... args) noexcept(noexcept(
+      detail::invoke_r<R>(std::declval<FD&>(), std::forward<Args>(args)...)))
+      -> decltype(detail::invoke_r<R>(std::declval<FD&>(),
+                                      std::forward<Args>(args)...)) {
+    return detail::invoke_r<R>(fd, std::forward<Args>(args)...);
+  }
+
+  template <typename... Args>
+  auto operator()(Args&&... args) const
+      noexcept(noexcept(detail::invoke_r<R>(std::declval<FD const&>(),
+                                            std::forward<Args>(args)...)))
+          -> decltype(detail::invoke_r<R>(std::declval<FD const&>(),
+                                          std::forward<Args>(args)...)) {
+    return detail::invoke_r<R>(fd, std::forward<Args>(args)...);
+  }
+};
+
+template <typename R, typename FD, typename... BoundArgs>
+struct bind_result_r {
+  using type = decltype(std::bind<R>(std::declval<detail::bound_r<R, FD>>(),
+                                     std::declval<BoundArgs>()...));
+};
+} // namespace detail
+
+template <typename F,
+          typename... BoundArgs,
+          typename FD = typename std::decay<F>::type>
+typename detail::bind_result<FD, BoundArgs...>::type bind(F&& f,
+                                                          BoundArgs&&... args) {
+  return std::bind(detail::bound<FD>{detail::bind_tag{}, std::forward<F>(f)},
+                   std::forward<BoundArgs>(args)...);
+}
+
+template <typename R,
+          typename F,
+          typename... BoundArgs,
+          typename FD = typename std::decay<F>::type>
+typename detail::bind_result_r<R, FD, BoundArgs...>::type
+bind(F&& f, BoundArgs&&... args) {
+  return std::bind<R>(
+      detail::bound_r<R, FD>{detail::bind_tag{}, std::forward<F>(f)},
+      std::forward<BoundArgs>(args)...);
+}
+#endif
+
+namespace placeholders = std::placeholders;
+
 // [func.memfn], member function adaptors
 
 // We only enable the C++17 implementation under C++2a here to account for
@@ -265,6 +380,18 @@ template <typename T, typename C>
 typename detail::mem_fn_result<T C::*>::type mem_fn(T C::*pm) noexcept {
   return pm;
 }
+#endif
+
+// [func.bind], function object binders
+
+#if SLB_HAS_CXX14_VARIABLE_TEMPLATES // C++14
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_bind_expression_v =
+    std::is_bind_expression<T>::value;
+
+template <typename T>
+SLB_CXX17_INLINE_VARIABLE constexpr int is_placeholder_v =
+    slb::is_placeholder<T>::value;
 #endif
 
 } // namespace slb

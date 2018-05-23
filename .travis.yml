@@ -56,7 +56,7 @@ matrix:
             - ubuntu-toolchain-r-test
 
     # gcc-7
-    - env: VERSION=7 CXX_VERSIONS="11;14;17"
+    - env: VERSION=7 CXX_VERSIONS="11;14;17" CXXFLAGS="-Wno-noexcept-type"
       compiler: gcc
       os: linux
       addons:
@@ -173,7 +173,7 @@ script:
     import pprint
     import subprocess
     result = {}
-    cxxflags = '-Wall -Wextra -Werror -pedantic-errors -std=c++{std}'
+    cxxflags = '${CXXFLAGS} -std=c++{std} -Wall -Wextra -Werror -pedantic-errors'
     for cxx_version in "${CXX_VERSIONS}".split(';'):
       os.environ['CXXFLAGS'] = cxxflags.format(std=cxx_version)
       for build_type in ['Debug', 'Release']:

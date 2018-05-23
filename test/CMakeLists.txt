@@ -9,6 +9,7 @@
 add_library(Catch2 OBJECT catch.cpp)
 
 set(_tests
+  functional/bind
   functional/invoke
   functional/mem_fn
   functional/not_fn
