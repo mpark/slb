@@ -23,6 +23,7 @@
   - `invoke`
   - `mem_fn`
   - `not_fn`
+  - Functional operators
 
 #### `<type_traits>`
 
@@ -65,7 +66,7 @@
 
   - [ ] [N3302](https://wg21.link/N3302): Constexpr Library Additions: complex, v2
   - [ ] [N3346](https://wg21.link/N3346): Terminology for Container Element Requirements
-  - [ ] [N3421](https://wg21.link/N3421): Making Operator Functors `greater<>`
+  - [X] [N3421](https://wg21.link/N3421): Making Operator Functors `greater<>`
   - [ ] [N3462](https://wg21.link/N3462): `std::result_of` and SFINAE
   - [ ] [N3469](https://wg21.link/N3469): Constexpr Library Additions: chrono, v3
   - [ ] [N3470](https://wg21.link/N3470): Constexpr Library Additions: containers, v2
@@ -84,7 +85,7 @@
   - [ ] [N3670](https://wg21.link/N3670): Addressing Tuples by Type
   - [ ] [N3671](https://wg21.link/N3671): Making non-modifying sequence operations more robust
   - [ ] [N3779](https://wg21.link/N3779): User-defined Literals for `std::complex`
-  - [ ] [N3789](https://wg21.link/N3789): Constexpr Library Additions: functional
+  - [X] [N3789](https://wg21.link/N3789): Constexpr Library Additions: functional
   - [ ] [N3887](https://wg21.link/N3887): Consistent Metafunction Aliases
   - [ ] [N3891](https://wg21.link/N3891): A proposal to rename `shared_mutex` to `shared_timed_mutex`
   - [ ] [N3924](https://wg21.link/N3924): Discouraging `rand()` in C++14

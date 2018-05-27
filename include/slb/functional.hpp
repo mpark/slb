@@ -150,12 +150,14 @@ namespace std {
 
 */
 
+#include <cstdint>
 #include <functional>
 #include <type_traits>
 #include <utility>
 
 #include "detail/config.hpp"
 #include "detail/invoke.hpp"
+#include "detail/lib.hpp"
 #include "type_traits.hpp"
 
 namespace slb {
@@ -174,6 +176,500 @@ invoke(F&& f,
        Args&&... args) noexcept(slb::is_nothrow_invocable<F, Args...>::value) {
   return detail::invoke(std::forward<F>(f), std::forward<Args>(args)...);
 }
+#endif
+
+// [arithmetic.operations], arithmetic operations
+
+// We only enable the transparent implementation under C++14 here to account for
+// N3789: "Constexpr Library Additions: functional".
+
+#if __cpp_lib_transparent_operators /* C++14 */ &&                             \
+    __cplusplus >= 201402L /* C++14 */
+using std::plus;
+using std::minus;
+using std::multiplies;
+using std::divides;
+using std::modulus;
+using std::negate;
+#else
+template <typename T = void>
+struct plus {
+  constexpr T operator()(T const& x, T const& y) const
+      noexcept(noexcept(x + y)) {
+    return x + y;
+  }
+};
+
+template <>
+struct plus<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const
+      noexcept(noexcept(detail::lib::forward<T>(t) +
+                        detail::lib::forward<U>(u)))
+          -> decltype(detail::lib::forward<T>(t) + detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) + detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct minus {
+  constexpr T operator()(T const& x, T const& y) const
+      noexcept(noexcept(x - y)) {
+    return x - y;
+  }
+};
+
+template <>
+struct minus<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const
+      noexcept(noexcept(detail::lib::forward<T>(t) -
+                        detail::lib::forward<U>(u)))
+          -> decltype(detail::lib::forward<T>(t) - detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) - detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct multiplies {
+  constexpr T operator()(T const& x, T const& y) const
+      noexcept(noexcept(x* y)) {
+    return x * y;
+  }
+};
+
+template <>
+struct multiplies<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const
+      noexcept(noexcept(detail::lib::forward<T>(t) *
+                        detail::lib::forward<U>(u)))
+          -> decltype(detail::lib::forward<T>(t) * detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) * detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct divides {
+  constexpr T operator()(T const& x, T const& y) const
+      noexcept(noexcept(x / y)) {
+    return x / y;
+  }
+};
+
+template <>
+struct divides<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const
+      noexcept(noexcept(detail::lib::forward<T>(t) /
+                        detail::lib::forward<U>(u)))
+          -> decltype(detail::lib::forward<T>(t) / detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) / detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct modulus {
+  constexpr T operator()(T const& x, T const& y) const
+      noexcept(noexcept(x % y)) {
+    return x % y;
+  }
+};
+
+template <>
+struct modulus<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const
+      noexcept(noexcept(detail::lib::forward<T>(t) %
+                        detail::lib::forward<U>(u)))
+          -> decltype(detail::lib::forward<T>(t) % detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) % detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct negate {
+  constexpr T operator()(T const& x) const noexcept(noexcept(-x)) { return -x; }
+};
+
+template <>
+struct negate<void> {
+  template <typename T>
+  constexpr auto operator()(T&& t) const
+      noexcept(noexcept(-detail::lib::forward<T>(t)))
+          -> decltype(-detail::lib::forward<T>(t)) {
+    return -detail::lib::forward<T>(t);
+  }
+
+  using is_transparent = void() const;
+};
+#endif
+
+// [comparisons], comparisons
+
+// We only enable the transparent implementation under C++14 here to account for
+// N3789: "Constexpr Library Additions: functional".
+
+#if __cpp_lib_transparent_operators /* C++14 */ &&                             \
+    __cplusplus >= 201402L /* C++14 */
+using std::equal_to;
+using std::not_equal_to;
+using std::greater;
+using std::less;
+using std::greater_equal;
+using std::less_equal;
+#else
+template <typename T = void>
+struct equal_to {
+  constexpr bool operator()(T const& x, T const& y) const
+      noexcept(noexcept(x == y)) {
+    return x == y;
+  }
+};
+
+template <>
+struct equal_to<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const noexcept(
+      noexcept(detail::lib::forward<T>(t) == detail::lib::forward<U>(u)))
+      -> decltype(detail::lib::forward<T>(t) == detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) == detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct not_equal_to {
+  constexpr bool operator()(T const& x, T const& y) const
+      noexcept(noexcept(x != y)) {
+    return x != y;
+  }
+};
+
+template <>
+struct not_equal_to<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const noexcept(
+      noexcept(detail::lib::forward<T>(t) != detail::lib::forward<U>(u)))
+      -> decltype(detail::lib::forward<T>(t) != detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) != detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct greater {
+  constexpr bool operator()(T const& x, T const& y) const
+      noexcept(noexcept(x > y)) {
+    return x > y;
+  }
+};
+
+template <typename T>
+struct greater<T*> : std::greater<T*> {
+  bool operator()(T* x, T* y) const noexcept {
+    return reinterpret_cast<std::uintptr_t>(x) >
+           reinterpret_cast<std::uintptr_t>(y);
+  }
+};
+
+template <>
+struct greater<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const
+      noexcept(noexcept(detail::lib::forward<T>(t) >
+                        detail::lib::forward<U>(u)))
+          -> decltype(detail::lib::forward<T>(t) > detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) > detail::lib::forward<U>(u);
+  }
+
+  template <typename T, typename U>
+  bool operator()(T* t, U* u) const noexcept {
+    using CT = typename std::common_type<T*, U*>::type;
+    return greater<CT>{}(t, u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct less {
+  constexpr bool operator()(T const& x, T const& y) const
+      noexcept(noexcept(x < y)) {
+    return x < y;
+  }
+};
+
+template <typename T>
+struct less<T*> {
+  bool operator()(T* x, T* y) const noexcept {
+    return reinterpret_cast<std::uintptr_t>(x) <
+           reinterpret_cast<std::uintptr_t>(y);
+  }
+};
+
+template <>
+struct less<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const
+      noexcept(noexcept(detail::lib::forward<T>(t) <
+                        detail::lib::forward<U>(u)))
+          -> decltype(detail::lib::forward<T>(t) < detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) < detail::lib::forward<U>(u);
+  }
+
+  template <typename T, typename U>
+  bool operator()(T* t, U* u) const noexcept {
+    using CT = typename std::common_type<T*, U*>::type;
+    return less<CT>{}(t, u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct greater_equal {
+  constexpr bool operator()(T const& x, T const& y) const
+      noexcept(noexcept(x >= y)) {
+    return x >= y;
+  }
+};
+
+template <typename T>
+struct greater_equal<T*> {
+  bool operator()(T* x, T* y) const noexcept {
+    return reinterpret_cast<std::uintptr_t>(x) >=
+           reinterpret_cast<std::uintptr_t>(y);
+  }
+};
+
+template <>
+struct greater_equal<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const noexcept(
+      noexcept(detail::lib::forward<T>(t) >= detail::lib::forward<U>(u)))
+      -> decltype(detail::lib::forward<T>(t) >= detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) >= detail::lib::forward<U>(u);
+  }
+
+  template <typename T, typename U>
+  bool operator()(T* t, U* u) const noexcept {
+    using CT = typename std::common_type<T*, U*>::type;
+    return greater_equal<CT>{}(t, u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct less_equal {
+  constexpr bool operator()(T const& x, T const& y) const
+      noexcept(noexcept(x <= y)) {
+    return x <= y;
+  }
+};
+
+template <typename T>
+struct less_equal<T*> {
+  bool operator()(T* x, T* y) const noexcept {
+    return reinterpret_cast<std::uintptr_t>(x) <=
+           reinterpret_cast<std::uintptr_t>(y);
+  }
+};
+
+template <>
+struct less_equal<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const noexcept(
+      noexcept(detail::lib::forward<T>(t) <= detail::lib::forward<U>(u)))
+      -> decltype(detail::lib::forward<T>(t) <= detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) <= detail::lib::forward<U>(u);
+  }
+
+  template <typename T, typename U>
+  bool operator()(T* t, U* u) const noexcept {
+    using CT = typename std::common_type<T*, U*>::type;
+    return less_equal<CT>{}(t, u);
+  }
+
+  using is_transparent = void() const;
+};
+#endif
+
+// [logical.operations], logical operations
+
+// We only enable the transparent implementation under C++14 here to account for
+// N3789: "Constexpr Library Additions: functional".
+
+#if __cpp_lib_transparent_operators /* C++14 */ &&                             \
+    __cplusplus >= 201402L /* C++14 */
+using std::logical_and;
+using std::logical_or;
+using std::logical_not;
+#else
+template <typename T = void>
+struct logical_and {
+  constexpr bool operator()(T const& x, T const& y) const
+      noexcept(noexcept(x&& y)) {
+    return x && y;
+  }
+};
+
+template <>
+struct logical_and<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const noexcept(
+      noexcept(detail::lib::forward<T>(t) && detail::lib::forward<U>(u)))
+      -> decltype(detail::lib::forward<T>(t) && detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) && detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct logical_or {
+  constexpr bool operator()(T const& x, T const& y) const
+      noexcept(noexcept(x || y)) {
+    return x || y;
+  }
+};
+
+template <>
+struct logical_or<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const noexcept(
+      noexcept(detail::lib::forward<T>(t) || detail::lib::forward<U>(u)))
+      -> decltype(detail::lib::forward<T>(t) || detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) || detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct logical_not {
+  constexpr bool operator()(T const& x) const noexcept(noexcept(!x)) {
+    return !x;
+  }
+};
+
+template <>
+struct logical_not<void> {
+  template <typename T>
+  constexpr auto operator()(T&& t) const
+      noexcept(noexcept(!detail::lib::forward<T>(t)))
+          -> decltype(!detail::lib::forward<T>(t)) {
+    return !detail::lib::forward<T>(t);
+  }
+
+  using is_transparent = void() const;
+};
+#endif
+
+// [bitwise.operations], bitwise operations
+
+// We only enable the transparent implementation under C++14 here to account for
+// N3789: "Constexpr Library Additions: functional".
+
+#if __cpp_lib_transparent_operators /* C++14 */ &&                             \
+    __cplusplus >= 201402L /* C++14 */
+using std::bit_and;
+using std::bit_or;
+using std::bit_xor;
+using std::bit_not;
+#else
+template <typename T = void>
+struct bit_and {
+  constexpr T operator()(T const& x, T const& y) const
+      noexcept(noexcept(x& y)) {
+    return x & y;
+  }
+};
+
+template <>
+struct bit_and<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const
+      noexcept(noexcept(detail::lib::forward<T>(t) &
+                        detail::lib::forward<U>(u)))
+          -> decltype(detail::lib::forward<T>(t) & detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) & detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct bit_or {
+  constexpr T operator()(T const& x, T const& y) const
+      noexcept(noexcept(x | y)) {
+    return x | y;
+  }
+};
+
+template <>
+struct bit_or<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const
+      noexcept(noexcept(detail::lib::forward<T>(t) |
+                        detail::lib::forward<U>(u)))
+          -> decltype(detail::lib::forward<T>(t) | detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) | detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct bit_xor {
+  constexpr T operator()(T const& x, T const& y) const
+      noexcept(noexcept(x ^ y)) {
+    return x ^ y;
+  }
+};
+
+template <>
+struct bit_xor<void> {
+  template <typename T, typename U>
+  constexpr auto operator()(T&& t, U&& u) const
+      noexcept(noexcept(detail::lib::forward<T>(t) ^
+                        detail::lib::forward<U>(u)))
+          -> decltype(detail::lib::forward<T>(t) ^ detail::lib::forward<U>(u)) {
+    return detail::lib::forward<T>(t) ^ detail::lib::forward<U>(u);
+  }
+
+  using is_transparent = void() const;
+};
+
+template <typename T = void>
+struct bit_not {
+  constexpr T operator()(T const& x) const noexcept(noexcept(~x)) { return ~x; }
+};
+
+template <>
+struct bit_not<void> {
+  template <typename T>
+  constexpr auto operator()(T&& t) const
+      noexcept(noexcept(~detail::lib::forward<T>(t)))
+          -> decltype(~detail::lib::forward<T>(t)) {
+    return ~detail::lib::forward<T>(t);
+  }
+
+  using is_transparent = void() const;
+};
 #endif
 
 // [func.not_fn], function template not_fn

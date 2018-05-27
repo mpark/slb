@@ -21,6 +21,16 @@ template <typename>
 struct always_false : std::false_type {};
 
 ////////////////////////////////////////////////////////////////////////////////
+template <typename T>
+constexpr T&& forward(typename std::remove_reference<T>::type& t) noexcept {
+  return static_cast<T&&>(t);
+}
+template <typename T>
+constexpr T&& forward(typename std::remove_reference<T>::type&& t) noexcept {
+  return static_cast<T&&>(t);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4180) // qualifier applied to function type has no
