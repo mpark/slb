@@ -665,6 +665,15 @@
 - [ ] [P0767](https://wg21.link/P0767): Deprecate POD
 - [ ] [P0768](https://wg21.link/P0768): Library Support for the Spaceship (Comparison) Operator
 - [ ] [P0777](https://wg21.link/P0777): Treating Unnecessary `decay`
+- [ ] [P0122](https://wg21.link/P0122): `<span>`
+- [ ] [P0355](https://wg21.link/P0355): Extending chrono to Calendars and Time Zones
+- [ ] [P0551](https://wg21.link/P0551): Thou Shalt Not Specialize `std` Function Templates!
+- [ ] [P0753](https://wg21.link/P0753): Manipulators for C++ Synchronized Buffered Ostream
+- [ ] [P0754](https://wg21.link/P0754): `<version>`
+- [ ] [P0809](https://wg21.link/P0809): Comparing Unordered Containers
+- [ ] [P0858](https://wg21.link/P0858): Constexpr iterator requirements
+- [ ] [P0905](https://wg21.link/P0905): Symmetry for spaceship
+- [ ] [P0966](https://wg21.link/P0966): `string::reserve` Should Not Shrink
 
 ##### Issues
 
@@ -706,3 +715,33 @@
 - [ ] [LWG2998](https://wg21.link/LWG2998): Requirements on function objects passed to `{forward_,}list`-specific algorithms
 - [ ] [LWG3001](https://wg21.link/LWG3001): `weak_ptr::element_type` needs `remove_extent_t`
 - [ ] [LWG3024](https://wg21.link/LWG3024): `variant`'s copies must be deleted instead of disabled via SFINAE
+- [ ] [LWG2164](https://wg21.link/LWG2164): What are the semantics of `vector.emplace(vector.begin(), vector.back())`?
+- [ ] [LWG2243](https://wg21.link/LWG2243): `istream::putback` problem
+- [ ] [LWG2816](https://wg21.link/LWG2816): `resize_file` has impossible postcondition
+- [ ] [LWG2843](https://wg21.link/LWG2843): Unclear behavior of `std::pmr::memory_resource::do_allocate()`
+- [ ] [LWG2849](https://wg21.link/LWG2849): Why does `!is_regular_file(from)` cause `copy_file` to report a "file already exists" error?
+- [ ] [LWG2851](https://wg21.link/LWG2851): `std::filesystem` enum classes are now underspecified
+- [ ] [LWG2946](https://wg21.link/LWG2946): LWG 2758's resolution missed further corrections
+- [ ] [LWG2969](https://wg21.link/LWG2969): `polymorphic_allocator::construct()` shouldn't pass `resource()`
+- [ ] [LWG2975](https://wg21.link/LWG2975): Missing case for `pair` construction in scoped and polymorphic allocators
+- [ ] [LWG2989](https://wg21.link/LWG2989): `path`'s stream insertion operator lets you insert everything under the sun
+- [ ] [LWG3000](https://wg21.link/LWG3000): `monotonic_memory_resource::do_is_equal` uses dynamic_cast unnecessarily
+- [ ] [LWG3004](https://wg21.link/LWG3004): string.capacity and vector.capacity should specify time complexity for `capacity()`
+- [ ] [LWG3005](https://wg21.link/LWG3005): Destruction order of arrays by `make_shared`/`allocate_shared` only recommended?
+- [ ] [LWG3007](https://wg21.link/LWG3007): `allocate_shared` should rebind allocator to cv-unqualified `value_type` for construction
+- [ ] [LWG3009](https://wg21.link/LWG3009): Including `<string_view>` doesn't provide `std::size/empty/data`
+- [ ] [LWG3013](https://wg21.link/LWG3013): `(recursive_)directory_iterator` construction and traversal should not be `noexcept`
+- [ ] [LWG3014](https://wg21.link/LWG3014): More `noexcept` issues with filesystem operations
+- [ ] [LWG3015](https://wg21.link/LWG3015): `copy_options::unspecified` underspecified
+- [ ] [LWG3017](https://wg21.link/LWG3017): list splice functions should use `addressof`
+- [ ] [LWG3026](https://wg21.link/LWG3026): `filesystem::weakly_canonical` still defined in terms of `canonical(p, base)`
+- [ ] [LWG3030](https://wg21.link/LWG3030): Who shall meet the requirements of `try_lock`?
+- [ ] [LWG3034](https://wg21.link/LWG3034): P0767R1 breaks previously-standard-layout types
+- [ ] [LWG3035](https://wg21.link/LWG3035): `std::allocator`'s constructors should be `constexpr`
+- [ ] [LWG3039](https://wg21.link/LWG3039): Unnecessary `decay` in `thread` and `packaged_task`
+- [ ] [LWG3041](https://wg21.link/LWG3041): Unnecessary `decay` in `reference_wrapper`
+- [ ] [LWG3043](https://wg21.link/LWG3043): Bogus postcondition for `filesystem_error` constructor
+- [ ] [LWG3045](https://wg21.link/LWG3045): `atomic<floating-point>` doesn't have `value_type` or `difference_type`
+- [ ] [LWG3048](https://wg21.link/LWG3048): `transform_reduce(exec, first1, last1, first2, init)` discards execution policy
+- [ ] [LWG3051](https://wg21.link/LWG3051): Floating point classifications were inadvertently changed in P0175
+- [ ] [LWG3075](https://wg21.link/LWG3075): `basic_string` needs deduction guides from `basic_string_view`
