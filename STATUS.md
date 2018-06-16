@@ -24,6 +24,10 @@
   - `mem_fn`
   - `not_fn`
 
+#### `<string_view>`
+
+  - `string_view`
+
 #### `<type_traits>`
 
   - `bool_constant`
@@ -316,7 +320,7 @@
   - [ ] [P0394](https://wg21.link/P0394): Hotel Parallelifornia: `terminate()` for Parallel Algorithms Exception Handling
   - [ ] [P0003](https://wg21.link/P0003): Removing Deprecated Exception Specifications from C++17
   - [ ] [P0067](https://wg21.link/P0067): Elementary string conversions, revision 5
-  - [ ] [P0403](https://wg21.link/P0403): Literal suffixes for `basic_string_view`
+  - [X] [P0403](https://wg21.link/P0403): Literal suffixes for `basic_string_view`
   - [ ] [P0414](https://wg21.link/P0414): Merging `shared_ptr` changes from Library Fundamentals to C++17
   - [ ] [P0418](https://wg21.link/P0418): Fail or succeed: there is no atomic lattice
   - [ ] [P0426](https://wg21.link/P0426): Constexpr for `std::char_traits`
@@ -579,7 +583,7 @@
   - [ ] [LWG2748](https://wg21.link/LWG2748): `swappable` traits for optionals
   - [ ] [LWG2749](https://wg21.link/LWG2749): `swappable` traits for variants
   - [ ] [LWG2752](https://wg21.link/LWG2752): "Throws:" clauses of `async` and `packaged_task` are unimplementable
-  - [ ] [LWG2755](https://wg21.link/LWG2755): [string.view.io] uses non-existent `basic_string_view::to_string` function
+  - [X] [LWG2755](https://wg21.link/LWG2755): [string.view.io] uses non-existent `basic_string_view::to_string` function
   - [ ] [LWG2756](https://wg21.link/LWG2756): C++ WP optional should `forward` `T`'s implicit conversions
   - [ ] [LWG2758](https://wg21.link/LWG2758): `std::string{}.assign("ABCDE", 0, 1)` is ambiguous
   - [ ] [LWG2759](https://wg21.link/LWG2759): `gcd` / `lcm` and `bool` for the WP
@@ -589,8 +593,8 @@
   - [ ] [LWG2769](https://wg21.link/LWG2769): Redundant const in the return type of `any_cast(const any&)`
   - [ ] [LWG2771](https://wg21.link/LWG2771): Broken _Effects_ of some `basic_string::compare` functions in terms of `basic_string_view`
   - [ ] [LWG2773](https://wg21.link/LWG2773): Making `std::ignore` constexpr
-  - [ ] [LWG2777](https://wg21.link/LWG2777): `basic_string_view::copy` should use `char_traits::copy`
-  - [ ] [LWG2778](https://wg21.link/LWG2778): `basic_string_view` is missing `constexpr`
+  - [X] [LWG2777](https://wg21.link/LWG2777): `basic_string_view::copy` should use `char_traits::copy`
+  - [X] [LWG2778](https://wg21.link/LWG2778): `basic_string_view` is missing `constexpr`
   - [ ] [LWG2260](https://wg21.link/LWG2260): Missing requirement for `Allocator::pointer`
   - [ ] [LWG2676](https://wg21.link/LWG2676): Provide `filesystem::path` overloads for File-based streams
   - [ ] [LWG2768](https://wg21.link/LWG2768): `any_cast` and move semantics
@@ -614,7 +618,7 @@
   - [X] [LWG2807](https://wg21.link/LWG2807): `std::invoke` should use `std::is_nothrow_callable`
   - [ ] [LWG2812](https://wg21.link/LWG2812): Range access is available with `<string_view>`
   - [ ] [LWG2824](https://wg21.link/LWG2824): `list::sort` should say that the order of elements is unspecified if an exception is thrown
-  - [ ] [LWG2826](https://wg21.link/LWG2826): `string_view` iterators use old wording
+  - [X] [LWG2826](https://wg21.link/LWG2826): `string_view` iterators use old wording
   - [ ] [LWG2834](https://wg21.link/LWG2834): Resolution LWG 2223 is missing wording about end iterators
   - [ ] [LWG2835](https://wg21.link/LWG2835): LWG 2536 seems to misspecify `<tgmath.h>`
   - [ ] [LWG2837](https://wg21.link/LWG2837): `gcd` and `lcm` should support a wider range of input values

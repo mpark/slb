@@ -13,6 +13,7 @@ set(_tests
   functional/invoke
   functional/mem_fn
   functional/not_fn
+  string_view
   type_traits
   utility)
 foreach(_test ${_tests})
@@ -24,15 +25,27 @@ foreach(_test ${_tests})
   target_link_libraries(test.${_test} SLB)
   set_property(TARGET test.${_test} PROPERTY FOLDER "test/${_test_folder}")
 
+  set(_instantiations )
   file(STRINGS ${_test_file} _lines)
   foreach(_line ${_lines})
-    if(_line MATCHES "^TEST_CASE\\(\"([A-Za-z_0-9()-]+)\"")
-      set(_case ${CMAKE_MATCH_1})
+    if(_line MATCHES "^#define SLB_INSTANTIATION \"([A-Za-z_0-9:()-]+)\"")
+      list(APPEND _instantiations ${CMAKE_MATCH_1})
+    elseif(_line MATCHES "^TEST_CASE\\(\"([A-Za-z_0-9:()-]+)\"")
+      set(_case "${CMAKE_MATCH_1}")
       string(MAKE_C_IDENTIFIER ${_case} _case_id)
 
       add_test(
         NAME test.${_test}.${_case_id}
         COMMAND test.${_test} "${_case}")
+    elseif(_line MATCHES "^TEST_CASE\\(SLB_INSTANTIATION( \"([A-Za-z_0-9:()-=]+)\")?")
+      foreach(_instantiation ${_instantiations})
+        set(_case "${_instantiation}${CMAKE_MATCH_2}")
+        string(MAKE_C_IDENTIFIER ${_case} _case_id)
+
+        add_test(
+          NAME test.${_test}.${_case_id}
+          COMMAND test.${_test} "${_case}")
+      endforeach()
     endif()
   endforeach()
 endforeach()

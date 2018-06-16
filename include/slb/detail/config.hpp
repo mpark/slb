@@ -27,6 +27,14 @@
 #define __has_feature(x) 0
 #endif
 
+#ifndef __has_attribute
+#define __has_attribute(x) 0
+#endif
+
+#ifndef __has_cpp_attribute
+#define __has_cpp_attribute(x) 0
+#endif
+
 #ifndef __has_warning
 #define __has_warning(x) 0
 #endif
@@ -47,6 +55,15 @@
 #define SLB_HAS_CXX14_VARIABLE_TEMPLATES 1
 #else
 #define SLB_HAS_CXX14_VARIABLE_TEMPLATES 0
+#endif
+
+// P0189: "Wording for [[nodiscard]] attribute"
+#if __has_cpp_attribute(nodiscard) > 201603
+#define SLB_CXX17_NODISCARD [[nodiscard]]
+#elif __has_attribute(warn_unused_result)
+#define SLB_CXX17_NODISCARD __attribute__((warn_unused_result))
+#else
+#define SLB_CXX17_NODISCARD
 #endif
 
 // P0386: "Inline Variables"

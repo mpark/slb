@@ -37,6 +37,25 @@ struct is_function : std::integral_constant<bool,
 
 ////////////////////////////////////////////////////////////////////////////////
 template <typename T>
+constexpr T(min)(T a, T b) {
+  return a < b ? a : b;
+}
+template <typename T, typename... Ts>
+constexpr T(min)(T a, T b, Ts... cs) {
+  return (min)((min)(a, b), cs...);
+}
+
+template <typename T>
+constexpr T(max)(T a, T b) {
+  return a < b ? b : a;
+}
+template <typename T, typename... Ts>
+constexpr T(max)(T a, T b, Ts... cs) {
+  return (max)((max)(a, b), cs...);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+template <typename T>
 struct remove_cvref {
   using type =
       typename std::remove_cv<typename std::remove_reference<T>::type>::type;
