@@ -674,6 +674,30 @@
 - [ ] [P0858](https://wg21.link/P0858): Constexpr iterator requirements
 - [ ] [P0905](https://wg21.link/P0905): Symmetry for spaceship
 - [ ] [P0966](https://wg21.link/P0966): `string::reserve` Should Not Shrink
+- [ ] [P0019](https://wg21.link/P0019): Atomic Ref
+- [ ] [P0458](https://wg21.link/P0458): Checking for Existence of an Element in Associative Containers
+- [ ] [P0475](https://wg21.link/P0475): LWG 2511: guaranteed copy elision for piecewise construction
+- [ ] [P0476](https://wg21.link/P0476): Bit-casting object representations
+- [ ] [P0528](https://wg21.link/P0528): The Curious Case of Padding Bits, Featuring Atomic Compare-and-Exchange
+- [ ] [P0542](https://wg21.link/P0542): Support for contract based programming in C++
+- [ ] [P0556](https://wg21.link/P0556): Integral power-of-2 operations
+- [ ] [P0619](https://wg21.link/P0619): Reviewing Deprecated Facilities of C++17 for C++20
+- [ ] [P0646](https://wg21.link/P0646): Improving the Return Value of Erase-Like Algorithms
+- [ ] [P0722](https://wg21.link/P0722): Efficient sized delete for variable sized classes
+- [ ] [P0758](https://wg21.link/P0758): Implicit conversion traits and utility functions
+- [ ] [P0759](https://wg21.link/P0759): `fpos` Requirements
+- [ ] [P0769](https://wg21.link/P0769): Add shift to `<algorithm>`
+- [ ] [P0788](https://wg21.link/P0788): Standard Library Specification in a Concepts and Contracts World
+- [ ] [P0879](https://wg21.link/P0879): Constexpr for swap and swap related functions Also resolves LWG issue 2800.
+- [ ] [P0887](https://wg21.link/P0887): The identity metafunction
+- [ ] [P0892](https://wg21.link/P0892): `explicit(bool)`
+- [ ] [P0898](https://wg21.link/P0898): Standard Library Concepts
+- [ ] [P0935](https://wg21.link/P0935): Eradicating unnecessarily `explicit` default constructors from the standard library
+- [ ] [P0941](https://wg21.link/P0941): Integrating feature-test macros into the C++ WD
+- [ ] [P1023](https://wg21.link/P1023): `constexpr` comparison operators for `std::array`
+- [ ] [P1025](https://wg21.link/P1025): Update The Reference To The Unicode Standard
+- [ ] [P1120](https://wg21.link/P1120): Consistency improvements for `<=>` and other comparison operators
+
 
 ##### Issues
 
@@ -745,3 +769,17 @@
 - [ ] [LWG3048](https://wg21.link/LWG3048): `transform_reduce(exec, first1, last1, first2, init)` discards execution policy
 - [ ] [LWG3051](https://wg21.link/LWG3051): Floating point classifications were inadvertently changed in P0175
 - [ ] [LWG3075](https://wg21.link/LWG3075): `basic_string` needs deduction guides from `basic_string_view`
+- [ ] [LWG2139](https://wg21.link/LWG2139): What is a user-defined type?
+- [ ] [LWG2970](https://wg21.link/LWG2970): Return type of `std::visit` misspecified
+- [ ] [LWG3058](https://wg21.link/LWG3058): Parallel `adjacent_difference` shouldn't require creating temporaries
+- [ ] [LWG3062](https://wg21.link/LWG3062): Unnecessary `decay_t` in `is_execution_policy_v` should be `remove_cvref_t`
+- [ ] [LWG3067](https://wg21.link/LWG3067): `recursive_directory_iterator::pop` must invalidate
+- [ ] [LWG3074](https://wg21.link/LWG3074): Non-member functions for `valarray` should only deduce from the `valarray`
+- [ ] [LWG3076](https://wg21.link/LWG3076): `basic_string` CTAD ambiguity
+- [ ] [LWG3079](https://wg21.link/LWG3079): LWG 2935 forgot to fix the `existing_p` overloads of `create_directory`
+- [ ] [LWG3080](https://wg21.link/LWG3080): Floating point `from_chars` pattern specification breaks round-tripping
+- [ ] [LWG3083](https://wg21.link/LWG3083): What should `ios::iword(-1)` do?
+- [ ] [LWG3094](https://wg21.link/LWG3094): `[time.duration.io]p4` makes surprising claims about encoding
+- [ ] [LWG3100](https://wg21.link/LWG3100): Unnecessary and confusing "empty span" wording
+- [ ] [LWG3102](https://wg21.link/LWG3102): Clarify `span` `iterator` and `const_iterator` behavior
+- [ ] [LWG3104](https://wg21.link/LWG3104): Fixing `duration` division
