@@ -200,6 +200,28 @@ TEST_CASE("negate<void>", "[arithmetic.operations]") {
 
 // [comparisons], comparisons
 
+template <typename T>
+struct Convertible {
+  T val;
+  operator T() const { return val; }
+};
+
+struct MemberPtrComparison {
+  void* ptr;
+  bool operator>(void* uptr) const { return ptr > uptr; }
+  bool operator<(void* uptr) const { return ptr < uptr; }
+  bool operator>=(void* uptr) const { return ptr >= uptr; }
+  bool operator<=(void* uptr) const { return ptr <= uptr; }
+};
+
+struct FreePtrComparison {
+  void* ptr;
+};
+bool operator>(FreePtrComparison x, void* uptr) { return x.ptr > uptr; }
+bool operator<(FreePtrComparison x, void* uptr) { return x.ptr < uptr; }
+bool operator>=(FreePtrComparison x, void* uptr) { return x.ptr >= uptr; }
+bool operator<=(FreePtrComparison x, void* uptr) { return x.ptr <= uptr; }
+
 TEST_CASE("equal_to", "[comparisons]") {
   constexpr slb::equal_to<int> op{};
   CHECK(std::is_same<decltype(op(4, 2)), bool>::value);
@@ -254,6 +276,7 @@ TEST_CASE("greater", "[comparisons]") {
 
     constexpr slb::greater<int*> pop{};
     CHECK(std::is_same<decltype(pop(&s.x, &s.y)), bool>::value);
+    CHECK(pop(&s.x, &s.y) == (&s.x > &s.y));
   }
 }
 
@@ -270,6 +293,17 @@ TEST_CASE("greater<void>", "[comparisons]") {
 
     constexpr slb::greater<> pop{};
     CHECK(std::is_same<decltype(pop(&s.x, &s.y)), bool>::value);
+    CHECK(pop(&s.x, &s.y) == (&s.x > &s.y));
+
+    Convertible<int*> const cx{&s.x};
+    Convertible<int*> const cy{&s.y};
+    CHECK(pop(cx, cy) == (&s.x > &s.y));
+
+    MemberPtrComparison const mx{&s.x};
+    CHECK(pop(mx, &s.y) == (&s.x > &s.y));
+
+    FreePtrComparison const fx{&s.x};
+    CHECK(pop(fx, &s.y) == (&s.x > &s.y));
   }
 
   /* using is_transparent = unspecified; */ {
@@ -305,6 +339,17 @@ TEST_CASE("less<void>", "[comparisons]") {
 
     constexpr slb::less<> pop{};
     CHECK(std::is_same<decltype(pop(&s.x, &s.y)), bool>::value);
+    CHECK(pop(&s.x, &s.y) == (&s.x < &s.y));
+
+    Convertible<int*> const cx{&s.x};
+    Convertible<int*> const cy{&s.y};
+    CHECK(pop(cx, cy) == (&s.x < &s.y));
+
+    MemberPtrComparison const mx{&s.x};
+    CHECK(pop(mx, &s.y) == (&s.x < &s.y));
+
+    FreePtrComparison const fx{&s.x};
+    CHECK(pop(fx, &s.y) == (&s.x < &s.y));
   }
 
   /* using is_transparent = unspecified; */ {
@@ -340,6 +385,17 @@ TEST_CASE("greater_equal<void>", "[comparisons]") {
 
     constexpr slb::greater_equal<> pop{};
     CHECK(std::is_same<decltype(pop(&s.x, &s.y)), bool>::value);
+    CHECK(pop(&s.x, &s.y) == (&s.x >= &s.y));
+
+    Convertible<int*> const cx{&s.x};
+    Convertible<int*> const cy{&s.y};
+    CHECK(pop(cx, cy) == (&s.x >= &s.y));
+
+    MemberPtrComparison const mx{&s.x};
+    CHECK(pop(mx, &s.y) == (&s.x >= &s.y));
+
+    FreePtrComparison const fx{&s.x};
+    CHECK(pop(fx, &s.y) == (&s.x >= &s.y));
   }
 
   /* using is_transparent = unspecified; */ {
@@ -375,6 +431,17 @@ TEST_CASE("less_equal<void>", "[comparisons]") {
 
     constexpr slb::less_equal<> pop{};
     CHECK(std::is_same<decltype(pop(&s.x, &s.y)), bool>::value);
+    CHECK(pop(&s.x, &s.y) == (&s.x <= &s.y));
+
+    Convertible<int*> const cx{&s.x};
+    Convertible<int*> const cy{&s.y};
+    CHECK(pop(cx, cy) == (&s.x <= &s.y));
+
+    MemberPtrComparison const mx{&s.x};
+    CHECK(pop(mx, &s.y) == (&s.x <= &s.y));
+
+    FreePtrComparison const fx{&s.x};
+    CHECK(pop(fx, &s.y) == (&s.x <= &s.y));
   }
 
   /* using is_transparent = unspecified; */ {

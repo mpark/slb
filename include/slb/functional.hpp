@@ -385,6 +385,60 @@ struct greater<T*> : std::greater<T*> {
   }
 };
 
+namespace detail {
+template <typename T, typename U>
+auto has_user_defined_greater()
+    -> decltype(operator>(std::declval<T>(), std::declval<U>()));
+
+template <typename T, typename U>
+auto has_user_defined_greater()
+    -> decltype(std::declval<T>().operator>(std::declval<U>()));
+
+template <typename T,
+          typename U,
+          typename = decltype(detail::has_user_defined_greater<T, U>())>
+std::false_type check_is_builtin_greater(int);
+
+template <typename T, typename U>
+std::true_type check_is_builtin_greater(...);
+
+template <typename T, typename U, typename = void>
+struct is_builtin_greater : std::false_type {};
+
+template <typename T, typename U>
+struct is_builtin_greater<T,
+                          U,
+                          decltype(
+                              (void)(std::declval<T>() > std::declval<U>()))>
+    : decltype(detail::check_is_builtin_greater<T, U>(0)) {};
+
+template <typename T,
+          typename U,
+          bool IsBuiltin = is_builtin_greater<T, U>::value>
+struct is_builtin_ptr_greater : std::false_type {};
+
+template <typename T, typename U>
+struct is_builtin_ptr_greater<T, U, /*IsBuiltin=*/true>
+    : std::integral_constant<
+          bool,
+          std::is_convertible<T, void const volatile*>::value &&
+              std::is_convertible<U, void const volatile*>::value> {};
+
+template <typename T, typename U>
+constexpr auto greater(std::false_type, T&& t, U&& u) noexcept(
+    noexcept(detail::lib::forward<T>(t) > detail::lib::forward<U>(u)))
+    -> decltype(detail::lib::forward<T>(t) > detail::lib::forward<U>(u)) {
+  return detail::lib::forward<T>(t) > detail::lib::forward<U>(u);
+}
+
+template <typename T, typename U>
+bool greater(std::true_type, T&& t, U&& u) noexcept(
+    noexcept(detail::lib::forward<T>(t) > detail::lib::forward<U>(u))) {
+  return slb::greater<void const volatile*>{}(detail::lib::forward<T>(t),
+                                              detail::lib::forward<U>(u));
+}
+} // namespace detail
+
 template <>
 struct greater<void> {
   template <typename T, typename U>
@@ -392,7 +446,10 @@ struct greater<void> {
       noexcept(noexcept(detail::lib::forward<T>(t) >
                         detail::lib::forward<U>(u)))
           -> decltype(detail::lib::forward<T>(t) > detail::lib::forward<U>(u)) {
-    return detail::lib::forward<T>(t) > detail::lib::forward<U>(u);
+    return detail::greater(
+        typename detail::is_builtin_ptr_greater<T, U>::type{},
+        detail::lib::forward<T>(t),
+        detail::lib::forward<U>(u));
   }
 
   template <typename T, typename U>
@@ -420,6 +477,57 @@ struct less<T*> {
   }
 };
 
+namespace detail {
+template <typename T, typename U>
+auto has_user_defined_less()
+    -> decltype(operator<(std::declval<T>(), std::declval<U>()));
+
+template <typename T, typename U>
+auto has_user_defined_less()
+    -> decltype(std::declval<T>().operator<(std::declval<U>()));
+
+template <typename T,
+          typename U,
+          typename = decltype(detail::has_user_defined_less<T, U>())>
+std::false_type check_is_builtin_less(int);
+
+template <typename T, typename U>
+std::true_type check_is_builtin_less(...);
+
+template <typename T, typename U, typename = void>
+struct is_builtin_less : std::false_type {};
+
+template <typename T, typename U>
+struct is_builtin_less<T,
+                       U,
+                       decltype((void)(std::declval<T>() < std::declval<U>()))>
+    : decltype(detail::check_is_builtin_less<T, U>(0)) {};
+
+template <typename T, typename U, bool IsBuiltin = is_builtin_less<T, U>::value>
+struct is_builtin_ptr_less : std::false_type {};
+
+template <typename T, typename U>
+struct is_builtin_ptr_less<T, U, /*IsBuiltin=*/true>
+    : std::integral_constant<
+          bool,
+          std::is_convertible<T, void const volatile*>::value &&
+              std::is_convertible<U, void const volatile*>::value> {};
+
+template <typename T, typename U>
+constexpr auto less(std::false_type, T&& t, U&& u) noexcept(
+    noexcept(detail::lib::forward<T>(t) < detail::lib::forward<U>(u)))
+    -> decltype(detail::lib::forward<T>(t) < detail::lib::forward<U>(u)) {
+  return detail::lib::forward<T>(t) < detail::lib::forward<U>(u);
+}
+
+template <typename T, typename U>
+bool less(std::true_type, T&& t, U&& u) noexcept(
+    noexcept(detail::lib::forward<T>(t) < detail::lib::forward<U>(u))) {
+  return slb::less<void const volatile*>{}(detail::lib::forward<T>(t),
+                                           detail::lib::forward<U>(u));
+}
+} // namespace detail
+
 template <>
 struct less<void> {
   template <typename T, typename U>
@@ -427,7 +535,9 @@ struct less<void> {
       noexcept(noexcept(detail::lib::forward<T>(t) <
                         detail::lib::forward<U>(u)))
           -> decltype(detail::lib::forward<T>(t) < detail::lib::forward<U>(u)) {
-    return detail::lib::forward<T>(t) < detail::lib::forward<U>(u);
+    return detail::less(typename detail::is_builtin_ptr_less<T, U>::type{},
+                        detail::lib::forward<T>(t),
+                        detail::lib::forward<U>(u));
   }
 
   template <typename T, typename U>
@@ -455,13 +565,70 @@ struct greater_equal<T*> {
   }
 };
 
+namespace detail {
+template <typename T, typename U>
+auto has_user_defined_greater_equal()
+    -> decltype(operator>=(std::declval<T>(), std::declval<U>()));
+
+template <typename T, typename U>
+auto has_user_defined_greater_equal()
+    -> decltype(std::declval<T>().operator>=(std::declval<U>()));
+
+template <typename T,
+          typename U,
+          typename = decltype(detail::has_user_defined_greater_equal<T, U>())>
+std::false_type check_is_builtin_greater_equal(int);
+
+template <typename T, typename U>
+std::true_type check_is_builtin_greater_equal(...);
+
+template <typename T, typename U, typename = void>
+struct is_builtin_greater_equal : std::false_type {};
+
+template <typename T, typename U>
+struct is_builtin_greater_equal<T,
+                                U,
+                                decltype((void)(std::declval<T>() >=
+                                                std::declval<U>()))>
+    : decltype(detail::check_is_builtin_greater_equal<T, U>(0)) {};
+
+template <typename T,
+          typename U,
+          bool IsBuiltin = is_builtin_greater_equal<T, U>::value>
+struct is_builtin_ptr_greater_equal : std::false_type {};
+
+template <typename T, typename U>
+struct is_builtin_ptr_greater_equal<T, U, /*IsBuiltin=*/true>
+    : std::integral_constant<
+          bool,
+          std::is_convertible<T, void const volatile*>::value &&
+              std::is_convertible<U, void const volatile*>::value> {};
+
+template <typename T, typename U>
+constexpr auto greater_equal(std::false_type, T&& t, U&& u) noexcept(
+    noexcept(detail::lib::forward<T>(t) >= detail::lib::forward<U>(u)))
+    -> decltype(detail::lib::forward<T>(t) >= detail::lib::forward<U>(u)) {
+  return detail::lib::forward<T>(t) >= detail::lib::forward<U>(u);
+}
+
+template <typename T, typename U>
+bool greater_equal(std::true_type, T&& t, U&& u) noexcept(
+    noexcept(detail::lib::forward<T>(t) >= detail::lib::forward<U>(u))) {
+  return slb::greater_equal<void const volatile*>{}(detail::lib::forward<T>(t),
+                                                    detail::lib::forward<U>(u));
+}
+} // namespace detail
+
 template <>
 struct greater_equal<void> {
   template <typename T, typename U>
   constexpr auto operator()(T&& t, U&& u) const noexcept(
       noexcept(detail::lib::forward<T>(t) >= detail::lib::forward<U>(u)))
       -> decltype(detail::lib::forward<T>(t) >= detail::lib::forward<U>(u)) {
-    return detail::lib::forward<T>(t) >= detail::lib::forward<U>(u);
+    return detail::greater_equal(
+        typename detail::is_builtin_ptr_greater_equal<T, U>::type{},
+        detail::lib::forward<T>(t),
+        detail::lib::forward<U>(u));
   }
 
   template <typename T, typename U>
@@ -489,13 +656,70 @@ struct less_equal<T*> {
   }
 };
 
+namespace detail {
+template <typename T, typename U>
+auto has_user_defined_less_equal()
+    -> decltype(operator<=(std::declval<T>(), std::declval<U>()));
+
+template <typename T, typename U>
+auto has_user_defined_less_equal()
+    -> decltype(std::declval<T>().operator<=(std::declval<U>()));
+
+template <typename T,
+          typename U,
+          typename = decltype(detail::has_user_defined_less_equal<T, U>())>
+std::false_type check_is_builtin_less_equal(int);
+
+template <typename T, typename U>
+std::true_type check_is_builtin_less_equal(...);
+
+template <typename T, typename U, typename = void>
+struct is_builtin_less_equal : std::false_type {};
+
+template <typename T, typename U>
+struct is_builtin_less_equal<T,
+                             U,
+                             decltype((void)(std::declval<T>() <=
+                                             std::declval<U>()))>
+    : decltype(detail::check_is_builtin_less_equal<T, U>(0)) {};
+
+template <typename T,
+          typename U,
+          bool IsBuiltin = is_builtin_less_equal<T, U>::value>
+struct is_builtin_ptr_less_equal : std::false_type {};
+
+template <typename T, typename U>
+struct is_builtin_ptr_less_equal<T, U, /*IsBuiltin=*/true>
+    : std::integral_constant<
+          bool,
+          std::is_convertible<T, void const volatile*>::value &&
+              std::is_convertible<U, void const volatile*>::value> {};
+
+template <typename T, typename U>
+constexpr auto less_equal(std::false_type, T&& t, U&& u) noexcept(
+    noexcept(detail::lib::forward<T>(t) <= detail::lib::forward<U>(u)))
+    -> decltype(detail::lib::forward<T>(t) <= detail::lib::forward<U>(u)) {
+  return detail::lib::forward<T>(t) <= detail::lib::forward<U>(u);
+}
+
+template <typename T, typename U>
+bool less_equal(std::true_type, T&& t, U&& u) noexcept(
+    noexcept(detail::lib::forward<T>(t) <= detail::lib::forward<U>(u))) {
+  return slb::less_equal<void const volatile*>{}(detail::lib::forward<T>(t),
+                                                 detail::lib::forward<U>(u));
+}
+} // namespace detail
+
 template <>
 struct less_equal<void> {
   template <typename T, typename U>
   constexpr auto operator()(T&& t, U&& u) const noexcept(
       noexcept(detail::lib::forward<T>(t) <= detail::lib::forward<U>(u)))
       -> decltype(detail::lib::forward<T>(t) <= detail::lib::forward<U>(u)) {
-    return detail::lib::forward<T>(t) <= detail::lib::forward<U>(u);
+    return detail::less_equal(
+        typename detail::is_builtin_ptr_less_equal<T, U>::type{},
+        detail::lib::forward<T>(t),
+        detail::lib::forward<U>(u));
   }
 
   template <typename T, typename U>

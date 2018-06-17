@@ -457,7 +457,7 @@
   - [ ] [LWG2192](https://wg21.link/LWG2192): Validity and return type of `std::abs(0u)` is unclear
   - [ ] [LWG2276](https://wg21.link/LWG2276): Missing requirement on `std::promise::set_exception`
   - [ ] [LWG2296](https://wg21.link/LWG2296): `std::addressof` should be `constexpr`
-  - [ ] [LWG2450](https://wg21.link/LWG2450): `(greater|less|greater_equal|less_equal)<void>` do not yield a total order for pointers
+  - [X] [LWG2450](https://wg21.link/LWG2450): `(greater|less|greater_equal|less_equal)<void>` do not yield a total order for pointers
   - [ ] [LWG2520](https://wg21.link/LWG2520): N4089 broke initializing `unique_ptr<T[]>` from a `nullptr`
   - [ ] [LWG2523](https://wg21.link/LWG2523): `std::promise` synopsis shows two `set_value_at_thread_exit()`'s for no apparent reason
   - [ ] [LWG2537](https://wg21.link/LWG2537): Constructors for `priority_queue` taking allocators should call `make_heap`
