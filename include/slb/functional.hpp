@@ -79,6 +79,9 @@ namespace std {
   template <> struct bit_xor<void>;
   template <> struct bit_not<void>;
 
+  // [func.identity], identity
+  struct identity;
+
   // [func.not_fn], function template not_fn
   template <class F> unspecified not_fn(F&& f);
 
@@ -895,6 +898,17 @@ struct bit_not<void> {
   using is_transparent = void() const;
 };
 #endif
+
+// [func.identity], identity
+
+struct identity {
+  template <typename T>
+  constexpr T&& operator()(T&& t) const noexcept {
+    return detail::lib::forward<T>(t);
+  }
+
+  using is_transparent = void() const;
+};
 
 // [func.not_fn], function template not_fn
 

@@ -20,6 +20,7 @@
 
 #### `<functional>`
 
+  - `identity`
   - `invoke`
   - `mem_fn`
   - `not_fn`

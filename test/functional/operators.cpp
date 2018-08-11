@@ -599,3 +599,24 @@ TEST_CASE("bit_not<void>", "[bitwise.operations]") {
     CHECK(has_is_transparent<slb::bit_not<>>::value);
   }
 }
+
+TEST_CASE("identity", "[func.identity]") {
+  constexpr slb::identity op{};
+
+  int i = 4;
+  CHECK(std::is_same<decltype(op(i)), int&>::value);
+  CHECK(noexcept(op(i)));
+  CHECK(&op(i) == &i);
+  constexpr int rl = op(4);
+  (void)rl;
+
+  CHECK(std::is_same<decltype(op(4)), int&&>::value);
+  CHECK(noexcept(op(4)));
+  CHECK(op(4) == 4);
+  constexpr int rr = op(4);
+  (void)rr;
+
+  /* using is_transparent = unspecified; */ {
+    CHECK(has_is_transparent<slb::identity>::value);
+  }
+}
