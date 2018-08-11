@@ -183,6 +183,7 @@ namespace std {
     using add_pointer_t    = typename add_pointer<T>::type;
 
   // [meta.trans.other], other transformations
+  template<class T> struct type_identity;
   template<size_t Len,
            size_t Align = default-alignment> // see [meta.trans.other]
     struct aligned_storage;
@@ -195,6 +196,8 @@ namespace std {
   template<class T> struct underlying_type;
   template<class Fn, class... ArgTypes> struct invoke_result;
 
+  template<class T>
+    using type_identity_t  = typename type_identity<T>::type;
   template<size_t Len,
            size_t Align = default-alignment> // see [meta.trans.other]
     using aligned_storage_t = typename aligned_storage<Len, Align>::type;
@@ -1351,6 +1354,11 @@ using add_pointer_t = typename slb::add_pointer<T>::type;
 
 // [meta.trans.other], other transformations
 
+template <typename T>
+struct type_identity {
+  using type = T;
+};
+
 using std::aligned_storage;
 
 // libstdc++ did not provide `aligned_union` until version 5.
@@ -1430,6 +1438,9 @@ struct default_alignment<slb::aligned_storage<Len, Align>>
     : slb::integral_constant<std::size_t, Align> {};
 
 } // namespace detail
+
+template <typename T>
+using type_identity_t = typename slb::type_identity<T>::type;
 
 template <std::size_t Len,
           std::size_t Align =

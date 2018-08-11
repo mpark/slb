@@ -31,6 +31,7 @@
   - `is_aggregate`
   - `is_null_pointer`
   - `remove_cvref`
+  - `type_identity`
   - `void_t`
   - Invocable type traits
     - `std::is_invocable`
@@ -689,7 +690,7 @@
 - [ ] [P0769](https://wg21.link/P0769): Add shift to `<algorithm>`
 - [ ] [P0788](https://wg21.link/P0788): Standard Library Specification in a Concepts and Contracts World
 - [ ] [P0879](https://wg21.link/P0879): Constexpr for swap and swap related functions Also resolves LWG issue 2800.
-- [ ] [P0887](https://wg21.link/P0887): The identity metafunction
+- [X] [P0887](https://wg21.link/P0887): The identity metafunction
 - [ ] [P0892](https://wg21.link/P0892): `explicit(bool)`
 - [ ] [P0898](https://wg21.link/P0898): Standard Library Concepts
 - [ ] [P0935](https://wg21.link/P0935): Eradicating unnecessarily `explicit` default constructors from the standard library

@@ -1242,6 +1242,12 @@ TEST_CASE("add_pointer_t", "[meta.trans.ptr]") {
 
 // [meta.trans.other], other transformations
 
+// template<class T> struct type_identity;
+TEST_CASE("type_identity", "[meta.trans.other]") {
+  CHECK(std::is_same<slb::type_identity<int>::type, int>::value);
+  CHECK(std::is_same<slb::type_identity<int const>::type, int const>::value);
+}
+
 // template<size_t Len, class... Types> struct aligned_union;
 TEST_CASE("aligned_union", "[meta.trans.other]") {
   union U {
@@ -1292,6 +1298,15 @@ TEST_CASE("remove_cvref", "[meta.trans.other]") {
   CHECK(std::is_same<slb::remove_cvref<int volatile&&>::type, int>::value);
   CHECK(
       std::is_same<slb::remove_cvref<int const volatile&&>::type, int>::value);
+}
+
+// template<class T>
+//   using type_identity_t  = typename type_identity<T>::type;
+TEST_CASE("type_identity_t", "[meta.trans.other]") {
+  CHECK(std::is_same<slb::type_identity_t<int>,
+                     slb::type_identity<int>::type>::value);
+  CHECK(std::is_same<slb::type_identity_t<int const>,
+                     slb::type_identity<int const>::type>::value);
 }
 
 // template<size_t Len,
