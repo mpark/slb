@@ -124,11 +124,17 @@ TEST_CASE("mem_fn(mem-obj-ptr)", "[func.memfn]") {
 
   /* reference wrapper */ {
     C x = {42};
-    std::reference_wrapper<C> r = x;
-    std::reference_wrapper<C const> cr = x;
+    std::reference_wrapper<C> std_r = x;
+    std::reference_wrapper<C const> std_cr = x;
 
-    CHECK_NESTED(mem_obj(r.get().obj, nothrows, mem, r));
-    CHECK_NESTED(mem_obj(cr.get().obj, nothrows, mem, cr));
+    CHECK_NESTED(mem_obj(std_r.get().obj, nothrows, mem, std_r));
+    CHECK_NESTED(mem_obj(std_cr.get().obj, nothrows, mem, std_cr));
+
+    slb::reference_wrapper<C> slb_r = x;
+    slb::reference_wrapper<C const> slb_cr = x;
+
+    CHECK_NESTED(mem_obj(slb_r.get().obj, nothrows, mem, slb_r));
+    CHECK_NESTED(mem_obj(slb_cr.get().obj, nothrows, mem, slb_cr));
   }
 
   /* pointer */ {
@@ -214,16 +220,37 @@ TEST_CASE("mem_fn(mem-fun-ptr)", "[func.memfn]") {
 
   /* reference wrapper */ {
     C x = {42};
-    std::reference_wrapper<C> r = x;
-    std::reference_wrapper<C const> cr = x;
+    std::reference_wrapper<C> std_r = x;
+    std::reference_wrapper<C const> std_cr = x;
 
-    CHECK_NESTED(mem_fun(r.get().fun(40), p0012_nothrows, mem, r, 40));
-    CHECK_NESTED(mem_fun(r.get().cfun(40), p0012_nothrows, cmem, r, 40));
-    CHECK_NESTED(mem_fun(r.get().lfun(40), p0012_nothrows, lmem, r, 40));
-    CHECK_NESTED(mem_fun(r.get().clfun(40), p0012_nothrows, clmem, r, 40));
+    CHECK_NESTED(mem_fun(std_r.get().fun(40), p0012_nothrows, mem, std_r, 40));
+    CHECK_NESTED(
+        mem_fun(std_r.get().cfun(40), p0012_nothrows, cmem, std_r, 40));
+    CHECK_NESTED(
+        mem_fun(std_r.get().lfun(40), p0012_nothrows, lmem, std_r, 40));
+    CHECK_NESTED(
+        mem_fun(std_r.get().clfun(40), p0012_nothrows, clmem, std_r, 40));
 
-    CHECK_NESTED(mem_fun(cr.get().cfun(40), p0012_nothrows, cmem, cr, 40));
-    CHECK_NESTED(mem_fun(cr.get().clfun(40), p0012_nothrows, clmem, cr, 40));
+    CHECK_NESTED(
+        mem_fun(std_cr.get().cfun(40), p0012_nothrows, cmem, std_cr, 40));
+    CHECK_NESTED(
+        mem_fun(std_cr.get().clfun(40), p0012_nothrows, clmem, std_cr, 40));
+
+    slb::reference_wrapper<C> slb_r = x;
+    slb::reference_wrapper<C const> slb_cr = x;
+
+    CHECK_NESTED(mem_fun(slb_r.get().fun(40), p0012_nothrows, mem, slb_r, 40));
+    CHECK_NESTED(
+        mem_fun(slb_r.get().cfun(40), p0012_nothrows, cmem, slb_r, 40));
+    CHECK_NESTED(
+        mem_fun(slb_r.get().lfun(40), p0012_nothrows, lmem, slb_r, 40));
+    CHECK_NESTED(
+        mem_fun(slb_r.get().clfun(40), p0012_nothrows, clmem, slb_r, 40));
+
+    CHECK_NESTED(
+        mem_fun(slb_cr.get().cfun(40), p0012_nothrows, cmem, slb_cr, 40));
+    CHECK_NESTED(
+        mem_fun(slb_cr.get().clfun(40), p0012_nothrows, clmem, slb_cr, 40));
   }
 
   /* pointer */ {

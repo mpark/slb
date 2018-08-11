@@ -19,6 +19,10 @@
 #include <utility>
 
 namespace slb {
+
+template <typename T>
+class reference_wrapper;
+
 namespace detail {
 namespace invoke_impl {
 
@@ -28,6 +32,9 @@ struct is_reference_wrapper : std::false_type {};
 
 template <typename T>
 struct is_reference_wrapper<std::reference_wrapper<T>> : std::true_type {};
+
+template <typename T>
+struct is_reference_wrapper<slb::reference_wrapper<T>> : std::true_type {};
 
 ////////////////////////////////////////////////////////////////////////////////
 struct ref_tag {};

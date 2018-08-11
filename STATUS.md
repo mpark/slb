@@ -23,6 +23,7 @@
   - `invoke`
   - `mem_fn`
   - `not_fn`
+  - `reference_wrapper`
 
 #### `<type_traits>`
 
@@ -254,7 +255,7 @@
   - [ ] [N4190](https://wg21.link/N4190): Removing `auto_ptr`, `random_shuffle()`, And Old Stuff.
   - [ ] [N4258](https://wg21.link/N4258): Cleaning-up noexcept in the Library.
   - [ ] [N4259](https://wg21.link/N4259): Wording for `std::uncaught_exceptions`
-  - [ ] [N4277](https://wg21.link/N4277): `TriviallyCopyable` `reference_wrapper`.
+  - [X] [N4277](https://wg21.link/N4277): `TriviallyCopyable` `reference_wrapper`.
   - [ ] [N4279](https://wg21.link/N4279): Improved insertion interface for unique-key maps.
   - [ ] [N4280](https://wg21.link/N4280): Non-member `size()` and more
   - [ ] [N4284](https://wg21.link/N4284): Contiguous Iterators.
@@ -437,7 +438,7 @@
   - [ ] [LWG2380](https://wg21.link/LWG2380): May `<cstdlib>` provide `long ::abs(long)` and `long long ::abs(long long)`?
   - [ ] [LWG2384](https://wg21.link/LWG2384): Allocator's deallocate function needs better specification
   - [ ] [LWG2385](https://wg21.link/LWG2385): `function::assign` allocator argument doesn't make sense
-  - [ ] [LWG2435](https://wg21.link/LWG2435): `reference_wrapper::operator()`'s _Remark_ should be deleted
+  - [X] [LWG2435](https://wg21.link/LWG2435): `reference_wrapper::operator()`'s _Remark_ should be deleted
   - [ ] [LWG2447](https://wg21.link/LWG2447): Allocators and `volatile`-qualified value types
   - [ ] [LWG2462](https://wg21.link/LWG2462): `std::ios_base::failure` is overspecified
   - [ ] [LWG2466](https://wg21.link/LWG2466): `allocator_traits::max_size()` default behavior is incorrect
@@ -702,7 +703,7 @@
 - [ ] [LWG2981](https://wg21.link/LWG2981): Remove redundant deduction guides from standard library
 - [ ] [LWG2982](https://wg21.link/LWG2982): Making `size_type` consistent in associative container deduction guides
 - [ ] [LWG2988](https://wg21.link/LWG2988): Clause 32 cleanup missed one `typename`
-- [ ] [LWG2993](https://wg21.link/LWG2993): `reference_wrapper` conversion from `T&&`
+- [X] [LWG2993](https://wg21.link/LWG2993): `reference_wrapper` conversion from `T&&`
 - [ ] [LWG2998](https://wg21.link/LWG2998): Requirements on function objects passed to `{forward_,}list`-specific algorithms
 - [ ] [LWG3001](https://wg21.link/LWG3001): `weak_ptr::element_type` needs `remove_extent_t`
 - [ ] [LWG3024](https://wg21.link/LWG3024): `variant`'s copies must be deleted instead of disabled via SFINAE

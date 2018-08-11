@@ -139,11 +139,17 @@ TEST_CASE("not_fn(mem-obj-ptr)", "[func.not_fn]") {
 
   /* reference wrapper */ {
     C x = {42};
-    std::reference_wrapper<C> r = x;
-    std::reference_wrapper<C const> cr = x;
+    std::reference_wrapper<C> std_r = x;
+    std::reference_wrapper<C const> std_cr = x;
 
-    CHECK_NESTED(not_fn(!r.get().obj, nothrows, nf, r));
-    CHECK_NESTED(not_fn(!cr.get().obj, nothrows, nf, cr));
+    CHECK_NESTED(not_fn(!std_r.get().obj, nothrows, nf, std_r));
+    CHECK_NESTED(not_fn(!std_cr.get().obj, nothrows, nf, std_cr));
+
+    slb::reference_wrapper<C> slb_r = x;
+    slb::reference_wrapper<C const> slb_cr = x;
+
+    CHECK_NESTED(not_fn(!slb_r.get().obj, nothrows, nf, slb_r));
+    CHECK_NESTED(not_fn(!slb_cr.get().obj, nothrows, nf, slb_cr));
   }
 
   /* pointer */ {
@@ -238,16 +244,33 @@ TEST_CASE("not_fn(mem-fun-ptr)", "[func.not_fn]") {
 
   /* reference wrapper */ {
     C x = {42};
-    std::reference_wrapper<C> r = x;
-    std::reference_wrapper<C const> cr = x;
+    std::reference_wrapper<C> std_r = x;
+    std::reference_wrapper<C const> std_cr = x;
 
-    CHECK_NESTED(not_fn(!r.get().fun(40), p0012_nothrows, nf, r, 40));
-    CHECK_NESTED(not_fn(!r.get().cfun(40), p0012_nothrows, ncf, r, 40));
-    CHECK_NESTED(not_fn(!r.get().lfun(40), p0012_nothrows, nlf, r, 40));
-    CHECK_NESTED(not_fn(!r.get().clfun(40), p0012_nothrows, nclf, r, 40));
+    CHECK_NESTED(not_fn(!std_r.get().fun(40), p0012_nothrows, nf, std_r, 40));
+    CHECK_NESTED(not_fn(!std_r.get().cfun(40), p0012_nothrows, ncf, std_r, 40));
+    CHECK_NESTED(not_fn(!std_r.get().lfun(40), p0012_nothrows, nlf, std_r, 40));
+    CHECK_NESTED(
+        not_fn(!std_r.get().clfun(40), p0012_nothrows, nclf, std_r, 40));
 
-    CHECK_NESTED(not_fn(!cr.get().cfun(40), p0012_nothrows, ncf, cr, 40));
-    CHECK_NESTED(not_fn(!cr.get().clfun(40), p0012_nothrows, nclf, cr, 40));
+    CHECK_NESTED(
+        not_fn(!std_cr.get().cfun(40), p0012_nothrows, ncf, std_cr, 40));
+    CHECK_NESTED(
+        not_fn(!std_cr.get().clfun(40), p0012_nothrows, nclf, std_cr, 40));
+
+    slb::reference_wrapper<C> slb_r = x;
+    slb::reference_wrapper<C const> slb_cr = x;
+
+    CHECK_NESTED(not_fn(!slb_r.get().fun(40), p0012_nothrows, nf, slb_r, 40));
+    CHECK_NESTED(not_fn(!slb_r.get().cfun(40), p0012_nothrows, ncf, slb_r, 40));
+    CHECK_NESTED(not_fn(!slb_r.get().lfun(40), p0012_nothrows, nlf, slb_r, 40));
+    CHECK_NESTED(
+        not_fn(!slb_r.get().clfun(40), p0012_nothrows, nclf, slb_r, 40));
+
+    CHECK_NESTED(
+        not_fn(!slb_cr.get().cfun(40), p0012_nothrows, ncf, slb_cr, 40));
+    CHECK_NESTED(
+        not_fn(!slb_cr.get().clfun(40), p0012_nothrows, nclf, slb_cr, 40));
   }
 
   /* pointer */ {

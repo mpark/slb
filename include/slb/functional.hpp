@@ -151,6 +151,7 @@ namespace std {
 */
 
 #include <functional>
+#include <memory>
 #include <type_traits>
 #include <utility>
 
@@ -175,6 +176,84 @@ invoke(F&& f,
   return detail::invoke(std::forward<F>(f), std::forward<Args>(args)...);
 }
 #endif
+
+// [refwrap], reference_wrapper
+namespace detail {
+template <typename T>
+static T& ref_bind(T& t) noexcept {
+  return t;
+}
+template <typename T>
+static void ref_bind(T&&) = delete;
+} // namespace detail
+
+template <typename T>
+class reference_wrapper {
+public:
+  // types
+  using type = T;
+
+  // construct/copy/destroy
+  template <typename U,
+            typename = typename std::enable_if<
+                !std::is_same<typename detail::lib::remove_cvref<U>::type,
+                              reference_wrapper>::value>::type,
+            typename = decltype(detail::ref_bind<T>(std::declval<U>()))>
+  reference_wrapper(U&& t) noexcept(
+      noexcept(detail::ref_bind<T>(std::forward<U>(t))))
+      : _ptr(std::addressof(detail::ref_bind<T>(std::forward<U>(t)))) {}
+
+  reference_wrapper(reference_wrapper const&) noexcept = default;
+
+  // assignment
+  reference_wrapper& operator=(reference_wrapper const&) noexcept = default;
+
+  // access
+  operator T&() const noexcept { return *_ptr; }
+  T& get() const noexcept { return *_ptr; }
+
+  // invocation
+  template <typename... ArgTypes>
+  typename slb::invoke_result<T&, ArgTypes...>::type
+  operator()(ArgTypes&&... args) const
+      noexcept(slb::is_nothrow_invocable<T&, ArgTypes...>::value) {
+    return detail::invoke(*_ptr, std::forward<ArgTypes>(args)...);
+  }
+
+private:
+  T* _ptr;
+};
+
+#if SLB_HAS_CXX17_DEDUCTION_GUIDES
+template <typename T>
+reference_wrapper(T&)->reference_wrapper<T>;
+#endif
+
+template <typename T>
+reference_wrapper<T> ref(T& t) noexcept {
+  return reference_wrapper<T>(t);
+}
+
+template <typename T>
+reference_wrapper<T> ref(reference_wrapper<T> t) noexcept {
+  return slb::ref(t.get());
+}
+
+template <typename T>
+void ref(T const&&) = delete;
+
+template <typename T>
+reference_wrapper<T const> cref(T const& t) noexcept {
+  return reference_wrapper<T const>(t);
+}
+
+template <typename T>
+reference_wrapper<T const> cref(reference_wrapper<T> t) noexcept {
+  return slb::cref(t.get());
+}
+
+template <typename T>
+void cref(T const&&) = delete;
 
 // [func.not_fn], function template not_fn
 

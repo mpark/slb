@@ -10,6 +10,7 @@
 
 #include <slb/type_traits.hpp>
 
+#include <slb/functional.hpp>
 #include <functional>
 #include <type_traits>
 
@@ -838,6 +839,10 @@ TEST_CASE("is_invocable", "[meta.rel]") {
         invocable<int, Fn, std::reference_wrapper<C>, int>(p0012_nothrows));
     CHECK_NESTED(not_invocable<Fn, std::reference_wrapper<C const>, int>());
 
+    CHECK_NESTED(
+        invocable<int, Fn, slb::reference_wrapper<C>, int>(p0012_nothrows));
+    CHECK_NESTED(not_invocable<Fn, slb::reference_wrapper<C const>, int>());
+
     CHECK_NESTED(invocable<int, Fn, C*, int>(p0012_nothrows));
     CHECK_NESTED(not_invocable<Fn, C const*, int>());
 
@@ -903,6 +908,10 @@ TEST_CASE("is_invocable", "[meta.rel]") {
     CHECK_NESTED(invocable<int&, Fn, std::reference_wrapper<C>>(nothrows));
     CHECK_NESTED(
         invocable<int const&, Fn, std::reference_wrapper<C const>>(nothrows));
+
+    CHECK_NESTED(invocable<int&, Fn, slb::reference_wrapper<C>>(nothrows));
+    CHECK_NESTED(
+        invocable<int const&, Fn, slb::reference_wrapper<C const>>(nothrows));
 
     CHECK_NESTED(invocable<int&, Fn, C*>(nothrows));
     CHECK_NESTED(invocable<int const&, Fn, C const*>(nothrows));
@@ -1209,6 +1218,12 @@ TEST_CASE("invoke_result", "[meta.trans.other]") {
     CHECK(no_result<
           slb::invoke_result<Fn, std::reference_wrapper<C const>, int>>::value);
 
+    CHECK(std::is_same<
+          slb::invoke_result<Fn, slb::reference_wrapper<C>, int>::type,
+          int>::value);
+    CHECK(no_result<
+          slb::invoke_result<Fn, slb::reference_wrapper<C const>, int>>::value);
+
     CHECK(std::is_same<slb::invoke_result<Fn, C*, int>::type, int>::value);
     CHECK(no_result<slb::invoke_result<Fn, C const*, int>>::value);
 
@@ -1282,6 +1297,12 @@ TEST_CASE("invoke_result", "[meta.trans.other]") {
                        int&>::value);
     CHECK(std::is_same<
           slb::invoke_result<Fn, std::reference_wrapper<C const>>::type,
+          int const&>::value);
+
+    CHECK(std::is_same<slb::invoke_result<Fn, slb::reference_wrapper<C>>::type,
+                       int&>::value);
+    CHECK(std::is_same<
+          slb::invoke_result<Fn, slb::reference_wrapper<C const>>::type,
           int const&>::value);
 
     CHECK(std::is_same<slb::invoke_result<Fn, C*>::type, int&>::value);

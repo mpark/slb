@@ -305,11 +305,17 @@ TEST_CASE("bind(mem-obj-ptr)", "[func.bind.bind]") {
 
   /* reference wrapper */ {
     C x = {42};
-    std::reference_wrapper<C> r = x;
-    std::reference_wrapper<C const> cr = x;
+    std::reference_wrapper<C> std_r = x;
+    std::reference_wrapper<C const> std_cr = x;
 
-    CHECK_NESTED(bind_obj(r.get().obj, byref, f, r));
-    CHECK_NESTED(bind_obj(cr.get().obj, byref, f, cr));
+    CHECK_NESTED(bind_obj(std_r.get().obj, byref, f, std_r));
+    CHECK_NESTED(bind_obj(std_cr.get().obj, byref, f, std_cr));
+
+    slb::reference_wrapper<C> slb_r = x;
+    slb::reference_wrapper<C const> slb_cr = x;
+
+    CHECK_NESTED(bind_obj(slb_r.get().obj, byref, f, slb_r));
+    CHECK_NESTED(bind_obj(slb_cr.get().obj, byref, f, slb_cr));
   }
 
   /* pointer */ {
@@ -373,16 +379,27 @@ TEST_CASE("bind(mem-fun-ptr)", "[func.bind.bind]") {
 
   /* reference wrapper */ {
     C x = {42};
-    std::reference_wrapper<C> r = x;
-    std::reference_wrapper<C const> cr = x;
+    std::reference_wrapper<C> std_r = x;
+    std::reference_wrapper<C const> std_cr = x;
 
-    CHECK_NESTED(bind_fun(r.get().fun(40), f, r, 40));
-    CHECK_NESTED(bind_fun(r.get().cfun(40), cf, r, 40));
-    CHECK_NESTED(bind_fun(r.get().lfun(40), lf, r, 40));
-    CHECK_NESTED(bind_fun(r.get().clfun(40), clf, r, 40));
+    CHECK_NESTED(bind_fun(std_r.get().fun(40), f, std_r, 40));
+    CHECK_NESTED(bind_fun(std_r.get().cfun(40), cf, std_r, 40));
+    CHECK_NESTED(bind_fun(std_r.get().lfun(40), lf, std_r, 40));
+    CHECK_NESTED(bind_fun(std_r.get().clfun(40), clf, std_r, 40));
 
-    CHECK_NESTED(bind_fun(cr.get().cfun(40), cf, cr, 40));
-    CHECK_NESTED(bind_fun(cr.get().clfun(40), clf, cr, 40));
+    CHECK_NESTED(bind_fun(std_cr.get().cfun(40), cf, std_cr, 40));
+    CHECK_NESTED(bind_fun(std_cr.get().clfun(40), clf, std_cr, 40));
+
+    slb::reference_wrapper<C> slb_r = x;
+    slb::reference_wrapper<C const> slb_cr = x;
+
+    CHECK_NESTED(bind_fun(slb_r.get().fun(40), f, slb_r, 40));
+    CHECK_NESTED(bind_fun(slb_r.get().cfun(40), cf, slb_r, 40));
+    CHECK_NESTED(bind_fun(slb_r.get().lfun(40), lf, slb_r, 40));
+    CHECK_NESTED(bind_fun(slb_r.get().clfun(40), clf, slb_r, 40));
+
+    CHECK_NESTED(bind_fun(slb_cr.get().cfun(40), cf, slb_cr, 40));
+    CHECK_NESTED(bind_fun(slb_cr.get().clfun(40), clf, slb_cr, 40));
   }
 
   /* pointer */ {
