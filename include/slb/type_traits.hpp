@@ -115,6 +115,7 @@ namespace std {
   template<class T, class U> struct is_same;
   template<class Base, class Derived> struct is_base_of;
   template<class From, class To> struct is_convertible;
+  template<class From, class To> struct is_nothrow_convertible;
 
   template<class Fn, class... ArgTypes> struct is_invocable;
   template<class R, class Fn, class... ArgTypes> struct is_invocable_r;
@@ -403,6 +404,9 @@ namespace std {
     inline constexpr bool is_base_of_v = is_base_of<Base, Derived>::value;
   template<class From, class To>
     inline constexpr bool is_convertible_v = is_convertible<From, To>::value;
+  template<class From, class To>
+    inline constexpr bool is_nothrow_convertible_v
+      = is_nothrow_convertible<From, To>::value;
   template<class Fn, class... ArgTypes>
     inline constexpr bool is_invocable_v = is_invocable<Fn, ArgTypes...>::value;
   template<class R, class Fn, class... ArgTypes>
@@ -1191,6 +1195,35 @@ struct is_convertible
     : slb::bool_constant<std::is_convertible<From, To>::value> {};
 #endif
 
+namespace detail {
+template <typename From,
+          typename To,
+          bool Convertible = std::is_convertible<From, To>::value>
+struct is_nothrow_convertible_impl {
+  static constexpr bool value = false;
+};
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4244) // conversion from 'type1' to 'type2', possible
+                                // loss of data
+#endif
+template <typename From, typename To>
+struct is_nothrow_convertible_impl<From, To, true> {
+  static void conversion(To) noexcept;
+
+  static constexpr bool value = noexcept(conversion(std::declval<From>()));
+};
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+} // namespace detail
+
+template <typename From, typename To>
+struct is_nothrow_convertible
+    : slb::bool_constant<detail::is_nothrow_convertible_impl<From, To>::value> {
+};
+
 // We only enable the C++17 implementation under C++2a here to account for
 // P0704: "Fixing const-qualified pointers to members".
 
@@ -1830,6 +1863,10 @@ SLB_CXX17_INLINE_VARIABLE constexpr bool is_base_of_v =
 template <typename From, typename To>
 SLB_CXX17_INLINE_VARIABLE constexpr bool is_convertible_v =
     slb::is_convertible<From, To>::value;
+
+template <typename From, typename To>
+SLB_CXX17_INLINE_VARIABLE constexpr bool is_nothrow_convertible_v =
+    slb::is_nothrow_convertible<From, To>::value;
 
 template <typename F, typename... Args>
 SLB_CXX17_INLINE_VARIABLE constexpr bool is_invocable_v =

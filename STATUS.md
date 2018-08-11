@@ -29,6 +29,7 @@
   - `bool_constant`
   - `endian`
   - `is_aggregate`
+  - `is_nothrow_convertible`
   - `is_null_pointer`
   - `remove_cvref`
   - `void_t`
@@ -684,7 +685,7 @@
 - [ ] [P0619](https://wg21.link/P0619): Reviewing Deprecated Facilities of C++17 for C++20
 - [ ] [P0646](https://wg21.link/P0646): Improving the Return Value of Erase-Like Algorithms
 - [ ] [P0722](https://wg21.link/P0722): Efficient sized delete for variable sized classes
-- [ ] [P0758](https://wg21.link/P0758): Implicit conversion traits and utility functions
+- [X] [P0758](https://wg21.link/P0758): Implicit conversion traits and utility functions
 - [ ] [P0759](https://wg21.link/P0759): `fpos` Requirements
 - [ ] [P0769](https://wg21.link/P0769): Add shift to `<algorithm>`
 - [ ] [P0788](https://wg21.link/P0788): Standard Library Specification in a Concepts and Contracts World

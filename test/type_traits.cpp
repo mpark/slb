@@ -912,6 +912,39 @@ TEST_CASE("is_convertible", "[meta.rel]") {
       std::is_base_of<slb::true_type, slb::is_convertible<float, int>>::value);
 }
 
+// template<class From, class To> struct is_nothrow_convertible;
+template <typename T, bool IsNothrow = true>
+struct conv_to {
+  operator T() const noexcept(IsNothrow) { return T(); }
+};
+template <typename T>
+using conv_to_throws = conv_to<T, false>;
+
+template <typename T, bool IsNothrow = true>
+struct conv_from {
+  conv_from(T) noexcept(IsNothrow) {}
+};
+template <typename T>
+using conv_from_throws = conv_from<T, false>;
+
+TEST_CASE("is_nothrow_convertible", "[meta.rel]") {
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_nothrow_convertible<float, int>>::value);
+
+  CHECK(std::is_base_of<slb::true_type,
+                        slb::is_nothrow_convertible<conv_to<int>, int>>::value);
+  CHECK(std::is_base_of<
+        slb::false_type,
+        slb::is_nothrow_convertible<conv_to_throws<int>, int>>::value);
+
+  CHECK(
+      std::is_base_of<slb::true_type,
+                      slb::is_nothrow_convertible<int, conv_from<int>>>::value);
+  CHECK(std::is_base_of<
+        slb::false_type,
+        slb::is_nothrow_convertible<int, conv_from_throws<int>>>::value);
+}
+
 // template <class Fn, class... ArgTypes>
 // struct is_invocable;
 // template <class R, class Fn, class... ArgTypes>
@@ -927,20 +960,6 @@ struct smart_ptr {
 };
 template <typename T>
 using smart_ptr_throws = smart_ptr<T, false>;
-
-template <typename T, bool IsNothrow = true>
-struct conv_to {
-  operator T() const noexcept(IsNothrow) { return T(); }
-};
-template <typename T>
-using conv_to_throws = conv_to<T, false>;
-
-template <typename T, bool IsNothrow = true>
-struct conv_from {
-  conv_from(T) noexcept(IsNothrow) {}
-};
-template <typename T>
-using conv_from_throws = conv_from<T, false>;
 
 // Account for P0012: "Make exception specifications be part of the type
 // system".
@@ -2448,6 +2467,18 @@ TEST_CASE("is_convertible_v", "[meta.rel]") {
   CHECK(slb::is_convertible_v<float, int> ==
         slb::is_convertible<float, int>::value);
   constexpr bool v = slb::is_convertible_v<float, int>;
+  (void)v;
+}
+
+// template<class From, class To>
+//   inline constexpr bool is_nothrow_convertible_v
+//     = is_nothrow_convertible<From, To>::value;
+TEST_CASE("is_nothrow_convertible_v", "[meta.rel]") {
+  CHECK(std::is_same<decltype(slb::is_nothrow_convertible_v<float, int>),
+                     bool const>::value);
+  CHECK(slb::is_nothrow_convertible_v<float, int> ==
+        slb::is_nothrow_convertible<float, int>::value);
+  constexpr bool v = slb::is_nothrow_convertible_v<float, int>;
   (void)v;
 }
 
