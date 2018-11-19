@@ -697,6 +697,34 @@
 - [ ] [P1023](https://wg21.link/P1023): `constexpr` comparison operators for `std::array`
 - [ ] [P1025](https://wg21.link/P1025): Update The Reference To The Unicode Standard
 - [ ] [P1120](https://wg21.link/P1120): Consistency improvements for `<=>` and other comparison operators
+- [ ] [P0318](https://wg21.link/P0318): `unwrap_ref_decay` and `unwrap_reference`
+- [ ] [P0356](https://wg21.link/P0356): Simplified partial function application
+- [ ] [P0357](https://wg21.link/P0357): `reference_wrapper` for incomplete types
+- [ ] [P0482](https://wg21.link/P0482): `char8_t`: A type for UTF-8 characters and strings
+- [ ] [P0487](https://wg21.link/P0487): Fixing `operator>>(basic_istream&, CharT*)` (LWG 2499)
+- [ ] [P0591](https://wg21.link/P0591): Utility functions to implement uses-allocator construction
+- [ ] [P0595](https://wg21.link/P0595): `std::is_constant_evaluated()`
+- [ ] [P0602](https://wg21.link/P0602): `variant` and `optional` should propagate copy/move triviality
+- [ ] [P0608](https://wg21.link/P0608): A sane `variant` converting constructor
+- [ ] [P0655](https://wg21.link/P0655): `visit<R>`: Explicit Return Type for `visit`
+- [ ] [P0771](https://wg21.link/P0771): `std::function` move constructor should be `noexcept`
+- [ ] [P0896](https://wg21.link/P0896): The One Ranges Proposal
+- [ ] [P0899](https://wg21.link/P0899): LWG 3016 is not a defect
+- [ ] [P0919](https://wg21.link/P0919): Heterogeneous lookup for unordered containers
+- [ ] [P0972](https://wg21.link/P0972): `<chrono>` `zero()`, `min()`, and `max()` should be `noexcept`
+- [ ] [P1006](https://wg21.link/P1006): Constexpr in `std::pointer_traits`
+- [ ] [P1007](https://wg21.link/P1007): `std::assume_aligned`
+- [ ] [P1020](https://wg21.link/P1020): Smart pointer creation with default initialization
+- [ ] [P1032](https://wg21.link/P1032): Misc `constexpr` bits
+- [ ] [P1085](https://wg21.link/P1085): Should Span be Regular?
+- [ ] [P1123](https://wg21.link/P1123): Editorial Guidance for merging P0019r8 and P0528r3
+- [ ] [P1148](https://wg21.link/P1148): Cleaning up Clause 20
+- [ ] [P1165](https://wg21.link/P1165): Make stateful allocator propagation more consistent for `operator+(basic_string)`
+- [ ] [P1209](https://wg21.link/P1209): Adopt Consistent Container Erasure from Library Fundamentals 2 for C++20
+- [ ] [P1236](https://wg21.link/P1236): Alternative Wording for P0907R4 Signed Integers are Two's Complement
+- [ ] [P1248](https://wg21.link/P1248): Remove CommonReference requirement from StrictWeakOrdering (a.k.a Fixing Relations)
+- [ ] [P1285](https://wg21.link/P1285): Improving Completeness Requirements for Type Traits
+- [ ] [P1353](https://wg21.link/P1353): Missing feature test macros
 
 
 ##### Issues
@@ -783,3 +811,36 @@
 - [ ] [LWG3100](https://wg21.link/LWG3100): Unnecessary and confusing "empty span" wording
 - [ ] [LWG3102](https://wg21.link/LWG3102): Clarify `span` `iterator` and `const_iterator` behavior
 - [ ] [LWG3104](https://wg21.link/LWG3104): Fixing `duration` division
+- [ ] [LWG2183](https://wg21.link/LWG2183): Muddled allocator requirements for `match_results` constructors
+- [ ] [LWG2184](https://wg21.link/LWG2184): Muddled allocator requirements for `match_results` assignments
+- [ ] [LWG2412](https://wg21.link/LWG2412): `promise::set_value()` and `promise::get_future()` should not race
+- [ ] [LWG2499](https://wg21.link/LWG2499): `operator>>(basic_istream&, CharT*)` makes it hard to avoid buffer overflows
+- [ ] [LWG2682](https://wg21.link/LWG2682): `filesystem::copy()` won't create a symlink to a directory
+- [ ] [LWG2797](https://wg21.link/LWG2797): Trait precondition violations
+- [ ] [LWG2936](https://wg21.link/LWG2936): Path comparison is defined in terms of the generic format
+- [ ] [LWG2943](https://wg21.link/LWG2943): Problematic specification of the wide version of `basic_filebuf::open`
+- [ ] [LWG2995](https://wg21.link/LWG2995): `basic_stringbuf` default constructor forbids it from using SSO capacity
+- [ ] [LWG2996](https://wg21.link/LWG2996): Missing rvalue overloads for `shared_ptr` operations
+- [ ] [LWG3008](https://wg21.link/LWG3008): `make_shared` (sub)object destruction semantics are not specified
+- [ ] [LWG3022](https://wg21.link/LWG3022): `is_convertible<derived*, base*>` may lead to ODR
+- [ ] [LWG3025](https://wg21.link/LWG3025): Map-like container deduction guides should use `pair<Key, T>`, not `pair<const Key, T>`
+- [ ] [LWG3031](https://wg21.link/LWG3031): Algorithms and predicates with non-const reference arguments
+- [ ] [LWG3037](https://wg21.link/LWG3037): `polymorphic_allocator` and incomplete types
+- [ ] [LWG3038](https://wg21.link/LWG3038): `polymorphic_allocator::allocate` should not allow integer overflow to create vulnerabilities
+- [ ] [LWG3054](https://wg21.link/LWG3054): `uninitialized_copy` appears to not be able to meet its exception-safety guarantee
+- [ ] [LWG3065](https://wg21.link/LWG3065): LWG 2989 missed that all `path`'s other operators should be hidden friends as well
+- [ ] [LWG3096](https://wg21.link/LWG3096): `path::lexically_relative` is confused by trailing slashes
+- [ ] [LWG3116](https://wg21.link/LWG3116): `OUTERMOST_ALLOC_TRAITS>` needs `remove_reference_t`
+- [ ] [LWG3122](https://wg21.link/LWG3122): `__cpp_lib_chrono_udls` was accidentally dropped
+- [ ] [LWG3127](https://wg21.link/LWG3127): `basic_osyncstream::rdbuf` needs a `const_cast`
+- [ ] [LWG3128](https://wg21.link/LWG3128): `strstream::rdbuf` needs a `const_cast`
+- [ ] [LWG3129](https://wg21.link/LWG3129): `regex_token_iterator` constructor uses wrong pointer arithmetic
+- [ ] [LWG3130](https://wg21.link/LWG3130): `[input.output]` needs many `addressof`
+- [ ] [LWG3131](https://wg21.link/LWG3131): `addressof` all the things
+- [ ] [LWG3132](https://wg21.link/LWG3132): Library needs to ban macros named `expects` or `ensures`
+- [ ] [LWG3137](https://wg21.link/LWG3137): Header for `__cpp_lib_to_chars`
+- [ ] [LWG3145](https://wg21.link/LWG3145): `file_clock` breaks ABI for C++17 implementations
+- [ ] [LWG3147](https://wg21.link/LWG3147): Definitions of "likely" and "unlikely" are likely to cause problems
+- [ ] [LWG3148](https://wg21.link/LWG3148): `<concepts>` should be freestanding
+- [ ] [LWG3153](https://wg21.link/LWG3153): `Common` and `common_type` have too little in common
+- [ ] [LWG3154](https://wg21.link/LWG3154): `Common` and `CommonReference` have a common defect
